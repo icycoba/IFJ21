@@ -13,5 +13,4 @@
  */
 
 #include <stdio.h>
-
-void removeMeFunc();
+#include "error.h"
