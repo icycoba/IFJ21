@@ -11,3 +11,9 @@
  * Popis:
  *      TODO
  */
+
+#include <stdio.h>
+
+int main(){
+    printf("Hello, IFJ21.\n");
+}

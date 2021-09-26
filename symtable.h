@@ -11,3 +11,7 @@
  * Popis:
  *      TODO
  */
+
+#include <stdio.h>
+
+void removeMeFunc();
