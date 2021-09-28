@@ -3,13 +3,13 @@
  *      Implementace překladače imperativního jazyka IFJ21
  * 
  * Autoři:
- *      
+ *      @author Martin Hlinský (xhlins01)
  * 
  * Soubor:
- *      symtable.c
+ *      @file symtable.c
  * 
  * Popis:
- *      TODO
+ *      @brief Tabulka symbolů implementovaná jako binární vyhledávací strom.
  */
 
 #include "symtable.h"

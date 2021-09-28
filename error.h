@@ -3,7 +3,7 @@
  *      Implementace překladače imperativního jazyka IFJ21
  * 
  * Autoři:
- *      Martin Hlinský (xhlins01)
+ *      @author Martin Hlinský (xhlins01)
  * 
  * Soubor:
  *      @file error.h
