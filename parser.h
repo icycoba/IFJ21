@@ -6,8 +6,10 @@
  *      
  * 
  * Soubor:
- *      parser.h
+ *      @file parser.h
  * 
  * Popis:
- *      TODO
+ *      @brief Modul pro provedení syntaktické a sémantické analýzy
  */
+
+#include <stdio.h>
