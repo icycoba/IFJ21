@@ -19,20 +19,57 @@
 #include "str.h"
 
 typedef enum{
+    T_NIL,
     T_INT,
     T_FLOAT,
     T_STRING,
-    T_NIL
+    T_FUNC    
 } sType;
 
+/**
+ *  @brief Data uzlu 
+ **/
 typedef struct symTableData {
     sType type;
     char* attribute;
 } *symTableDataPtr;
 
+/**
+ *  @brief Uzel stromu
+ **/
 typedef struct symTableNode {
     string key;
     struct symTableDataPtr *data;
     struct symTableNode *lptr;
     struct symTableNode *rptr; 
 } *symTableNodePtr;
+
+/**
+ *  @brief Inicializace BVS 
+ **/
+void symTableInit(symTableNodePtr *tree);
+
+/**
+ *  @brief Hledání uzlu ve stromě podle identifikátoru
+ **/
+symTableDataPtr symTableSearch(symTableNodePtr *tree, string key);
+
+/**
+ *  @brief Vložení nového uzlu do stromu
+ **/
+void symTableInsert(symTableNodePtr *tree, string key, symTableDataPtr data);
+
+/**
+ *  @brief Pomocná funkce pro vyhledání, přesun a uvolnění nejpravějšího uzlu
+ **/
+void replaceByRightmost(symTableNodePtr replacedPtr, symTableNodePtr *tree);
+
+/**
+ *  @brief Vymazání uzlu ze stromu
+ **/
+void symTableDelete(symTableNodePtr *tree, string key);
+
+/**
+ *  @brief Zrušení celého stromu
+ **/
+void symTableDispose(symTableNodePtr *tree);
