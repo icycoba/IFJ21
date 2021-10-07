@@ -44,32 +44,9 @@ typedef struct symTableNode {
     struct symTableNode *rptr; 
 } *symTableNodePtr;
 
-/**
- *  @brief Inicializace BVS 
- **/
 void symTableInit(symTableNodePtr *tree);
-
-/**
- *  @brief Hledání uzlu ve stromě podle identifikátoru
- **/
 symTableDataPtr symTableSearch(symTableNodePtr *tree, string key);
-
-/**
- *  @brief Vložení nového uzlu do stromu
- **/
 void symTableInsert(symTableNodePtr *tree, string key, symTableDataPtr data);
-
-/**
- *  @brief Pomocná funkce pro vyhledání, přesun a uvolnění nejpravějšího uzlu
- **/
 void replaceByRightmost(symTableNodePtr replacedPtr, symTableNodePtr *tree);
-
-/**
- *  @brief Vymazání uzlu ze stromu
- **/
 void symTableDelete(symTableNodePtr *tree, string key);
-
-/**
- *  @brief Zrušení celého stromu
- **/
 void symTableDispose(symTableNodePtr *tree);
