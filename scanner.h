@@ -2,7 +2,7 @@
  * Projekt:
  *      Implementace překladače imperativního jazyka IFJ21
  * 
- * Autoři:
+ * Autoři: Jakub Ryšánek (xrysan05)
  *      
  * 
  * Soubor:
