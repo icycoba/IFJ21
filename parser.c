@@ -15,6 +15,12 @@
 #include "parser.h"
 
 int main(){
-    
+    int internalErr = 0;
+
+    symTableNodePtr funcTable;
+    symTableInit(&funcTable);
+
+
+
     return 0;  
 }
