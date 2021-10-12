@@ -1,0 +1,33 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "C/C++: gcc.exe sestavit aktivní soubor",
+            "command": "C:\\MinGW\\bin\\gcc.exe",
+            "args": [
+                "-g3",
+                "-std=c99",
+                "-Wall",
+                "-Werror",
+                "-Wextra",
+                "-pedantic",
+                "error.c",
+                "str.c",
+                "symtable.c",
+                "parser.c",
+                "main.c",
+                "-o",
+                "ifj21"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "detail": "Úloha vygenerovaná ladicím programem"
+        }
+    ],
+    "version": "2.0.0"
+}

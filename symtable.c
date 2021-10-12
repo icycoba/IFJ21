@@ -28,10 +28,12 @@ symTableDataPtr symTableSearch(symTableNodePtr *tree, string key){
     if(!(*tree)) return NULL;
 
     else if (strCmpString(&key, &(*tree)->key) < 0)
-        return symTableSearch((*tree)->lptr, key);
+        return symTableSearch(&(*tree)->lptr, key);
     
     else if (strCmpString(&key, &(*tree)->key) > 0)
-        return symTableSearch((*tree)->rptr, key);
+        return symTableSearch(&(*tree)->rptr, key);
+
+    else return NULL;
 }
 
 /**
@@ -45,7 +47,7 @@ void symTableInsert(symTableNodePtr *tree, string key, symTableDataPtr data){
         symTableNodePtr temp = malloc(sizeof(struct symTableNode));
         if(temp == NULL) return;
 
-        temp->data = data;
+        //temp->data = data;
         temp->key = key;
         temp->lptr = NULL;
         temp->rptr = NULL;
@@ -54,11 +56,11 @@ void symTableInsert(symTableNodePtr *tree, string key, symTableDataPtr data){
     }
 
     if (strCmpString(&key, &(*tree)->key) < 0){
-        symTableInsert((*tree)->lptr, key, data);
+        symTableInsert(&(*tree)->lptr, key, data);
         return;
     }
     else if (strCmpString(&key, &(*tree)->key) > 0){
-        symTableInsert((*tree)->rptr, key, data);
+        symTableInsert(&(*tree)->rptr, key, data);
         return;
     } 
 }
@@ -67,7 +69,7 @@ void symTableInsert(symTableNodePtr *tree, string key, symTableDataPtr data){
  *  @brief Pomocná funkce pro vyhledání, přesun a uvolnění nejpravějšího uzlu
  **/
 void replaceByRightmost(symTableNodePtr replacedPtr, symTableNodePtr *tree){
-    if(!(*tree)) return NULL;
+    if(!(*tree)) return;
 
     if((*tree)->rptr != NULL){
         replaceByRightmost(replacedPtr, &(*tree)->rptr);
@@ -84,7 +86,7 @@ void replaceByRightmost(symTableNodePtr replacedPtr, symTableNodePtr *tree){
  *  @brief Vymazání uzlu ze stromu
  **/
 void symTableDelete(symTableNodePtr *tree, string key){
-    if(!(*tree)) return NULL;
+    if(!(*tree)) return;
 
     if (strCmpString(&key, &(*tree)->key) < 0){
         symTableDelete(&(*tree)->lptr, key);
@@ -105,7 +107,7 @@ void symTableDelete(symTableNodePtr *tree, string key){
  *  @brief Zrušení celého stromu
  **/
 void symTableDispose(symTableNodePtr *tree){
-    if(!(*tree)) return NULL;
+    if(!(*tree)) return;
 
     symTableDispose(&(*tree)->lptr);
     symTableDispose(&(*tree)->rptr);

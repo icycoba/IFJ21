@@ -14,8 +14,9 @@
 
 #include "parser.h"
 
-int main(){
+int parser(){
     int internalErr = 0;
+    printf("%d\n", internalErr);
 
     symTableNodePtr funcTable;
     symTableInit(&funcTable);

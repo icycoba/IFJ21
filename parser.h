@@ -17,7 +17,5 @@
 #include <malloc.h>
 #include <stdbool.h>
 
-#include "error.h"
-#include "str.h"
 #include "symtable.h"
 #include "scanner.h"
