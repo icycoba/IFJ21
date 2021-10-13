@@ -9,7 +9,7 @@
  *      scanner.c
  * 
  * Popis:
- *      TODO
+ *      @brief Modul pro provedení lexikální analýzy
  */
 
 #include "scanner.h"

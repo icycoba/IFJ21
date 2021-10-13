@@ -15,5 +15,6 @@
 
 int main(){
     printf("Hello karel\n");
-    return 0;
+    int returnCode = parser();
+    return returnCode;
 }

@@ -12,6 +12,8 @@
  *      @brief Tabulka symbolů implementovaná jako binární vyhledávací strom.
  */
 
+#pragma once
+
 #include <stdio.h>
 #include <stdbool.h>
 

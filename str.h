@@ -12,6 +12,8 @@
  *      @brief Jednoduchá knihovna pro práci s nekonečně dlouhými řetězci.
  */
 
+#pragma once
+
 #include <string.h>
 #include <malloc.h>
 

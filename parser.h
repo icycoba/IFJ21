@@ -12,6 +12,8 @@
  *      @brief Modul pro provedení syntaktické a sémantické analýzy
  */
 
+#pragma once
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>
@@ -19,3 +21,5 @@
 
 #include "symtable.h"
 #include "scanner.h"
+
+int parser();

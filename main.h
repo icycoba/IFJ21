@@ -12,6 +12,8 @@
  *      @brief Hlavní program.
  */
 
+#pragma once
+
 #include <stdio.h>
 
 #include "parser.h"

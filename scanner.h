@@ -10,6 +10,7 @@
  *      scanner.h
  * 
  * Popis:
- *      TODO
+ *      @brief Modul pro provedení lexikální analýzy
  */
  
+ #pragma once

@@ -12,6 +12,8 @@
  *      @brief Výpis chybových hlášek na standartní chybový výstup.
  */
 
+#pragma once
+
 #include <stdio.h>
 #include <stdlib.h>
 
