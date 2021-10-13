@@ -37,9 +37,6 @@ symTableDataPtr symTableSearch(symTableNodePtr *tree, string key){
 }
 
 /**
- *  TODO!! nejspíš bude crashovat protože pointery a bude potřebovat možná i trochu domyslet --xhlins01
- */
-/**
  *  @brief Vložení nového uzlu do stromu
  **/
 void symTableInsert(symTableNodePtr *tree, string key, symTableDataPtr data){
@@ -47,7 +44,7 @@ void symTableInsert(symTableNodePtr *tree, string key, symTableDataPtr data){
         symTableNodePtr temp = malloc(sizeof(struct symTableNode));
         if(temp == NULL) return;
 
-        //temp->data = data;
+        temp->data = data;
         temp->key = key;
         temp->lptr = NULL;
         temp->rptr = NULL;

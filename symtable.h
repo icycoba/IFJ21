@@ -39,7 +39,7 @@ typedef struct symTableData {
  **/
 typedef struct symTableNode {
     string key;
-    struct symTableDataPtr *data;
+    struct symTableData *data;
     struct symTableNode *lptr;
     struct symTableNode *rptr; 
 } *symTableNodePtr;
