@@ -15,13 +15,17 @@
  
 #pragma once
 
+#include <stdio.h>
+#include <ctype.h>
+
+#include <str.h>
+
 
 // TODO komentáře, možná len -xhlins01
 enum state{
     // Nekoncové stavy
     S_START,
     S_DOT,
-    S_CONCAT,
     S_STRSTART,
     S_STR1,
     S_STR2,

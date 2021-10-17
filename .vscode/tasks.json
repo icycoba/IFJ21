@@ -15,6 +15,7 @@
                 "str.c",
                 "symtable.c",
                 "parser.c",
+                "scanner.c",
                 "main.c",
                 "-o",
                 "ifj21"
