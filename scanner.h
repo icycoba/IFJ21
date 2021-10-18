@@ -5,9 +5,8 @@
  * Autoři: 
  *      @author Jakub Ryšánek   (xrysan05)
  *      @author Martin Hlinský  (xhlins01)
- * 
  * Soubor:
- *      scanner.h
+ *      @file scanner.h
  * 
  * Popis:
  *      @brief Modul pro provedení lexikální analýzy
@@ -18,8 +17,8 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#include <str.h>
-
+#include "str.h"
+#include "error.h"
 
 // TODO komentáře, možná len -xhlins01
 enum state{
@@ -35,7 +34,6 @@ enum state{
     S_DOUBLE,
     S_EXP1,
     S_EXP2,
-    S_LEN,
     S_SUB,
     S_DIV,
     S_GT,
@@ -71,6 +69,7 @@ enum state{
     RSBR,
     LCBR,
     RCBR,
+    LEN,
 
     //Klíčová slova
     KW_DO,
@@ -89,3 +88,5 @@ enum state{
     KW_THEN,
     KW_WHILE
  };
+
+ int getToken(string *attribute);
