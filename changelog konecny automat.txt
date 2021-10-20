@@ -1,0 +1,5 @@
++ LEN je nyni koncovy stav.
++ COMMENTS pridany
+
++ STR3
+- STR4
