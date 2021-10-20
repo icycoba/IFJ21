@@ -1,0 +1,220 @@
+Hello karel
+
+-: S_START
+-: S_SUB
+ : S_COMM_LINE
+Z: S_COMM_LINE
+a: S_COMM_LINE
+j: S_COMM_LINE
+i: S_COMM_LINE
+s: S_COMM_LINE
+t: S_COMM_LINE
+e: S_COMM_LINE
+n: S_COMM_LINE
+i: S_COMM_LINE
+ : S_COMM_LINE
+z: S_COMM_LINE
+a: S_COMM_LINE
+k: S_COMM_LINE
+l: S_COMM_LINE
+a: S_COMM_LINE
+d: S_COMM_LINE
+n: S_COMM_LINE
+i: S_COMM_LINE
+ : S_COMM_LINE
+k: S_COMM_LINE
+o: S_COMM_LINE
+m: S_COMM_LINE
+p: S_COMM_LINE
+a: S_COMM_LINE
+t: S_COMM_LINE
+i: S_COMM_LINE
+b: S_COMM_LINE
+i: S_COMM_LINE
+l: S_COMM_LINE
+i: S_COMM_LINE
+t: S_COMM_LINE
+y: S_COMM_LINE
+ : S_COMM_LINE
+I: S_COMM_LINE
+F: S_COMM_LINE
+J: S_COMM_LINE
+2: S_COMM_LINE
+1: S_COMM_LINE
+-: S_COMM_LINE
+>: S_COMM_LINE
+T: S_COMM_LINE
+e: S_COMM_LINE
+a: S_COMM_LINE
+l: S_COMM_LINE
+: S_COMM_LINE
+
+: S_COMM_LINE
+: S_START
+
+: S_START
+f: S_START
+u: ID
+n: S_START
+c: ID
+t: S_START
+i: ID
+o: S_START
+n: ID
+ : S_START
+t: S_START
+o: ID
+i: S_START
+n: ID
+t: S_START
+e: ID
+g: S_START
+e: ID
+r: S_START
+(: ID
+f: S_START
+ : ID
+:: S_START
+ : S_START
+n: S_START
+u: ID
+m: S_START
+b: ID
+e: S_START
+r: ID
+): S_START
+ : S_START
+:: S_START
+ : S_START
+i: S_START
+n: ID
+t: S_START
+e: ID
+g: S_START
+e: ID
+r: S_START
+: ID
+
+: S_START
+ : S_START
+ : S_START
+l: S_START
+o: ID
+c: S_START
+a: ID
+l: S_START
+ : ID
+_: S_START
+ : S_START
+:: S_START
+ : S_START
+n: S_START
+u: ID
+m: S_START
+b: ID
+e: S_START
+r: ID
+: S_START
+
+: S_START
+ : S_START
+ : S_START
+l: S_START
+o: ID
+c: S_START
+a: ID
+l: S_START
+ : ID
+r: S_START
+e: ID
+t: S_START
+ : ID
+:: S_START
+ : S_START
+i: S_START
+n: ID
+t: S_START
+e: ID
+g: S_START
+e: ID
+r: S_START
+: ID
+
+: S_START
+ : S_START
+ : S_START
+i: S_START
+f: ID
+ : S_START
+t: S_START
+y: ID
+p: S_START
+e: ID
+(: S_START
+f: S_START
+): ID
+ : S_START
+=: S_START
+=: S_ASSIGN
+ : S_START
+": S_START
+n: S_STRSTART
+u: S_STRSTART
+m: S_STRSTART
+b: S_STRSTART
+e: S_STRSTART
+r: S_STRSTART
+": S_STRSTART
+ : S_START
+o: S_START
+r: ID
+ : S_START
+t: S_START
+y: ID
+p: S_START
+e: ID
+(: S_START
+f: S_START
+): ID
+ : S_START
+=: S_START
+=: S_ASSIGN
+ : S_START
+": S_START
+i: S_STRSTART
+n: S_STRSTART
+t: S_STRSTART
+e: S_STRSTART
+g: S_STRSTART
+e: S_STRSTART
+r: S_STRSTART
+": S_STRSTART
+ : S_START
+t: S_START
+h: ID
+e: S_START
+n: ID
+ : S_START
+: S_START
+
+: S_START
+ : S_START
+ : S_START
+ : S_START
+ : S_START
+r: S_START
+e: ID
+t: S_START
+,: ID
+ : S_START
+_: S_START
+ : S_START
+=: S_START
+ : S_ASSIGN
+ : S_START
+m: S_START
+a: ID
+t: S_START
+h: ID
+.: S_START
+m: S_DOT

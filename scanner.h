@@ -40,6 +40,10 @@ enum state{
     S_LT,
     S_ASSIGN,
     S_NEQ,
+    S_COMM_LINE,
+    S_BLOCK1,
+    S_BLOCK,
+    S_BLOCK_END1,
 
     //Koncové stavy
     COMMA,
@@ -70,6 +74,8 @@ enum state{
     LCBR,
     RCBR,
     LEN,
+    COMM_LINE_END,
+    BLOCK_END,
 
     //Klíčová slova
     KW_DO,
@@ -89,4 +95,6 @@ enum state{
     KW_WHILE
  };
 
- int getToken(string *attribute);
+ int getToken(/*string *attribute*/);
+ 
+ const char *printState(int);
