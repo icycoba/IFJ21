@@ -16,5 +16,5 @@
 
 ## Návod ke spuštění
 1) make
-2) ./ifj21 <stdin >stdout
+2) ./ifj21 &lt;stdin &gt;stdout
 3) (optional) make clean
