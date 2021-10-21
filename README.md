@@ -13,3 +13,8 @@
 * Generování mezikódu   (xrysan05)
 * Dokumentace           (xgalet05, xhlins01)
 * Testy
+
+## Návod ke spuštění
+1) make
+2) ./ifj21 <stdin >stdout
+3) (optional) make clean
