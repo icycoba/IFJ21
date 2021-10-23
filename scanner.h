@@ -34,6 +34,8 @@ enum state{
     S_DOUBLE,
     S_EXP1,
     S_EXP2,
+    S_EXP,
+    S_ID,
     S_SUB,
     S_DIV,
     S_GT,
@@ -44,6 +46,7 @@ enum state{
     S_BLOCK1,
     S_BLOCK,
     S_BLOCK_END1,
+    S_ZERO,
 
     //Koncové stavy
     COMMA,
@@ -76,6 +79,7 @@ enum state{
     LEN,
     COMM_LINE_END,
     BLOCK_END,
+    ZERO,
 
     //Klíčová slova
     KW_DO,

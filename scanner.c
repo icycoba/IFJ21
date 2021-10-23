@@ -15,37 +15,40 @@
 #include "scanner.h"
 
 // TODO ostatní cases, dokončit a otestovat -xhlins01
-int getToken(/*string *attribute*/){
+int getToken(string *attribute){
     // Počáteční stav je S_START
     int state = S_START;
 
     int i = 0;
 
-    int line, row = 0;
+    unsigned int line, col;
+    line = 1;
+    col = 0;
     while(1){
         // Načte znak ze stdin (TODO? -xhlins01)
         i++;
         char c = fgetc(stdin);
         //printf("%c\n", c);
-        row++;
+        col++;
         printf("%c: %s\n", c, printState(state));
         switch(state){
             case S_START:
-                if (isspace(c))                 {state = S_START; if (c == '\n') line++;}
+                if (isspace(c))                 {state = S_START; if (c == '\n') {line++;}}
                 else if (c == '.')              {state = S_DOT;}
                 else if (c == '\"')             {state = S_STRSTART;}
-                else if (c >= '0' && c <= '9')  {state = S_INT;}
+                else if (c >= '1' && c <= '9')  {state = S_INT;}
+                else if (c == '0')              {state = S_ZERO;}
                 else if (c == '-')              {state = S_SUB;}
                 else if (c == '/')              {state = S_DIV;}
                 else if (c == '>')              {state = S_GT;}
                 else if (c == '<')              {state = S_LT;}
                 else if (c == '=')              {state = S_ASSIGN;}
                 else if (c == '~')              {state = S_NEQ;}
+                else if((c >= 'a' && c <= 'z')
+                      ||(c >= 'A' && c <= 'Z')) {state = S_ID;}
 
                 else if (c == ',')              return COMMA;    
                 else if (c == ':')              return DOUBLEDOT;
-                else if((c >= 'a' && c <= 'z')
-                      ||(c >= 'A' && c <= 'Z')) {state = ID;}
                 else if (c == '+')              return ADD;
                 else if (c == '*')              return MUL;
                 else if (c == '(')              return LBR;
@@ -57,17 +60,29 @@ int getToken(/*string *attribute*/){
                 else if (c == '#')              return LEN;
                 break;
             case S_DOT:
-                if (c == '.')   return DOT;
-                else            errorMessage(ERR_LEXICAL, ("Objevil se neočekávaný znak\n"));
+                //printf("%d: %d\n", ++line, col);
+                if (c == '.')   return CONCAT;
+                else            {ungetc(c, stdin); return DOT;}
                 break;
             case S_STRSTART:
-                if (c == '\\')      state = S_STR1;
-                else if (c > 31 && c != '\"')    state = S_STRSTART; //TODO append to attribute
-                else if (c == '\"') {state = STREND; return STREND;}
-                else                errorMessage(ERR_LEXICAL, ("Objevil se neočekávaný znak\n"));
+                if (c == '\\')                  {state = S_STR1; strAddChar(attribute, c);}
+                else if (c > 31 && c != '\"')   {state = S_STRSTART; strAddChar(attribute, c);}
+                else if (c == '\"')             {state = STREND; return STREND;}
+                else                            errorMessage(ERR_LEXICAL, ("Objevil se neočekávaný znak"));
                 break;
             case S_STR1:
-                //TODO
+                if (c == '\\' || c == '\"'
+                 || c == 't'  || c == 'n')      {state = S_STRSTART; strAddChar(attribute, c);}
+                else if (c >= 0 && c <= 2)      {state = S_STR2; strAddChar(attribute, c);}
+                else                            errorMessage(ERR_LEXICAL, ("Objevil se neočekávaný znak"));
+                break;
+            case S_STR2:
+                if (c >= 0 && c <= 5)           {state = S_STR3; strAddChar(attribute, c);}
+                else                            errorMessage(ERR_LEXICAL, ("Objevil se neočekávaný znak"));
+                break;
+            case S_STR3:
+                if (c >= 1 && c <= 5)           {state = S_STRSTART; strAddChar(attribute, c);}
+                else                            errorMessage(ERR_LEXICAL, ("Objevil se neočekávaný znak"));
                 break;
             case S_INT:
                 if (c >= '0' && c <= '9')       state = S_INT;
@@ -75,17 +90,36 @@ int getToken(/*string *attribute*/){
                 else if (c == 'e' || c == 'E')  state = S_EXP1;
                 else                            {ungetc(c, stdin); return INT;}
                 break;
+            case S_ZERO:
+                if (c == '.')                   state = S_DOUBLE1;
+                else if (c == 'e' || c == 'E')  state = S_EXP1;
+                else                            {ungetc(c, stdin); return ZERO;} // Naimplementovat jako lexikální, nebo syntaktickou chybu? -xhlins01
+                break;
             case S_DOUBLE1:
-                //TODO
-                state = S_START;
+                if (c >= '0' && c <= '9')       state = S_DOUBLE;
+                else                            errorMessage(ERR_LEXICAL, ("Objevil se neočekávaný znak"));
+                break;
+            case S_DOUBLE:
+                if (c >= '0' && c <= '9')       state = S_DOUBLE;
+                if (c == 'e' || c == 'E')       state = S_EXP1;
+                else                            {ungetc(c, stdin); return DOUBLE;}
                 break;
             case S_EXP1:
-                //TODO
-                state = S_START;
+                if (c == '+' || c == '-')       state = S_EXP2;
+                else if (c >= '0' && c <= '9')  state = S_EXP;
+                else                            errorMessage(ERR_LEXICAL, ("Objevil se neočekávaný znak"));
                 break;
-            case ID:
-                //TODO
-                state = S_START;
+            case S_EXP2:
+                if (c >= '0' && c <= '9')       state = S_EXP;
+                else                            errorMessage(ERR_LEXICAL, ("Objevil se neočekávaný znak"));
+                break;
+            case S_EXP:
+                if (c >= '0' && c <= '9')       state = S_EXP;
+                else                            {ungetc(c, stdin); return EXP;}
+            case S_ID:
+                if  ((c >= 'a' && c <= 'z')
+                ||  (c >= 'A' && c <= 'Z'))     {state = S_ID;}
+                else                            {ungetc(c, stdin); return ID;}
                 break;
             case S_SUB:
                 if (c == '-')   state = S_COMM_LINE;
