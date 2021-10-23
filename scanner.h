@@ -47,6 +47,7 @@ enum state{
     S_BLOCK,
     S_BLOCK_END1,
     S_ZERO,
+    S_KW,
 
     //Koncové stavy
     COMMA,
