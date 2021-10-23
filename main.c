@@ -22,11 +22,11 @@ int main(){
     printf("---\nSoubor otevřen úspěšně:)\n---\n");
     */
     int returnCode = 0;
+    string *attribute;
+    if(strInit(attribute)) errorMessage(ERR_INTERNAL, "Chyba alokace řetězce");
     printf("Hello karel\n\n");
-    while (stdin != NULL){
-    int returnCodeTest = getToken();
-    //fprintf(stderr, "returnCodeTest: %d\n", returnCodeTest);
-    }
+
+    int returnCodeTest = getToken(attribute);
     
     //int returnCode = parser();
     return returnCode;

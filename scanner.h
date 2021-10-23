@@ -99,6 +99,6 @@ enum state{
     KW_WHILE
  };
 
- int getToken(/*string *attribute*/);
+ int getToken(string *attribute);
  
  const char *printState(int);

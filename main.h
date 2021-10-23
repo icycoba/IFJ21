@@ -18,3 +18,4 @@
 
 #include "parser.h"
 #include "scanner.h"
+#include "str.h"
