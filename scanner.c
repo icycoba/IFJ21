@@ -121,6 +121,7 @@ int getToken(string *attribute){
                 else                            {ungetc(c, stdin); state = S_KW;}
                 break;
             case S_KW:
+                ungetc(c, stdin);
                 if (strCmpConstStr(attribute, "do") == 0)               return KW_DO;
                 else if (strCmpConstStr(attribute, "else") == 0)        return KW_ELSE;
                 else if (strCmpConstStr(attribute, "end") == 0)         return KW_END;
