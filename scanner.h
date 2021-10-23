@@ -81,6 +81,7 @@ enum state{
     COMM_LINE_END,
     BLOCK_END,
     ZERO,
+    EOFILE,
 
     //Klíčová slova
     KW_DO,

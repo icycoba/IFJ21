@@ -14,23 +14,22 @@
 
 #include "scanner.h"
 
-// TODO ostatní cases, dokončit a otestovat -xhlins01
+/**
+ * @brief Funkce, která znak po znaku zpracovává standartní vstup na token.
+ * 
+ * @param attribute Parametr, do kterého se ukládají hodnoty pro další analýzu.
+*/
 int getToken(string *attribute){
     // Počáteční stav je S_START
     int state = S_START;
 
-    int i = 0;
-
+    // TODO: line a col do error handlingu      -xhlins01
     unsigned int line, col;
     line = 1;
     col = 0;
     while(1){
-        // Načte znak ze stdin (TODO? -xhlins01)
-        i++;
         char c = fgetc(stdin);
-        //printf("%c\n", c);
         col++;
-        //printf("%c: %s\n", c, printState(state));
         switch(state){
             case S_START:
                 if (isspace(c))                 {state = S_START; if (c == '\n') {line++;}}
@@ -57,7 +56,7 @@ int getToken(string *attribute){
                 else if (c == '{')              return LCBR;
                 else if (c == '}')              return RCBR;
                 else if (c == '#')              return LEN;
-                else if (c == EOF)              return 999;
+                else if (c == EOF)              return EOFILE;
                 break;
             case S_DOT:
                 //printf("%d: %d\n", ++line, col);
@@ -179,16 +178,20 @@ int getToken(string *attribute){
                 break;
             case S_NEQ:
                 if (c == '=')                   return NEQUAL;
-                else                            errorMessage(ERR_LEXICAL, ("Objevil se neočekávaný znak\n"));
+                else                            errorMessage(ERR_LEXICAL, ("Objevil se neočekávaný znak"));
                 break;
             default:
                 break;
         }
-        
     }
     return 0;
 }
 
+/**
+ * @brief Funkce, která vypisuje všechny tokeny podle enum ve scanner.h
+ * 
+ * @param state Stav, ve kterém se momentálně nachází program.
+*/
 const char *printState(int state){
     switch(state){
     // Nekoncové stavy
