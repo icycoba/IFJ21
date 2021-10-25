@@ -3,7 +3,7 @@
 function tointeger(f : number) : integer
   local _ : number
   local ret : integer
-  if type(f) == "number" or type(f) == "integer" then 
+  if type(f) == "number" or type(f) == "integer" then
     ret, _ = math.modf(f)
   end
   return ret
