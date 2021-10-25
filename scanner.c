@@ -24,13 +24,14 @@ unsigned int line, col;
 int getToken(string *attribute){
     // Počáteční stav je S_START
     int state = S_START;
-
+    
     char *eMessage;
     while(1){
         char c = fgetc(stdin);
-        col++;
+        fprintf(stderr, "%d: %c\n", col, c);
         switch(state){
             case S_START:
+                col++;
                 if (isspace(c))                 {state = S_START; col--; if (c == '\n') {line++; col = 0;}}
                 else if (c == '.')              {state = S_DOT;}
                 else if (c == '\"')             {state = S_STRSTART; strAddChar(attribute, c);}
