@@ -14,6 +14,8 @@
 
 #include "scanner.h"
 
+unsigned int line, col;
+
 /**
  * @brief Funkce, která znak po znaku zpracovává standartní vstup na token.
  * 
@@ -23,16 +25,13 @@ int getToken(string *attribute){
     // Počáteční stav je S_START
     int state = S_START;
 
-    // TODO: line a col do error handlingu      -xhlins01
-    unsigned int line, col;
-    line = 1;
-    col = 0;
+    char *eMessage;
     while(1){
         char c = fgetc(stdin);
         col++;
         switch(state){
             case S_START:
-                if (isspace(c))                 {state = S_START; if (c == '\n') {line++;}}
+                if (isspace(c))                 {state = S_START; col--; if (c == '\n') {line++; col = 0;}}
                 else if (c == '.')              {state = S_DOT;}
                 else if (c == '\"')             {state = S_STRSTART; strAddChar(attribute, c);}
                 else if (c >= '1' && c <= '9')  {state = S_INT; strAddChar(attribute, c);}
@@ -57,65 +56,78 @@ int getToken(string *attribute){
                 else if (c == '}')              return RCBR;
                 else if (c == '#')              return LEN;
                 else if (c == EOF)              return EOFILE;
+                else                            return UNKNOWN;
                 break;
             case S_DOT:
-                //printf("%d: %d\n", ++line, col);
+                col++;
                 if (c == '.')   return CONCAT;
                 else            {ungetc(c, stdin); return DOT;}
                 break;
             case S_STRSTART:
+                col++;
                 if (c == '\\')                  {state = S_STR1; strAddChar(attribute, c);}
                 else if (c > 31 && c != '\"')   {state = S_STRSTART; strAddChar(attribute, c);}
                 else if (c == '\"')             {state = STREND; strAddChar(attribute, c); return STREND;}
-                else                            errorMessage(ERR_LEXICAL, ("Objevil se neočekávaný znak"));
+                else                            {sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); errorMessage(ERR_LEXICAL, eMessage);}
                 break;
             case S_STR1:
+                col++;
                 if (c == '\\' || c == '\"'
                  || c == 't'  || c == 'n')      {state = S_STRSTART; strAddChar(attribute, c);}
                 else if (c >= 0 && c <= 2)      {state = S_STR2; strAddChar(attribute, c);}
-                else                            errorMessage(ERR_LEXICAL, ("Objevil se neočekávaný znak"));
+                else                            {sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); errorMessage(ERR_LEXICAL, eMessage);}
                 break;
             case S_STR2:
+                col++;
                 if (c >= 0 && c <= 5)           {state = S_STR3; strAddChar(attribute, c);}
-                else                            errorMessage(ERR_LEXICAL, ("Objevil se neočekávaný znak"));
+                else                            {sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); errorMessage(ERR_LEXICAL, eMessage);}
                 break;
             case S_STR3:
+                col++;
                 if (c >= 1 && c <= 5)           {state = S_STRSTART; strAddChar(attribute, c);}
-                else                            errorMessage(ERR_LEXICAL, ("Objevil se neočekávaný znak"));
+                else                            {sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); errorMessage(ERR_LEXICAL, eMessage);}
                 break;
             case S_INT:
+                col++;
                 if (c >= '0' && c <= '9')       {state = S_INT; strAddChar(attribute, c);}
                 else if (c == '.')              {state = S_DOUBLE1; strAddChar(attribute, c);}
                 else if (c == 'e' || c == 'E')  {state = S_EXP1; strAddChar(attribute, c);}
                 else                            {ungetc(c, stdin); return INT;}
                 break;
             case S_ZERO:
+                col++;
                 if (c == '.')                   {state = S_DOUBLE1; strAddChar(attribute, c);}
                 else if (c == 'e' || c == 'E')  {state = S_EXP1; strAddChar(attribute, c);}
                 else                            {ungetc(c, stdin); return ZERO;} // Naimplementovat jako lexikální, nebo syntaktickou chybu? -xhlins01
                 break;
             case S_DOUBLE1:
+                col++;
                 if (c >= '0' && c <= '9')       {state = S_DOUBLE; strAddChar(attribute, c);}
-                else                            errorMessage(ERR_LEXICAL, ("Objevil se neočekávaný znak"));
+                else                            {sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); errorMessage(ERR_LEXICAL, eMessage);}
                 break;
             case S_DOUBLE:
+                col++;
                 if (c >= '0' && c <= '9')       {state = S_DOUBLE; strAddChar(attribute, c);}
                 if (c == 'e' || c == 'E')       {state = S_EXP1; strAddChar(attribute, c);}
                 else                            {ungetc(c, stdin); return DOUBLE;}
                 break;
             case S_EXP1:
+                col++;
                 if (c == '+' || c == '-')       {state = S_EXP2; strAddChar(attribute, c);}
                 else if (c >= '0' && c <= '9')  {state = S_EXP; strAddChar(attribute, c);}
-                else                            errorMessage(ERR_LEXICAL, ("Objevil se neočekávaný znak"));
+                else                            {sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); errorMessage(ERR_LEXICAL, eMessage);}
                 break;
             case S_EXP2:
+                col++;
                 if (c >= '0' && c <= '9')       {state = S_EXP; strAddChar(attribute, c);}
-                else                            errorMessage(ERR_LEXICAL, ("Objevil se neočekávaný znak"));
+                else                            {sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); errorMessage(ERR_LEXICAL, eMessage);}
                 break;
             case S_EXP:
+                col++;
                 if (c >= '0' && c <= '9')       {state = S_EXP; strAddChar(attribute, c);}
                 else                            {ungetc(c, stdin); return EXP;}
             case S_ID:
+                col++;
                 if  (isalnum(c))                {state = S_ID; strAddChar(attribute, c);}
                 else                            {ungetc(c, stdin); state = S_KW;}
                 break;
@@ -139,46 +151,56 @@ int getToken(string *attribute){
                 else return ID;
                 break;
             case S_SUB:
+                col++;
                 if (c == '-')                   state = S_COMM_LINE;
                 else                            {ungetc(c, stdin); return SUB;}
                 break;
             case S_COMM_LINE:
+                col++;
                 if (c == '\n')                  return COMM_LINE_END;
                 else if (c == '[')              state = S_BLOCK1;
                 else                            state = S_COMM_LINE;
                 break;
             case S_BLOCK1:
+                col++;
                 if (c == '\n')                  return COMM_LINE_END;
                 else if (c == '[')              state = S_BLOCK;
                 else                            state = S_COMM_LINE;
                 break;
             case S_BLOCK:
+                col++;
                 if (c == ']')                   state = S_BLOCK_END1;
                 else                            state = S_BLOCK;
                 break;
             case S_BLOCK_END1:
+                col++;
                 if (c == ']')                   return BLOCK_END;
                 else                            state = S_BLOCK;
                 break;
             case S_DIV:
+                col++;
                 if (c == '/')                   return DIV_WHOLE;
                 else                            {ungetc(c, stdin); return DIV;}
                 break;
             case S_GT:
+                col++;
                 if (c == '=')                   return GTE;
                 else                            {ungetc(c, stdin); return GT;}
                 break;
             case S_LT:
+                col++;
                 if (c == '=')                   return LTE;
                 else                            {ungetc(c, stdin); return LT;}
                 break;
             case S_ASSIGN:
+                col++;
                 if (c == '=')                   return EQUAL;
                 else                            {ungetc(c, stdin); return ASSIGN;}
                 break;
             case S_NEQ:
+                col++;
                 if (c == '=')                   return NEQUAL;
-                else                            errorMessage(ERR_LEXICAL, ("Objevil se neočekávaný znak"));
+                else                            {sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); errorMessage(ERR_LEXICAL, eMessage);}
                 break;
             default:
                 break;
@@ -364,6 +386,9 @@ const char *printState(int state){
         break;
     case ZERO:
         return "BLOCK_END";
+        break;
+    case EOFILE:
+        return "EOF";
         break;
 
     //Klíčová slova

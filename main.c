@@ -23,10 +23,14 @@ int main(){
 
     while (returnCodeTest != 999){
         returnCodeTest = getToken(&attribute);
-        if (returnCodeTest > S_ZERO && returnCodeTest < EOFILE && (returnCodeTest != COMM_LINE_END && returnCodeTest != BLOCK_END)){
+        if (returnCodeTest > S_ZERO && returnCodeTest < UNKNOWN && (returnCodeTest != COMM_LINE_END && returnCodeTest != BLOCK_END)){
             printf("%-15s |%s\n", printState(returnCodeTest), strGetStr(&attribute));
         }
+        
         strClear(&attribute);
+        if (returnCodeTest == EOFILE){
+            return 999;
+        }
     }
     return returnCode;
 }

@@ -98,7 +98,9 @@ enum state{
     KW_RETURN,
     KW_STR,
     KW_THEN,
-    KW_WHILE
+    KW_WHILE,
+
+    UNKNOWN
  };
 
  int getToken(string *attribute);
