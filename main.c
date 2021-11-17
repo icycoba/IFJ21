@@ -21,16 +21,17 @@ int main(){
 
     int returnCodeTest = 0;
 
-    while (returnCodeTest != 999){
+    while (returnCodeTest != EOFILE){
         returnCodeTest = getToken(&attribute);
-        if (returnCodeTest > S_ZERO && returnCodeTest < UNKNOWN && (returnCodeTest != COMM_LINE_END && returnCodeTest != BLOCK_END)){
-            printf("%-15s |%s\n", printState(returnCodeTest), strGetStr(&attribute));
-        }
+        //if (returnCodeTest > S_ZERO && returnCodeTest < UNKNOWN && (returnCodeTest != COMM_LINE_END && returnCodeTest != BLOCK_END)){
+        //    printf("%-15s |%s\n", printState(returnCodeTest), strGetStr(&attribute));
+        //}
         
         strClear(&attribute);
-        if (returnCodeTest == EOFILE){
-            return 999;
-        }
+        //if (returnCodeTest == EOFILE){
+        //    return 999;
+        //}
     }
+    printf("Navratovy kod je %d\n", returnCode);
     return returnCode;
 }
