@@ -22,4 +22,7 @@
 #include "symtable.h"
 #include "scanner.h"
 
+#define SYNTAX_OK 0
+
 int parser();
+
