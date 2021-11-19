@@ -36,8 +36,11 @@ int parser(){
 
 //každá syntax funkce je jeden neterminál v gramatice
 int syntax_program(){
+    if (state != EOFILE){
     syntax_prolog();
     syntax_fun_dec_def_call();
+    }
+    return SYNTAX_OK;
 
 }
 
@@ -54,5 +57,22 @@ int syntax_prolog(){
 }
 
 int syntax_fun_dec_def_call(){
+    state = getToken(&token);
+    if (state == KW_GLOBAL){
+        /* code */
+    }
+    else if (state == KW_FUNC){
+        /* code */
+    }
+    else if(state == ID){
+        syntax_fun_call();
+    }
+    else{
+        if(state != EOFILE) return ERR_SYNTAX;
+        return SYNTAX_OK;
+    }
+}
+
+syntax_fun_call(){
 
 }
