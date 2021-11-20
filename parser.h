@@ -26,9 +26,6 @@
 #define SYNTAX_OK 0
 
 int parser();
-int syntax_program();
-int syntax_prolog();
-int syntax_fun_dec_def_call();
 
 void syntax_program();
 void syntax_prolog();

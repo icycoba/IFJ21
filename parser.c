@@ -39,13 +39,8 @@ int parser(){
 
 
 //každá syntax funkce je jeden neterminál v gramatice
-<<<<<<< HEAD
-int syntax_program(){
-    if (state != EOFILE){
-=======
 void syntax_program(){
     if (token != EOFILE){
->>>>>>> d1444df217f84f3481cb71869091e4d272edfbe2
         syntax_prolog();
         syntax_fun_dec_def_call();
     }
