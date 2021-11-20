@@ -43,7 +43,7 @@ void syntax_program(){
         syntax_prolog();
         syntax_fun_dec_def_call();
     }
-
+    //TODO if token != EOFILE => SYNTAX / SEMANTICS ERROR
 }
 
 void syntax_prolog(){
