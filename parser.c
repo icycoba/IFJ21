@@ -16,19 +16,22 @@
 #include "parser.h"
 
 
-string token;
-int state;
+//string token;
+//int state;
+int token = 0;
+string attribute;
+symTableNodePtr funcTable;
 
 
 int parser(){
     int internalErr = 0;
     printf("%d\n", internalErr);
 
-    symTableNodePtr funcTable;
     symTableInit(&funcTable);    
 
-    
-    state = getToken(&token);
+    if(strInit(&attribute)) errorMessage(ERR_INTERNAL, "Chyba alokace řetězce");
+
+    token = getToken(&attribute);
     syntax_program();
 
     return 0;  
@@ -36,44 +39,85 @@ int parser(){
 
 
 //každá syntax funkce je jeden neterminál v gramatice
+<<<<<<< HEAD
 int syntax_program(){
     if (state != EOFILE){
+=======
+void syntax_program(){
+    if (token != EOFILE){
+>>>>>>> d1444df217f84f3481cb71869091e4d272edfbe2
         syntax_prolog();
         syntax_fun_dec_def_call();
     }
-    return SYNTAX_OK;
+    //TODO if token != EOFILE => SYNTAX / SEMANTICS ERROR
+}
+
+void syntax_prolog(){
+    //TODO komentáře, blokové komentáře
+    if (token != KW_REQUIRE) errorMessage(ERR_SYNTAX, "V prologu chybí klíčové slovo require");
+
+    token = getToken(&attribute);
+    if (token != STREND || strCmpConstStr(&attribute, "\"ifj21\"")) errorMessage(ERR_SYNTAX, "Klíčové slovo require musí následovat řetězec \"ifj21\"");
+
 
 }
 
-int syntax_prolog(){
-    
-    if (state != KW_REQUIRE) return ERR_SYNTAX;
-
-    if ((state = getToken(&token)) == ERR_LEXICAL) return ERR_LEXICAL;
-
-    if (state != STREND || strCmpStr(token, "\"ijf21\"")) return ERR_SYNTAX;
-
-    return SYNTAX_OK;
-
-}
-
-int syntax_fun_dec_def_call(){
-    state = getToken(&token);
-    if (state == KW_GLOBAL){
+void syntax_fun_dec_def_call(){
+    token = getToken(&attribute);
+    if (token == KW_GLOBAL){
         /* code */
     }
-    else if (state == KW_FUNC){
+    else if (token == KW_FUNC){
         /* code */
     }
-    else if(state == ID){
+    else if(token == ID){
         syntax_fun_call();
     }
     else{
-        if(state != EOFILE) return ERR_SYNTAX;
-        return SYNTAX_OK;
+        if(token != EOFILE) errorMessage(ERR_SYNTAX, "Program neobsahuje EOF");
     }
 }
 
-syntax_fun_call(){
+void syntax_fun_call(){
+    //TODO
+}
 
+void syntax_param_type(){
+    //TODO
+}
+void syntax_param_type2(){
+    //TODO
+}
+void syntax_type_rtrn(){
+    //TODO
+}
+void syntax_type_rtrn2(){
+    //TODO
+}
+void syntax_fun_params(){
+    //TODO
+}
+void syntax_fun_params2(){
+    //TODO
+}
+void syntax_stmts(){
+    //TODO
+}
+void syntax_stmt(){
+    //TODO
+}
+void syntax_var_init(){
+    //TODO
+}
+void syntax_expr(){
+    //TODO
+}
+void syntax_expr2(){
+    //TODO
+}
+void syntax_type(){
+    //TODO
+}
+void syntax_ID_next(){
+    //TODO
 }
