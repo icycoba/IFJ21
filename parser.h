@@ -4,6 +4,7 @@
  * 
  * Autoři:
  *      @author Jakub Ryšánek   (xrysan05)
+ *      @author Karel Galeta    (xgalet05)
  * 
  * Soubor:
  *      @file parser.h
@@ -25,4 +26,7 @@
 #define SYNTAX_OK 0
 
 int parser();
+int syntax_program();
+int syntax_prolog();
+int syntax_fun_dec_def_call();
 

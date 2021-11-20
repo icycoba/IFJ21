@@ -4,6 +4,7 @@
  * 
  * Autoři:
  *      @author Jakub Ryšánek   (xrysan05)
+ *      @author Karel Galeta    (xgalet05)
  * 
  * Soubor:
  *      @file parser.c
@@ -37,8 +38,8 @@ int parser(){
 //každá syntax funkce je jeden neterminál v gramatice
 int syntax_program(){
     if (state != EOFILE){
-    syntax_prolog();
-    syntax_fun_dec_def_call();
+        syntax_prolog();
+        syntax_fun_dec_def_call();
     }
     return SYNTAX_OK;
 
