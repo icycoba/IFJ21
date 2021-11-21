@@ -25,6 +25,10 @@
 
 #define SYNTAX_OK 0
 
+int token = 0;
+string attribute;
+symTableNodePtr funcTable;
+
 int parser();
 
 void syntax_program();

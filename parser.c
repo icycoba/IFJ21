@@ -18,9 +18,6 @@
 
 //string token;
 //int state;
-int token = 0;
-string attribute;
-symTableNodePtr funcTable;
 
 
 int parser(){
