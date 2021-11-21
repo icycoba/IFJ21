@@ -41,6 +41,8 @@ void syntax_type_rtrn();
 void syntax_type_rtrn2();
 void syntax_fun_params();
 void syntax_fun_params2();
+void syntax_fun_call_params();
+void syntax_fun_call_params2();
 void syntax_stmts();
 void syntax_stmt();
 void syntax_var_init();
