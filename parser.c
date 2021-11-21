@@ -48,7 +48,16 @@ void syntax_program(){
 }
 
 void syntax_prolog(){
-    //TODO komentáře, blokové komentáře
+    //TODO START komentáře, blokové komentáře
+
+    // while (token == COMM_LINE_END || token == BLOCK_END){}
+    // NEBO
+    // if (token == COMM_LINE_END || token == BLOCK_END){
+    //  syntax_prolog();
+    //  return 0;
+    // }
+
+    // TODO END
     if (token != KW_REQUIRE) errorMessage(ERR_SYNTAX, "V prologu chybí klíčové slovo require");
 
     token = getToken(&attribute);
