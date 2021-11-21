@@ -5,6 +5,7 @@
  * Autoři:
  *      @author Jakub Ryšánek   (xrysan05)
  *      @author Karel Galeta    (xgalet05)
+ *      @author Martin Hlinský  (xhlins01)
  * 
  * Soubor:
  *      @file parser.h
@@ -25,7 +26,7 @@
 
 #define SYNTAX_OK 0
 
-int token = 0;
+int token;
 string attribute;
 symTableNodePtr funcTable;
 

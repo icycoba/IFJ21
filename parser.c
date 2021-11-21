@@ -5,6 +5,7 @@
  * Autoři:
  *      @author Jakub Ryšánek   (xrysan05)
  *      @author Karel Galeta    (xgalet05)
+ *      @author Martin Hlinský  (xhlins01)
  * 
  * Soubor:
  *      @file parser.c
