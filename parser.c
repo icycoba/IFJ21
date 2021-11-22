@@ -92,31 +92,21 @@ void syntax_fun_dec_def_call(){
 
 // <fun_call> -> ID LBR <fun_call_params> RBR
 void syntax_fun_call(){
-<<<<<<< HEAD
     token = getToken(&attribute);
-    if (token == ID){
+    if (token == LBR){
+        syntax_fun_call_params();
         token = getToken(&attribute);
-        if (token == LBR){
-            syntax_fun_call_params();
-            token = getToken(&attribute);
-            if(token == RBR){
-                
-            }
-        }
-        else{
-            errorMessage(ERR_SYNTAX, "Očekával se znak '('");
-        }
+        if(token != RBR) errorMessage(ERR_SYNTAX, "Očekával se se znak ')'");
     }
-=======
-    // Je definovana? :unless:
-
->>>>>>> cf0a685243098b29504b8df41162bad4be6448c2
+    else{
+        errorMessage(ERR_SYNTAX, "Očekával se znak '('");
+    }
 }
 
 // <param_type> -> <type> <param_type2>
 // <param_type> -> epsilon
 void syntax_param_type(){
-    //TODO
+    
 }
 
 // <param_type2> -> COMMA <type> <param_type2>
