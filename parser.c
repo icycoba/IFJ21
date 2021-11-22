@@ -87,7 +87,20 @@ void syntax_fun_dec_def_call(){
 
 // <fun_call> -> ID LBR <fun_call_params> RBR
 void syntax_fun_call(){
-    //TODO
+    token = getToken(&attribute);
+    if (token == ID){
+        token = getToken(&attribute);
+        if (token == LBR){
+            syntax_fun_call_params();
+            token = getToken(&attribute);
+            if(token == RBR){
+                
+            }
+        }
+        else{
+            errorMessage(ERR_SYNTAX, "Očekával se znak '('");
+        }
+    }
 }
 
 // <param_type> -> <type> <param_type2>
