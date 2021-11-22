@@ -17,8 +17,7 @@ int main(){
     int returnCode = 0;
     string attribute;
     if(strInit(&attribute)) errorMessage(ERR_INTERNAL, "Chyba alokace řetězce");
-    printf("Hello karel\n\n");
-
+    
     int returnCodeTest = 0;
 
     while (returnCodeTest != EOFILE){

@@ -29,6 +29,7 @@
 int token;
 string attribute;
 symTableNodePtr funcTable;
+symTableNodePtr varTable;
 
 int parser();
 
