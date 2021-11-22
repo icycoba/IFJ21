@@ -53,7 +53,7 @@ enum state{
     DOT,
     CONCAT,
     DOUBLEDOT,
-    STREND,
+    STRING,
     INT,
     DOUBLE,
     EXP,
@@ -98,6 +98,16 @@ enum state{
     KW_STR,
     KW_THEN,
     KW_WHILE,
+
+    //Vestavěné funkce
+    F_READS,
+    F_READI,
+    F_READN,
+    F_WRITE,
+    F_TOINTEGER,
+    F_SUBSTR,
+    F_ORD,
+    F_CHR,
 
     UNKNOWN
  };

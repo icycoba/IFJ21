@@ -23,9 +23,9 @@ int main(){
 
     while (returnCodeTest != EOFILE){
         returnCodeTest = getToken(&attribute);
-        //if (returnCodeTest > S_ZERO && returnCodeTest < UNKNOWN && (returnCodeTest != COMM_LINE_END && returnCodeTest != BLOCK_END)){
-        //    printf("%-15s |%s\n", printState(returnCodeTest), strGetStr(&attribute));
-        //}
+        if (returnCodeTest > S_ZERO && returnCodeTest < UNKNOWN){
+            printf("%-15s |%s\n", printState(returnCodeTest), strGetStr(&attribute));
+        }
         
         strClear(&attribute);
         //if (returnCodeTest == EOFILE){
