@@ -50,5 +50,6 @@ void syntax_stmt();
 void syntax_var_init();
 void syntax_expr();
 void syntax_expr2();
-void syntax_type();
 void syntax_ID_next();
+
+bool syntax_type();

@@ -106,13 +106,23 @@ void syntax_fun_call(){
 // <param_type> -> <type> <param_type2>
 // <param_type> -> epsilon
 void syntax_param_type(){
-    
+    token = getToken(&attribute);
+    if(syntax_type()){
+        syntax_param_type2();
+    }
+    else if(!syntax_type()) errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
 }
 
 // <param_type2> -> COMMA <type> <param_type2>
 // <param_type2> -> epsilon
 void syntax_param_type2(){
-    //TODO
+    token = getToken(&attribute);
+    if(token == COMMA){
+        token = getToken(&attribute);
+        if(syntax_type()) syntax_param_type2;
+        else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
+    }
+    else if(token != COMMA) errorMessage(ERR_SYNTAX, "Očekával se znak  ','");
 }
 
 // <type_rtrn> -> DOUBLEDOT <type> <type_rtrn2>
@@ -188,8 +198,9 @@ void syntax_expr2(){
 // <type> -> KW_STR
 // <type> -> KW_INT
 // <type> -> KW_NUM
-void syntax_type(){
-    //TODO
+bool syntax_type(){
+    if(token == KW_STR || token == KW_INT || token == KW_NUM) return true;
+    else return false;
 }
 
 // <ID_next> -> COMMA ID <ID_next>
