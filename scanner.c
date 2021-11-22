@@ -22,6 +22,7 @@ unsigned int line, col;
  * @param attribute Parametr, do kterého se ukládají hodnoty pro další analýzu.
 */
 int getToken(string *attribute){
+    strClear(attribute);
     // Počáteční stav je S_START
     int state = S_START;
     

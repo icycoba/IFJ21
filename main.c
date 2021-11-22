@@ -14,10 +14,11 @@
 #include "main.h"
 
 int main(){
+    /*
     int returnCode = 0;
     string attribute;
     if(strInit(&attribute)) errorMessage(ERR_INTERNAL, "Chyba alokace řetězce");
-    
+
     int returnCodeTest = 0;
 
     while (returnCodeTest != EOFILE){
@@ -33,4 +34,7 @@ int main(){
     }
     printf("Navratovy kod je %d\n", returnCode);
     return returnCode;
+    */
+    if(!parser()) return 0;
+    else return ERR_INTERNAL;
 }
