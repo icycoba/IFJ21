@@ -158,13 +158,13 @@ int getToken(string *attribute){
                 break;
             case S_COMM_LINE:
                 col++;
-                if (c == '\n')                  return COMM_LINE_END;
+                if (c == '\n')                  state = S_START;//return COMM_LINE_END;
                 else if (c == '[')              state = S_BLOCK1;
                 else                            state = S_COMM_LINE;
                 break;
             case S_BLOCK1:
                 col++;
-                if (c == '\n')                  return COMM_LINE_END;
+                if (c == '\n')                  state = S_START;//return COMM_LINE_END;
                 else if (c == '[')              state = S_BLOCK;
                 else                            state = S_COMM_LINE;
                 break;
@@ -175,7 +175,7 @@ int getToken(string *attribute){
                 break;
             case S_BLOCK_END1:
                 col++;
-                if (c == ']')                   return BLOCK_END;
+                if (c == ']')                   state = S_START;//return BLOCK_END;
                 else                            state = S_BLOCK;
                 break;
             case S_DIV:
