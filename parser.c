@@ -5,6 +5,7 @@
  * Autoři:
  *      @author Jakub Ryšánek   (xrysan05)
  *      @author Karel Galeta    (xgalet05)
+ *      @author Martin Hlinský  (xhlins01)
  * 
  * Soubor:
  *      @file parser.c
@@ -14,11 +15,6 @@
  */
 
 #include "parser.h"
-
-
-//string token;
-//int state;
-
 
 int parser(){
     int internalErr = 0;
@@ -47,22 +43,10 @@ void syntax_program(){
 
 // <prolog> -> KW_REQUIRE "ifj21"
 void syntax_prolog(){
-    //TODO START komentáře, blokové komentáře
-
-    // while (token == COMM_LINE_END || token == BLOCK_END){}
-    // NEBO
-    // if (token == COMM_LINE_END || token == BLOCK_END){
-    //  syntax_prolog();
-    //  return 0;
-    // }
-
-    // TODO END
     if (token != KW_REQUIRE) errorMessage(ERR_SYNTAX, "V prologu chybí klíčové slovo require");
 
     token = getToken(&attribute);
-    if (token != STREND || strCmpConstStr(&attribute, "\"ifj21\"")) errorMessage(ERR_SYNTAX, "Klíčové slovo require musí následovat řetězec \"ifj21\"");
-
-
+    if (token != STRING || strCmpConstStr(&attribute, "\"ifj21\"")) errorMessage(ERR_SYNTAX, "Klíčové slovo require musí následovat řetězec \"ifj21\"");
 }
 
 // <fun_dec_def_call> -> KW_GLOBAL  ID DOUBLEDOT    KW_FUNC         LBR <param_type>    RBR     <type_rtrn>
@@ -72,7 +56,28 @@ void syntax_prolog(){
 void syntax_fun_dec_def_call(){
     token = getToken(&attribute);
     if (token == KW_GLOBAL){
-        /* code */
+        token = getToken(&attribute);
+        if(token != ID) errorMessage(ERR_TYPE_CMP /*MOZNA ERR_SYNTAX TODO nejsem si jisty jaky tady bude error -xhlins01*/, "Pokus o definici non-ID");
+        //je atribut jiz declared?
+        if(symTableSearch(&funcTable, attribute)){
+            errorMessage(ERR_NONDEF, "Pokus o redeklaraci funkce");
+        } else{
+            symTableInsert(&funcTable, attribute, NULL);
+        }
+
+        token = getToken(&attribute);
+        if(token != DOUBLEDOT) errorMessage(ERR_SYNTAX, "Očekával se znak : v deklaraci funkce");
+
+        token = getToken(&attribute);
+        if(token != KW_FUNC) errorMessage(ERR_SYNTAX, "Očekávalo se klíčové slovo function v deklaraci funkce");
+
+        token = getToken(&attribute);
+        if(token != LBR) errorMessage(ERR_SYNTAX, "Očekával se znak ( v deklaraci funkce");
+        syntax_param_type();
+
+        token = getToken(&attribute);
+        if(token != RBR) errorMessage(ERR_SYNTAX, "Očekával se znak ) v deklaraci funkce");
+        syntax_type_rtrn();
     }
     else if (token == KW_FUNC){
         /* code */
@@ -87,6 +92,7 @@ void syntax_fun_dec_def_call(){
 
 // <fun_call> -> ID LBR <fun_call_params> RBR
 void syntax_fun_call(){
+<<<<<<< HEAD
     token = getToken(&attribute);
     if (token == ID){
         token = getToken(&attribute);
@@ -101,6 +107,10 @@ void syntax_fun_call(){
             errorMessage(ERR_SYNTAX, "Očekával se znak '('");
         }
     }
+=======
+    // Je definovana? :unless:
+
+>>>>>>> cf0a685243098b29504b8df41162bad4be6448c2
 }
 
 // <param_type> -> <type> <param_type2>

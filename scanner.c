@@ -68,7 +68,7 @@ int getToken(string *attribute){
                 col++;
                 if (c == '\\')                  {state = S_STR1; strAddChar(attribute, c);}
                 else if (c > 31 && c != '\"')   {state = S_STRSTART; strAddChar(attribute, c);}
-                else if (c == '\"')             {state = STREND; strAddChar(attribute, c); return STREND;}
+                else if (c == '\"')             {state = STRING; strAddChar(attribute, c); return STRING;}
                 else                            {sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); errorMessage(ERR_LEXICAL, eMessage);}
                 break;
             case S_STR1:
@@ -149,6 +149,15 @@ int getToken(string *attribute){
                 else if (strCmpConstStr(attribute, "string") == 0)      return KW_STR;
                 else if (strCmpConstStr(attribute, "then") == 0)        return KW_THEN;
                 else if (strCmpConstStr(attribute, "while") == 0)       return KW_WHILE;
+
+                else if (strCmpConstStr(attribute, "reads") == 0)       return F_READS;
+                else if (strCmpConstStr(attribute, "readi") == 0)       return F_READI;
+                else if (strCmpConstStr(attribute, "readn") == 0)       return F_READN;
+                else if (strCmpConstStr(attribute, "write") == 0)       return F_WRITE;
+                else if (strCmpConstStr(attribute, "tointeger") == 0)   return F_TOINTEGER;
+                else if (strCmpConstStr(attribute, "substr") == 0)      return F_SUBSTR;
+                else if (strCmpConstStr(attribute, "ord") == 0)         return F_ORD;
+                else if (strCmpConstStr(attribute, "chr") == 0)         return F_CHR;
                 else return ID;
                 break;
             case S_SUB:
@@ -158,13 +167,13 @@ int getToken(string *attribute){
                 break;
             case S_COMM_LINE:
                 col++;
-                if (c == '\n')                  return COMM_LINE_END;
+                if (c == '\n')                  state = S_START;//return COMM_LINE_END;
                 else if (c == '[')              state = S_BLOCK1;
                 else                            state = S_COMM_LINE;
                 break;
             case S_BLOCK1:
                 col++;
-                if (c == '\n')                  return COMM_LINE_END;
+                if (c == '\n')                  state = S_START;//return COMM_LINE_END;
                 else if (c == '[')              state = S_BLOCK;
                 else                            state = S_COMM_LINE;
                 break;
@@ -175,7 +184,7 @@ int getToken(string *attribute){
                 break;
             case S_BLOCK_END1:
                 col++;
-                if (c == ']')                   return BLOCK_END;
+                if (c == ']')                   state = S_START;//return BLOCK_END;
                 else                            state = S_BLOCK;
                 break;
             case S_DIV:
@@ -307,8 +316,8 @@ const char *printState(int state){
     case DOUBLEDOT:
         return "DOUBLEDOT";
         break;
-    case STREND:
-        return "STREND";
+    case STRING:
+        return "STRING";
         break;
     case INT:
         return "INT";
@@ -437,6 +446,31 @@ const char *printState(int state){
         break;
     case KW_WHILE:
         return "KW_WHILE";
+        break;
+
+    case F_READS: 
+        return "F_READS";
+        break;
+    case F_READI: 
+        return "F_READI";
+        break;
+    case F_READN: 
+        return "F_READN";
+        break;
+    case F_WRITE: 
+        return "F_WRITE";
+        break;
+    case F_TOINTEGER: 
+        return "F_TOINTEGER";
+        break;
+    case F_SUBSTR: 
+        return "F_SUBSTR";
+        break;
+    case F_ORD: 
+        return "F_ORD";
+        break;
+    case F_CHR: 
+        return "F_CHR";
         break;
     default:
         return "UNKNOWN STATE";
