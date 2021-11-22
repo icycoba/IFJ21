@@ -119,7 +119,7 @@ void syntax_param_type2(){
     token = getToken(&attribute);
     if(token == COMMA){
         token = getToken(&attribute);
-        if(syntax_type()) syntax_param_type2;
+        if(syntax_type()) syntax_param_type2();
         else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
     }
     else if(token != COMMA) errorMessage(ERR_SYNTAX, "Očekával se znak  ','");
@@ -128,19 +128,41 @@ void syntax_param_type2(){
 // <type_rtrn> -> DOUBLEDOT <type> <type_rtrn2>
 // <type_rtrn> -> epsilon
 void syntax_type_rtrn(){
-    //TODO
+    token = getToken(&attribute);
+    if(token == DOUBLEDOT){
+        token = getToken(&attribute);
+        if(syntax_type()) syntax_type_rtrn2();
+        else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
+    }
+    else if(token != DOUBLEDOT) errorMessage(ERR_SYNTAX, "Očekával se znak ':'");
 }
 
 // <type_rtrn2> -> COMMA <type> <type_rtrn2>
 // <type_rtrn2> -> epsilon
 void syntax_type_rtrn2(){
-    //TODO
+    token = getToken(&attribute);
+    if(token == COMMA){
+        token = getToken(&attribute);
+        if(syntax_type()) syntax_type_rtrn2();
+        else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
+    }
+    else if(token != COMMA) errorMessage(ERR_SYNTAX, "Očekával se znak ','");
 }
 
 // <fun_params> -> ID DOUBLEDOT <type> <fun_params2>
 // <fun_params> -> epsilon
 void syntax_fun_params(){
-    //TODO
+    token = getToken(&attribute);
+    if(token == ID){
+        token = getToken(&attribute);
+        if(token == DOUBLEDOT){
+            token = getToken(&attribute);
+            if(syntax_type()) syntax_fun_call_params2();
+            else errorMessage(ERR_SYNTAX, "Očekával se typ funkce");
+        }
+        else errorMessage(ERR_SYNTAX, "Očekával se znak ':'");
+    }
+    else if(token != ID) errorMessage(ERR_SYNTAX, "Očekávalo se ID");
 }
 
 // <fun_params2> -> COMMA ID DOUBLEDOT <type> <fun_params2>
