@@ -57,7 +57,7 @@ void syntax_fun_dec_def_call(){
     token = getToken(&attribute);
     if (token == KW_GLOBAL){
         token = getToken(&attribute);
-        if(token != ID) errorMessage(ERR_TYPE_CMP /*MOZNA ERR_SYNTAX TODO nejsem si jisty jaky tady bude error -xhlins01*/, "Pokus o definici non-ID");
+        if(token != ID) errorMessage(ERR_SYNTAX /*MOZNA ERR_SYNTAX TODO nejsem si jisty jaky tady bude error -xhlins01*/, "Pokus o definici non-ID");
         //je atribut jiz declared?
         if(symTableSearch(&funcTable, attribute)){
             errorMessage(ERR_NONDEF, "Pokus o redeklaraci funkce");
@@ -80,14 +80,30 @@ void syntax_fun_dec_def_call(){
         syntax_type_rtrn();
     }
     else if (token == KW_FUNC){
-        /* code */
+        token = getToken(&attribute);
+        if (token != ID) errorMessage(ERR_SYNTAX, "Očekával se token ID");
+
+        // TODO sémantika
+        token = getToken(&attribute);
+        if(token != LBR) errorMessage(ERR_SYNTAX, "Očekával se znak (");
+
+        syntax_fun_params();
+
+        token = getToken(&attribute);
+        if(token != RBR) errorMessage(ERR_SYNTAX, "Očekával se znak )");
+
+        syntax_type_rtrn();
+        syntax_stmts();
+
+        token = getToken(&attribute);
+        if(token != KW_END) errorMessage(ERR_SYNTAX, "Očekávalo se klíčové slovo end na konci funkce");
     }
     else if(token == ID){
         syntax_fun_call();
     }
-    else{
-        if(token != EOFILE) errorMessage(ERR_SYNTAX, "Program neobsahuje EOF");
-    }
+    //else{
+    //    if(token != EOFILE) errorMessage(ERR_SYNTAX, "Program neobsahuje EOF");
+    //}
 }
 
 // <fun_call> -> ID LBR <fun_call_params> RBR
