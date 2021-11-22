@@ -3,8 +3,8 @@
  *      Implementace překladače imperativního jazyka IFJ21
  * 
  * Autoři: 
- *      @author Jakub Ryšánek   (xrysan05)
  *      @author Martin Hlinský  (xhlins01)
+ * 
  * Soubor:
  *      @file scanner.h
  * 
@@ -20,7 +20,6 @@
 #include "str.h"
 #include "error.h"
 
-// TODO komentáře, možná len -xhlins01
 enum state{
     // Nekoncové stavy
     S_START,

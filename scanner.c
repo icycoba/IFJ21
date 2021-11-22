@@ -3,8 +3,8 @@
  *      Implementace překladače imperativního jazyka IFJ21
  * 
  * Autoři:
- *      @author Jakub Ryšánek   (xrysan05)
  *      @author Martin Hlinský  (xhlins01)
+ * 
  * Soubor:
  *      @file scanner.c
  * 
@@ -28,7 +28,7 @@ int getToken(string *attribute){
     char *eMessage;
     while(1){
         char c = fgetc(stdin);
-        fprintf(stderr, "%d: %c\n", col, c);
+        //fprintf(stderr, "%d: %c\n", col, c);
         switch(state){
             case S_START:
                 col++;
