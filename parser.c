@@ -129,7 +129,7 @@ void syntax_fun_call(){
     printf("fun_call\n");    
     if (token == LBR){
         syntax_fun_call_params();
-        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        //token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != RBR) errorMessage(ERR_SYNTAX, "Očekával se se znak ')'");
     }
     else errorMessage(ERR_SYNTAX, "Očekával se znak '('");
@@ -229,8 +229,7 @@ void syntax_fun_call_params(){
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == ID) {
         syntax_fun_call_params2();
-        token = getToken(&attribute);
-        printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        //token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
 }
 
@@ -245,7 +244,7 @@ void syntax_fun_call_params2(){
         else errorMessage(ERR_SYNTAX, "Očekávalo se ID");
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
-    else errorMessage(ERR_SYNTAX, "Očekával se znak ','");
+    
 }
 
 // <stmts> -> <stmt> <stmts>
@@ -253,7 +252,7 @@ void syntax_fun_call_params2(){
 void syntax_stmts(){
     printf("stmts\n");
     //token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-    if(token == KW_LOCAL || token == ID || token == KW_IF || token == KW_WHILE || token == KW_RETURN) {
+    if(token == KW_LOCAL || token == ID || token == KW_IF || token == KW_WHILE || token == KW_RETURN || (token < UNKNOWN && token > KW_WHILE)) {
         syntax_stmt(); 
         //token = getToken(&attribute);
         syntax_stmts();
@@ -268,6 +267,7 @@ void syntax_stmts(){
 void syntax_stmt(){
     printf("stmt\n");
     if(token == KW_LOCAL){
+        printf("stmt-local\n");
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != ID) errorMessage(ERR_SYNTAX, "Očekával se token ID");
 
@@ -279,11 +279,12 @@ void syntax_stmt(){
 
         syntax_var_init();
     } 
-    else if(token == ID || token == F_WRITE ||(token < UNKNOWN && token > KW_WHILE)){
-        printf("befelemepeseveze\n");
+    else if(token == ID ||(token < UNKNOWN && token > KW_WHILE)){
+        printf("stmt-id-or-fun\n");
         syntax_ID_assign_or_fun();
     } 
     else if(token == KW_IF){
+        printf("stmt-if\n");
         //TODO - volani bottom-up analyzy která určí jestli je tu validní terminál a vyhodnotí ho
         bottom_up();
         
@@ -298,9 +299,10 @@ void syntax_stmt(){
 
         
         if(token != KW_END) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"end\"");
-
+        if(token == KW_END) printf("Je tu slovo \"end\"\n");
     }     
     else if(token == KW_WHILE){
+        printf("stmt-while\n");
         //TODO - volani bottom-up analyzy která určí jestli je tu validní terminál a vyhodnotí ho
         bottom_up();
         
@@ -311,9 +313,9 @@ void syntax_stmt(){
 
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != KW_END) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"end\"");
-
     } 
     else if(token == KW_RETURN){
+        printf("stmt-return\n");
         syntax_expr();
         syntax_expr2();
     }
@@ -323,14 +325,20 @@ void syntax_stmt(){
 // <else> -> else <stmts>
 // <else> -> epsilon
 void syntax_else(){
+    printf("else\n");
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-    syntax_stmts();
-    token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+    if(token != KW_END) {
+        syntax_stmts();  
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute)); 
+    } 
+    printf("befelemepeseveze\n");
+
 }
 
 // <ID_assign_or_fun> -> <fun_call>
 // <ID_assign_or_fun> -> <ID_next>   ASSIGN      <expr>  <expr2>
 void syntax_ID_assign_or_fun(){
+    printf("id-or-fun\n");
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == LBR){
         syntax_fun_call();
