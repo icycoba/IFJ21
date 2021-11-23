@@ -251,8 +251,8 @@ void syntax_stmts(){
 }
 
 // <stmt> -> KW_LOCAL       ID          DOUBLEDOT   <type>      <var_init>
-// <stmt> -> KW_IF          <cond>      KW_THEN     <stmts>     KW_ELSE <stmts> KW_END
-// <stmt> -> KW_WHILE       <cond>      KW_DO       <stmts>     KW_END
+// <stmt> -> KW_IF          term        KW_THEN     <stmts>     KW_ELSE <stmts> KW_END
+// <stmt> -> KW_WHILE       term        KW_DO       <stmts>     KW_END
 // <stmt> -> KW_RETURN      <expr>      <expr2>
 // <stmt> -> <ID_assign_or_fun>
 void syntax_stmt(){
@@ -261,18 +261,47 @@ void syntax_stmt(){
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != ID) errorMessage(ERR_SYNTAX, "Očekával se token ID");
 
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        if(token != DOUBLEDOT) errorMessage(ERR_SYNTAX, "Očekával se znak :");
+
+        syntax_type();
+        syntax_var_init();
     } 
     else if(token == ID){
         syntax_ID_assign_or_fun();
     } 
     else if(token == KW_IF){
-        
+        //TODO - volani bottom-up analyzy která určí jestli je tu validní terminál a vyhodnotí ho
+
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        if(token != KW_THEN) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"then\"");
+
+        syntax_stmts();
+
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        if(token != KW_ELSE) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"else\"");
+
+        syntax_stmts();
+
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        if(token != KW_END) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"end\"");
+
     } 
     else if(token == KW_WHILE){
+        //TODO - volani bottom-up analyzy která určí jestli je tu validní terminál a vyhodnotí ho
+
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        if(token != KW_DO) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"do\"");
+
+        syntax_stmts();
+
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        if(token != KW_END) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"end\"");
 
     } 
     else if(token == KW_RETURN){
-
+        syntax_expr();
+        syntax_expr2();
     }
     else errorMessage(ERR_SYNTAX, "Očekával se statement");
 
@@ -309,6 +338,7 @@ void syntax_var_init(){
 }
 
 // <expr> -> <fun_call>
+// <expr> -> term
 void syntax_expr(){
     printf("expr\n");
     token = getToken(&attribute);printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
