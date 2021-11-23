@@ -110,9 +110,7 @@ void syntax_fun_call(){
         token = getToken(&attribute);
         if(token != RBR) errorMessage(ERR_SYNTAX, "Očekával se se znak ')'");
     }
-    else{
-        errorMessage(ERR_SYNTAX, "Očekával se znak '('");
-    }
+    else errorMessage(ERR_SYNTAX, "Očekával se znak '('");
 }
 
 // <param_type> -> <type> <param_type2>
@@ -123,7 +121,7 @@ void syntax_param_type(){
         syntax_param_type2();
         token = getToken(&attribute);
     }
-    //else if(!syntax_type()) errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
+    else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
 }
 
 // <param_type2> -> COMMA <type> <param_type2>
@@ -136,7 +134,7 @@ void syntax_param_type2(){
         else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
         token = getToken(&attribute);
     }
-    //else if(token != COMMA) errorMessage(ERR_SYNTAX, "Očekával se znak  ','");
+    else errorMessage(ERR_SYNTAX, "Očekával se znak  ','");
 }
 
 // <type_rtrn> -> DOUBLEDOT <type> <type_rtrn2>
@@ -149,7 +147,7 @@ void syntax_type_rtrn(){
         else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
         token = getToken(&attribute);
     }
-    //else if(token != DOUBLEDOT) errorMessage(ERR_SYNTAX, "Očekával se znak ':'");
+    else errorMessage(ERR_SYNTAX, "Očekával se znak ':'");
 }
 
 // <type_rtrn2> -> COMMA <type> <type_rtrn2>
@@ -162,7 +160,7 @@ void syntax_type_rtrn2(){
         else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
         token = getToken(&attribute);
     }
-    //else if(token != COMMA) errorMessage(ERR_SYNTAX, "Očekával se znak ','");
+    else errorMessage(ERR_SYNTAX, "Očekával se znak ','");
 }
 
 // <fun_params> -> ID DOUBLEDOT <type> <fun_params2>
@@ -179,7 +177,7 @@ void syntax_fun_params(){
         else errorMessage(ERR_SYNTAX, "Očekával se znak ':'");
         token = getToken(&attribute);
     }
-    //else if(token != ID) errorMessage(ERR_SYNTAX, "Očekávalo se ID");
+    else errorMessage(ERR_SYNTAX, "Očekávalo se ID");
 }
 
 // <fun_params2> -> COMMA ID DOUBLEDOT <type> <fun_params2>
@@ -200,7 +198,7 @@ void syntax_fun_params2(){
         else errorMessage(ERR_SYNTAX, "Očekávalo se ID");
         token = getToken(&attribute);
     }
-    //else if(token != COMMA) errorMessage(ERR_SYNTAX, "Očekával se znak ','");
+    else errorMessage(ERR_SYNTAX, "Očekával se znak ','");
 }
 
 // <fun_call_params> -> ID <fun_call_params2>
@@ -208,7 +206,7 @@ void syntax_fun_params2(){
 void syntax_fun_call_params(){
     token = getToken(&attribute);
     if(token == ID) {syntax_fun_call_params2(); token = getToken(&attribute);}
-    //else if(token != ID) errorMessage(ERR_SYNTAX, "Očekávalo se ID");
+    else errorMessage(ERR_SYNTAX, "Očekávalo se ID");
 }
 
 // <fun_call_params2> -> COMMA ID <fun_call_params2>
@@ -221,15 +219,18 @@ void syntax_fun_call_params2(){
         else errorMessage(ERR_SYNTAX, "Očekávalo se ID");
         token = getToken(&attribute);
     }
-    //else if(token != COMMA) errorMessage(ERR_SYNTAX, "Očekával se znak ','");
+    else errorMessage(ERR_SYNTAX, "Očekával se znak ','");
 }
 
 // <stmts> -> <stmt> <stmts>
 // <stmts> -> epsilon
 void syntax_stmts(){
-    token = getToken(&attribute); // Absolutně si nejsem jistý tady - Karlos    Jde to videt kappa -xhlins01 🟩☕
-    if(token == KW_LOCAL || token == ID || token == KW_IF || token == KW_WHILE || token == KW_RETURN) {syntax_stmt(); token = getToken(&attribute);}
-    //else if(token != KW_LOCAL || token != ID || token != KW_IF || token != KW_WHILE || token != KW_RETURN ) errorMessage(ERR_SYNTAX, "Očekával se příkaz");
+    token = getToken(&attribute);
+    if(token == KW_LOCAL || token == ID || token == KW_IF || token == KW_WHILE || token == KW_RETURN) {
+        syntax_stmt(); 
+        token = getToken(&attribute);
+    }
+   else errorMessage(ERR_SYNTAX, "Očekával se příkaz");
 }
 
 // <stmt> -> KW_LOCAL   ID          DOUBLEDOT   <type>  <var_init>
@@ -240,7 +241,7 @@ void syntax_stmts(){
 // <stmt> -> <fun_call>
 // <stmt> -> KW_RETURN  <expr>      <expr2>
 void syntax_stmt(){
-    //TODO
+    
 }
 
 // <var_init> -> ASSIGN <expr>
