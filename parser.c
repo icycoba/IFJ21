@@ -26,6 +26,9 @@ int parser(){
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     syntax_program();
 
+    token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+    if (token != EOFILE) errorMessage(ERR_SYNTAX, "Chybí EOF");
+
     strFree(&attribute);
     symTableDispose(&funcTable);
     return SYNTAX_OK;  
@@ -38,8 +41,9 @@ void syntax_program(){
     printf("program\n");
     if (token != EOFILE){
         syntax_prolog();
-        syntax_fun_dec_def_call();
+        syntax_fun_dec_def_call();        
     }
+
     //TODO if token != EOFILE => SYNTAX / SEMANTICS ERROR
 }
 
