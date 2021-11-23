@@ -99,7 +99,9 @@ void syntax_fun_dec_def_call(){
         if(token != RBR) errorMessage(ERR_SYNTAX, "Očekával se znak )");
 
         //TODO scuffed cteni tokenu (demonstrovano na maluvce)
-        syntax_type_rtrn();
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        if(token == DOUBLEDOT) syntax_type_rtrn();
+        //syntax_type_rtrn();
         syntax_stmts();
 
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
@@ -156,12 +158,8 @@ void syntax_param_type2(){
 void syntax_type_rtrn(){
     printf("type_rtrn\n");
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-    if(token == DOUBLEDOT){
-        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-        if(syntax_type()) syntax_type_rtrn2();
-        else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
-        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-    }
+    if(syntax_type()) syntax_type_rtrn2();
+    else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
 }
 
 // <type_rtrn2> -> COMMA <type> <type_rtrn2>
@@ -246,7 +244,7 @@ void syntax_fun_call_params2(){
 // <stmts> -> epsilon
 void syntax_stmts(){
     printf("stmts\n");
-    token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+    //token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == KW_LOCAL || token == ID || token == KW_IF || token == KW_WHILE || token == KW_RETURN) {
         syntax_stmt(); 
         //token = getToken(&attribute);
