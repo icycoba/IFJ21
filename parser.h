@@ -33,6 +33,7 @@ symTableNodePtr varTable;
 
 int parser();
 
+void bottom_up();
 void syntax_program();
 void syntax_prolog();
 void syntax_fun_dec_def_call();

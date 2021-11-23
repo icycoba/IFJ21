@@ -34,6 +34,14 @@ int parser(){
     return SYNTAX_OK;  
 }
 
+void bottom_up(){
+    printf("bottom-up\n");
+    token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+    while(token != KW_THEN || token != KW_DO || token != EOFILE ){
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+    }
+}
+
 //// každá syntax funkce je jeden neterminál v gramatice ////
 
 // <program> -> <prolog> <fun_dec_def_call> EOF
@@ -83,7 +91,7 @@ void syntax_fun_dec_def_call(){
         if(token != LBR) errorMessage(ERR_SYNTAX, "Očekával se znak ( v deklaraci funkce");
         syntax_param_type();
 
-        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        //token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != RBR) errorMessage(ERR_SYNTAX, "Očekával se znak ) v deklaraci funkce");
         syntax_type_rtrn();
     }
@@ -136,7 +144,7 @@ void syntax_param_type(){
         syntax_param_type2();
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
-    else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
+    //else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
 }
 
 // <param_type2> -> COMMA <type> <param_type2>
@@ -150,7 +158,7 @@ void syntax_param_type2(){
         else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
-    else errorMessage(ERR_SYNTAX, "Očekával se znak  ','");
+    //else errorMessage(ERR_SYNTAX, "Očekával se znak  ','");
 }
 
 // <type_rtrn> -> DOUBLEDOT <type> <type_rtrn2>
@@ -211,7 +219,7 @@ void syntax_fun_params2(){
         else errorMessage(ERR_SYNTAX, "Očekávalo se ID");
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
-    else errorMessage(ERR_SYNTAX, "Očekával se znak ','");
+    
 }
 
 // <fun_call_params> -> ID <fun_call_params2>
@@ -266,7 +274,9 @@ void syntax_stmt(){
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != DOUBLEDOT) errorMessage(ERR_SYNTAX, "Očekával se znak :");
 
-        syntax_type();
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        if(!syntax_type()) errorMessage(ERR_SYNTAX, "Očekával se typ");;
+
         syntax_var_init();
     } 
     else if(token == ID){
@@ -274,8 +284,8 @@ void syntax_stmt(){
     } 
     else if(token == KW_IF){
         //TODO - volani bottom-up analyzy která určí jestli je tu validní terminál a vyhodnotí ho
-
-        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        bottom_up();
+        
         if(token != KW_THEN) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"then\"");
 
         syntax_stmts();
@@ -291,8 +301,8 @@ void syntax_stmt(){
     } 
     else if(token == KW_WHILE){
         //TODO - volani bottom-up analyzy která určí jestli je tu validní terminál a vyhodnotí ho
-
-        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        bottom_up();
+        
         if(token != KW_DO) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"do\"");
 
         syntax_stmts();
@@ -358,7 +368,7 @@ void syntax_expr2(){
         token = getToken(&attribute);printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         syntax_expr();
         syntax_expr2();
-        token = getToken(&attribute);
+        token = getToken(&attribute);printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
 }
 
