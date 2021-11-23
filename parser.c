@@ -283,17 +283,17 @@ void syntax_ID_assign_or_fun(){
 // <var_init> -> epsilon
 void syntax_var_init(){
     printf("var_init\n");
-    token = getToken(&attribute);
+    token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == ASSIGN){
         syntax_expr();
-        token = getToken(&attribute);
+        token = getToken(&attribute);printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
 }
 
 // <expr> -> <fun_call>
 void syntax_expr(){
     printf("expr\n");
-    token = getToken(&attribute);
+    token = getToken(&attribute);printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == ID){
         syntax_fun_call();
     }
@@ -303,9 +303,9 @@ void syntax_expr(){
 // <expr2> -> epsilon
 void syntax_expr2(){
     printf("expr2\n");
-    token = getToken(&attribute);
+    token = getToken(&attribute);printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == COMMA){
-        token = getToken(&attribute);
+        token = getToken(&attribute);printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         syntax_expr();
         syntax_expr2();
         token = getToken(&attribute);
@@ -325,11 +325,11 @@ bool syntax_type(){
 // <ID_next> -> epsilon
 void syntax_ID_next(){
     printf("ID_next\n");
-    token = getToken(&attribute);
+    token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == COMMA){
-        token = getToken(&attribute);
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token == ID) syntax_ID_next();
         else errorMessage(ERR_SYNTAX, "Očekávalo se ID");
-        token = getToken(&attribute);
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
 }
