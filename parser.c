@@ -262,9 +262,9 @@ void syntax_stmt(){
         if(token != ID) errorMessage(ERR_SYNTAX, "Očekával se token ID");
 
     } else if(token == ID){
-
+        syntax_ID_next();
     } else if(token == KW_IF){
-
+        
     } else if(token == KW_WHILE){
 
     } else if(token == KW_RETURN){
