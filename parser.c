@@ -100,6 +100,7 @@ void syntax_fun_dec_def_call(){
         if(token != KW_END) errorMessage(ERR_SYNTAX, "Očekávalo se klíčové slovo end na konci funkce");
     }
     else if(token == ID){
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         syntax_fun_call();
     }
     //else{
@@ -109,8 +110,7 @@ void syntax_fun_dec_def_call(){
 
 // <fun_call> -> ID LBR <fun_call_params> RBR
 void syntax_fun_call(){
-    printf("fun_call\n");
-    token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+    printf("fun_call\n");    
     if (token == LBR){
         syntax_fun_call_params();
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
@@ -259,22 +259,40 @@ void syntax_stmt(){
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != ID) errorMessage(ERR_SYNTAX, "Očekával se token ID");
 
-    } else if(token == ID){
+    } 
+    else if(token == ID){
         syntax_ID_assign_or_fun();
-    } else if(token == KW_IF){
+    } 
+    else if(token == KW_IF){
         
-    } else if(token == KW_WHILE){
+    } 
+    else if(token == KW_WHILE){
 
-    } else if(token == KW_RETURN){
+    } 
+    else if(token == KW_RETURN){
 
     }
+    else errorMessage(ERR_SYNTAX, "Očekával se statement");
+
+    
     //TODO
 }
 
 // <ID_assign_or_fun> -> <fun_call>
 // <ID_assign_or_fun> -> <ID_next>   ASSIGN      <expr>  <expr2>
 void syntax_ID_assign_or_fun(){
-    
+    token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+    if(token == LBR){
+        syntax_fun_call();
+    }
+    else if(token == COMMA){
+        syntax_ID_next();
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        if(token != COMMA) errorMessage(ERR_SYNTAX, "Očekával se znak ,");
+        syntax_expr();
+        syntax_expr2();
+    }
+    else errorMessage(ERR_SYNTAX, "Očekával se znak , nebo (");
 }
 
 // <var_init> -> ASSIGN <expr>
