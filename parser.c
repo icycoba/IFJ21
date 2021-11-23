@@ -16,6 +16,9 @@
 
 #include "parser.h"
 
+/**
+ * @brief  Funkce, která obstarává chod syntaktické a sémantiské analýzy
+*/
 int parser(){
     symTableInit(&funcTable);
     if(strInit(&attribute)) errorMessage(ERR_INTERNAL, "Chyba alokace řetězce");
@@ -286,14 +289,23 @@ void syntax_var_init(){
 // <expr> -> <fun_call>
 void syntax_expr(){
     printf("expr\n");
-    //TODO
+    token = getToken(&attribute);
+    if(token == ID){
+        syntax_fun_call();
+    }
 }
 
 // <expr2> -> COMMA <expr> <expr2>
 // <expr2> -> epsilon
 void syntax_expr2(){
     printf("expr2\n");
-    //TODO
+    token = getToken(&attribute);
+    if(token == COMMA){
+        token = getToken(&attribute);
+        syntax_expr();
+        syntax_expr2();
+        token = getToken(&attribute);
+    }
 }
 
 // <type> -> KW_STR
@@ -309,5 +321,11 @@ bool syntax_type(){
 // <ID_next> -> epsilon
 void syntax_ID_next(){
     printf("ID_next\n");
-    //TODO
+    token = getToken(&attribute);
+    if(token == COMMA){
+        token = getToken(&attribute);
+        if(token == ID) syntax_ID_next();
+        else errorMessage(ERR_SYNTAX, "Očekávalo se ID");
+        token = getToken(&attribute);
+    }
 }
