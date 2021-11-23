@@ -344,10 +344,7 @@ bool syntax_type(){
 void syntax_ID_next(){
     printf("ID_next\n");
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-    if(token == COMMA){
-        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-        if(token == ID) syntax_ID_next();
-        else errorMessage(ERR_SYNTAX, "Očekávalo se ID");
-        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-    }
+    if(token == ID) syntax_ID_next();
+    else errorMessage(ERR_SYNTAX, "Očekávalo se ID");
+    token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
 }
