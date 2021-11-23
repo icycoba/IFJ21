@@ -155,7 +155,6 @@ void syntax_type_rtrn(){
         else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
-    //else errorMessage(ERR_SYNTAX, "Očekával se znak ':'");
 }
 
 // <type_rtrn2> -> COMMA <type> <type_rtrn2>
@@ -169,7 +168,6 @@ void syntax_type_rtrn2(){
         else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
-    //else errorMessage(ERR_SYNTAX, "Očekával se znak ','");
 }
 
 // <fun_params> -> ID DOUBLEDOT <type> <fun_params2>
@@ -187,7 +185,6 @@ void syntax_fun_params(){
         else errorMessage(ERR_SYNTAX, "Očekával se znak ':'");
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
-    //else errorMessage(ERR_SYNTAX, "Očekávalo se ID");
 }
 
 // <fun_params2> -> COMMA ID DOUBLEDOT <type> <fun_params2>
@@ -217,8 +214,11 @@ void syntax_fun_params2(){
 void syntax_fun_call_params(){
     printf("fun_call_params\n");
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-    if(token == ID) {syntax_fun_call_params2(); token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));}
-    //else if(token != ID) errorMessage(ERR_SYNTAX, "Očekávalo se ID");
+    if(token == ID) {
+        syntax_fun_call_params2();
+        token = getToken(&attribute);
+        printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+    }
 }
 
 // <fun_call_params2> -> COMMA ID <fun_call_params2>
@@ -245,7 +245,6 @@ void syntax_stmts(){
         //token = getToken(&attribute);
         syntax_stmts();
     }
-   //else errorMessage(ERR_SYNTAX, "Očekával se příkaz");
 }
 
 // <stmt> -> KW_LOCAL   ID          DOUBLEDOT   <type>  <var_init>
@@ -277,7 +276,11 @@ void syntax_stmt(){
 // <var_init> -> epsilon
 void syntax_var_init(){
     printf("var_init\n");
-    //TODO
+    token = getToken(&attribute);
+    if(token == ASSIGN){
+        syntax_expr();
+        token = getToken(&attribute);
+    }
 }
 
 // <expr> -> <fun_call>
