@@ -91,6 +91,7 @@ void syntax_fun_dec_def_call(){
         syntax_fun_params();
         if(token != RBR) errorMessage(ERR_SYNTAX, "Očekával se znak )");
 
+        //TODO scuffed cteni tokenu (demonstrovano na maluvce)
         syntax_type_rtrn();
         syntax_stmts();
 
@@ -154,7 +155,7 @@ void syntax_type_rtrn(){
         else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
-    else errorMessage(ERR_SYNTAX, "Očekával se znak ':'");
+    //else errorMessage(ERR_SYNTAX, "Očekával se znak ':'");
 }
 
 // <type_rtrn2> -> COMMA <type> <type_rtrn2>
@@ -168,7 +169,7 @@ void syntax_type_rtrn2(){
         else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
-    else errorMessage(ERR_SYNTAX, "Očekával se znak ','");
+    //else errorMessage(ERR_SYNTAX, "Očekával se znak ','");
 }
 
 // <fun_params> -> ID DOUBLEDOT <type> <fun_params2>
@@ -186,7 +187,7 @@ void syntax_fun_params(){
         else errorMessage(ERR_SYNTAX, "Očekával se znak ':'");
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
-    else errorMessage(ERR_SYNTAX, "Očekávalo se ID");
+    //else errorMessage(ERR_SYNTAX, "Očekávalo se ID");
 }
 
 // <fun_params2> -> COMMA ID DOUBLEDOT <type> <fun_params2>
@@ -237,7 +238,8 @@ void syntax_fun_call_params2(){
 // <stmts> -> <stmt> <stmts>
 // <stmts> -> epsilon
 void syntax_stmts(){
-    token = getToken(&attribute);
+    printf("stmts\n");
+    token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == KW_LOCAL || token == ID || token == KW_IF || token == KW_WHILE || token == KW_RETURN) {
         syntax_stmt(); 
         //token = getToken(&attribute);
@@ -255,6 +257,19 @@ void syntax_stmts(){
 // <stmt> -> KW_RETURN  <expr>      <expr2>
 void syntax_stmt(){
     printf("stmt\n");
+    if(token == KW_LOCAL){
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        if(token != ID) errorMessage(ERR_SYNTAX, "Očekával se token ID");
+
+    } else if(token == ID){
+
+    } else if(token == KW_IF){
+
+    } else if(token == KW_WHILE){
+
+    } else if(token == KW_RETURN){
+
+    }
     //TODO
 }
 
