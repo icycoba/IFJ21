@@ -250,13 +250,11 @@ void syntax_stmts(){
     }
 }
 
-// <stmt> -> KW_LOCAL   ID          DOUBLEDOT   <type>  <var_init>
-// <stmt> -> ID         <ID_next>   ASSIGN      <expr>  <expr2>
-// <stmt> -> KW_IF      <cond>      KW_THEN     <stmts> KW_ELSE <stmts> KW_END
-// <stmt> -> KW_WHILE   <cond>      KW_DO       <stmts> KW_END
-// <stmt> -> ID         <ID_next>   ASSIGN      <fun_call>
-// <stmt> -> <fun_call>
-// <stmt> -> KW_RETURN  <expr>      <expr2>
+// <stmt> -> KW_LOCAL       ID          DOUBLEDOT   <type>      <var_init>
+// <stmt> -> KW_IF          <cond>      KW_THEN     <stmts>     KW_ELSE <stmts> KW_END
+// <stmt> -> KW_WHILE       <cond>      KW_DO       <stmts>     KW_END
+// <stmt> -> KW_RETURN      <expr>      <expr2>
+// <stmt> -> <ID_assign_or_fun>
 void syntax_stmt(){
     printf("stmt\n");
     if(token == KW_LOCAL){
@@ -264,7 +262,7 @@ void syntax_stmt(){
         if(token != ID) errorMessage(ERR_SYNTAX, "Očekával se token ID");
 
     } else if(token == ID){
-        syntax_ID_next();
+        syntax_ID_assign_or_fun();
     } else if(token == KW_IF){
         
     } else if(token == KW_WHILE){
@@ -273,6 +271,12 @@ void syntax_stmt(){
 
     }
     //TODO
+}
+
+// <ID_assign_or_fun> -> <fun_call>
+// <ID_assign_or_fun> -> <ID_next>   ASSIGN      <expr>  <expr2>
+void syntax_ID_assign_or_fun(){
+    
 }
 
 // <var_init> -> ASSIGN <expr>
