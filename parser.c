@@ -37,7 +37,7 @@ int parser(){
 void bottom_up(){
     printf("bottom-up\n");
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-    while(token != KW_THEN && token != KW_DO && token != EOFILE ){
+    while(token != KW_THEN && token != KW_DO && token != EOFILE){
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
 }
@@ -287,7 +287,6 @@ void syntax_stmt(){
         printf("stmt-if\n");
         //TODO - volani bottom-up analyzy která určí jestli je tu validní terminál a vyhodnotí ho
         bottom_up();
-        
         if(token != KW_THEN) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"then\"");
 
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
