@@ -47,7 +47,7 @@ void syntax_fun_call_params();
 void syntax_fun_call_params2();
 void syntax_stmts();
 void syntax_stmt();
-void syntax_ID_assingn_or_fun();
+void syntax_ID_assign_or_fun();
 void syntax_var_init();
 void syntax_expr();
 void syntax_expr2();
