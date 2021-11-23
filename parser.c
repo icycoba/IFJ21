@@ -279,7 +279,8 @@ void syntax_stmt(){
 
         syntax_var_init();
     } 
-    else if(token == ID){
+    else if(token == ID || token == F_WRITE ||(token < UNKNOWN && token > KW_WHILE)){
+        printf("befelemepeseveze\n");
         syntax_ID_assign_or_fun();
     } 
     else if(token == KW_IF){
@@ -287,23 +288,24 @@ void syntax_stmt(){
         bottom_up();
         if(token != KW_THEN) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"then\"");
 
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         syntax_stmts();
 
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-        if(token != KW_ELSE) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"else\"");
+        if(token == KW_ELSE) syntax_else();
+        
 
-        syntax_stmts();
-
-        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        
         if(token != KW_END) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"end\"");
 
-    } 
+    }     
     else if(token == KW_WHILE){
         //TODO - volani bottom-up analyzy která určí jestli je tu validní terminál a vyhodnotí ho
         bottom_up();
         
         if(token != KW_DO) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"do\"");
 
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         syntax_stmts();
 
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
@@ -315,9 +317,14 @@ void syntax_stmt(){
         syntax_expr2();
     }
     else errorMessage(ERR_SYNTAX, "Očekával se statement");
+}
 
-    
-    //TODO
+// <else> -> else <stmts>
+// <else> -> epsilon
+void syntax_else(){
+    token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+    syntax_stmts();
+    token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
 }
 
 // <ID_assign_or_fun> -> <fun_call>
@@ -328,11 +335,15 @@ void syntax_ID_assign_or_fun(){
         syntax_fun_call();
     }
     else if(token == COMMA){
-        syntax_ID_next();
-        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-        if(token != COMMA) errorMessage(ERR_SYNTAX, "Očekával se znak ,");
+        syntax_ID_next();        
+        if(token != ASSIGN) errorMessage(ERR_SYNTAX, "Očekával se znak =");
         syntax_expr();
         syntax_expr2();
+    }
+    else if(token == ASSIGN){
+        syntax_expr();
+        syntax_expr2();
+
     }
     else errorMessage(ERR_SYNTAX, "Očekával se znak , nebo (");
 }
@@ -384,8 +395,10 @@ bool syntax_type(){
 // <ID_next> -> epsilon
 void syntax_ID_next(){
     printf("ID_next\n");
+
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-    if(token == ID) syntax_ID_next();
-    else errorMessage(ERR_SYNTAX, "Očekávalo se ID");
+    if(token != ID) errorMessage(ERR_SYNTAX, "Očekávalo se ID");
+    
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+    if(token == COMMA) syntax_ID_next();
 }
