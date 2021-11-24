@@ -130,7 +130,7 @@ int getToken(string *attribute){
                 else                            {ungetc(c, stdin); return EXP;}
             case S_ID:
                 col++;
-                if  (isalnum(c))                {state = S_ID; strAddChar(attribute, c);}
+                if  (isalnum(c) || c == '_')    {state = S_ID; strAddChar(attribute, c);}
                 else                            {ungetc(c, stdin); state = S_KW;}
                 break;
             case S_KW:
