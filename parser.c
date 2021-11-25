@@ -20,7 +20,7 @@
  * @brief  Funkce, která obstarává chod syntaktické a sémantiské analýzy
 */
 int parser(){
-    symTableInit(&funcTable);
+    funcTableInit(&funcTable);
     if(strInit(&attribute)) errorMessage(ERR_INTERNAL, "Chyba alokace řetězce");
 
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
@@ -30,16 +30,29 @@ int parser(){
     if (token != EOFILE) errorMessage(ERR_SYNTAX, "Chybí EOF");
 
     strFree(&attribute);
+<<<<<<< HEAD
     symTableDispose(&funcTable);
     printf("syntakticka analyza probehla bez problemu\n");
+=======
+    funcTableDispose(&funcTable);
+>>>>>>> 3c30fb03b32a0824d1546c78b73291ad5a36bafb
     return SYNTAX_OK;  
 }
 
 void bottom_up(){
     printf("bottom-up\n");
+    Stack *s;
+    stack_init(s);
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     while((token >= STRING && token <= NEQUAL) || token == LEN){
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        if(token == ID){
+            stack_push(s, token);
+            
+        }
+        else if(token == LEN){
+
+        }
     }
     printf("bottom-up-end\n");
 }
@@ -77,10 +90,10 @@ void syntax_fun_dec_def_call(){
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != ID) errorMessage(ERR_SYNTAX /*MOZNA ERR_SYNTAX TODO nejsem si jisty jaky tady bude error -xhlins01*/, "Pokus o definici non-ID");
         //je atribut jiz declared?
-        if(symTableSearch(&funcTable, attribute)){
+        if(funcTableSearch(&funcTable, attribute)){
             errorMessage(ERR_NONDEF, "Pokus o redeklaraci funkce");
         } else{
-            symTableInsert(&funcTable, attribute, NULL);
+            funcTableInsert(&funcTable, attribute, NULL);
         }
 
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
@@ -475,4 +488,47 @@ void syntax_ID_next(){
     
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == COMMA) syntax_ID_next();
+}
+
+// Inicializace zásobníku
+void stack_init(Stack *s){
+    if(s==NULL){
+        errorMessage(ERR_INTERNAL, "Chyba inicializace zásobníku");
+    }
+    else s->top = -1;
+}
+
+// Je zásobník plný?
+int stack_isFull(const Stack *s){
+    return (s->top == STACK_MAX_SIZE-1);
+}
+
+// Je záspbník prázdný?
+int stack_isEmpty(const Stack *s){
+    return (s->top == STACK_MAX_SIZE - 1);
+}
+
+// Uložení tokenu na zásobník
+void stack_push(Stack *s, int token){
+    if(!stack_isFull(s)){
+        s->top++;
+        s->arr[s->top]=token;
+    }
+    else{
+        errorMessage(ERR_INTERNAL, "Chyba vložení tokenu na zásobník");
+    }
+}
+
+// Odstranění tokenu z vrcholu zásobníku
+void stack_pop(Stack *s){
+    if(stack_isEmpty(s)) return;
+    else s->top--;
+}
+
+// Vracení znaku na vrcholu zásobníku
+void stack_top(const Stack *s, int *tokenPtr){
+    if(stack_isEmpty(s)){
+        errorMessage(ERR_INTERNAL, "Nenalezen vrchol zásobníku");
+    }
+    else *tokenPtr = s->arr[(s->top)];
 }

@@ -25,11 +25,18 @@
 #include "scanner.h"
 
 #define SYNTAX_OK 0
+#define STACK_MAX_SIZE 30
 
 int token;
 string attribute;
-symTableNodePtr funcTable;
-symTableNodePtr varTable;
+
+funcTableNodePtr funcTable;
+varTableNodePtr varTable;
+
+typedef struct{
+    int arr[STACK_MAX_SIZE];
+    int top;
+} Stack;
 
 int parser();
 
@@ -56,3 +63,10 @@ void syntax_expr2();
 void syntax_ID_next();
 
 bool syntax_type();
+
+void stack_init(Stack *);
+int stack_isFull(const Stack *);
+int stack_isEmpty(const Stack *);
+void stack_push(Stack *, int);
+void stack_pop(Stack *);
+void stack_top(const Stack *, int *);

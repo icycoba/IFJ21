@@ -44,7 +44,7 @@ int getToken(string *attribute){
                 else if (c == '<')              {state = S_LT;}
                 else if (c == '=')              {state = S_ASSIGN;}
                 else if (c == '~')              {state = S_NEQ;}
-                else if (isalpha(c))            {state = S_ID; strAddChar(attribute, c);}
+                else if (isalpha(c) || c == '_'){state = S_ID; strAddChar(attribute, c);}
 
                 else if (c == ',')              return COMMA;    
                 else if (c == ':')              return DOUBLEDOT;
@@ -130,7 +130,7 @@ int getToken(string *attribute){
                 else                            {ungetc(c, stdin); return EXP;}
             case S_ID:
                 col++;
-                if  (isalnum(c))                {state = S_ID; strAddChar(attribute, c);}
+                if  (isalnum(c) || c == '_')    {state = S_ID; strAddChar(attribute, c);}
                 else                            {ungetc(c, stdin); state = S_KW;}
                 break;
             case S_KW:
