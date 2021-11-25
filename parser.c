@@ -67,7 +67,33 @@ void bottom_up(){
                     stack_push(s, token);
                 }
             }
-        }
+            else if(s->arr[s->top] == CONCAT){
+                   if(token == GT ||token == GTE ||token == LT ||token == LTE ||token == EQUAL ||token == NEQUAL){
+                    stack_pop(s);
+                }
+                else if(token == RBR){
+                    stack_pop(s);
+                }
+                else{
+                    stack_push(s, token);
+                }
+            }
+            else if(s->arr[s->top] == ADD || s->arr[s->top] == SUB){
+                if(token == ADD || token == SUB || token == CONCAT){
+                    stack_pop(s);
+                }
+                else if(token == GT || token == GTE ||token == LT ||token == LTE ||token == EQUAL ||token == NEQUAL){
+                    stack_pop(s);
+                }
+                else if(token == RBR){
+                    stack_pop(s);
+                }
+                else{
+                    stack_push(s, token);
+                }
+            }
+
+            printf("STACK_TOP: %d", s->arr[s->top]);
         }*/
         
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
