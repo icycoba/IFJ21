@@ -30,21 +30,21 @@ typedef enum{
 /**
  *  @brief Data uzlu 
  **/
-typedef struct symTableData {
+typedef struct varTableData {
     sType type;
     string attribute;
     int scope;
-} *symTableDataPtr;
+} *varTableDataPtr;
 
 /**
  *  @brief Uzel stromu
  **/
-typedef struct symTableNode {
+typedef struct varTableNode {
     string key;
-    struct symTableData *data;
-    struct symTableNode *lptr;
-    struct symTableNode *rptr; 
-} *symTableNodePtr;
+    struct varTableData *data;
+    struct varTableNode *lptr;
+    struct varTableNode *rptr; 
+} *varTableNodePtr;
 
 
 typedef struct funcTableData{
@@ -60,12 +60,12 @@ typedef struct funcTableNode{
     struct funcTableNode *rptr;
 } *funcTableNodePtr;
 
-void symTableInit(symTableNodePtr *tree);
-symTableDataPtr symTableSearch(symTableNodePtr *tree, string key);
-void symTableInsert(symTableNodePtr *tree, string key, symTableDataPtr data);
-void replaceByRightmost(symTableNodePtr replacedPtr, symTableNodePtr *tree);
-void symTableDelete(symTableNodePtr *tree, string key);
-void symTableDispose(symTableNodePtr *tree);
+void varTableInit(varTableNodePtr *tree);
+varTableDataPtr varTableSearch(varTableNodePtr *tree, string key);
+void varTableInsert(varTableNodePtr *tree, string key, varTableDataPtr data);
+void replaceByRightmost(varTableNodePtr replacedPtr, varTableNodePtr *tree);
+void varTableDelete(varTableNodePtr *tree, string key);
+void varTableDispose(varTableNodePtr *tree);
 
 void funcTableInit(funcTableNodePtr *funcTree);
 funcTableDataPtr funcTableSearch(funcTableNodePtr *funcTree, string key);
@@ -74,9 +74,10 @@ void replaceByRightmostFunc(funcTableNodePtr replacedPtr, funcTableNodePtr *func
 void funcTableDelete(funcTableNodePtr *funcTree, string key);
 void funcTableDispose(funcTableNodePtr *funcTree);
 
+
 void funcParamsAppend();
 
-//bool isDeclared(symTableNodePtr *tree, funcTableNodePtr *funcTree, string key);
-//bool isFunc(symTableNodePtr *tree, funcTableNodePtr *funcTree, string key);
+//bool isDeclared(varTableNodePtr *tree, funcTableNodePtr *funcTree, string key);
+//bool isFunc(varTableNodePtr *tree, funcTableNodePtr *funcTree, string key);
 
-int getType(symTableNodePtr *tree, funcTableNodePtr *funcTree, string key);
+int getType(varTableNodePtr *tree, funcTableNodePtr *funcTree, string key);
