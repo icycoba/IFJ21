@@ -100,7 +100,8 @@ int getToken(string *attribute){
                 col++;
                 if (c == '.')                   {state = S_DOUBLE1; strAddChar(attribute, c);}
                 else if (c == 'e' || c == 'E')  {state = S_EXP1; strAddChar(attribute, c);}
-                else                            {ungetc(c, stdin); return ZERO;} // Naimplementovat jako lexikální, nebo syntaktickou chybu? -xhlins01
+                else if (c >= '1' && c <= '9')  {state = S_INT;}
+                else                            {sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); errorMessage(ERR_LEXICAL, eMessage);}
                 break;
             case S_DOUBLE1:
                 col++;
@@ -396,7 +397,7 @@ const char *printState(int state){
         return "BLOCK_END";
         break;
     case ZERO:
-        return "BLOCK_END";
+        return "ZERO";
         break;
     case EOFILE:
         return "EOF";
