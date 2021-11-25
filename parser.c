@@ -40,15 +40,12 @@ void bottom_up(){
     Stack *s;
     stack_init(s);
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-    while((token >= STRING && token <= NEQUAL) || token == LEN){
-        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-        if(token == ID){
+    while(token != KW_THEN && token != KW_DO && token != EOFILE){
+        if(stack_isEmpty(s)){
             stack_push(s, token);
-            
         }
-        else if(token == LEN){
-
-        }
+        
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
     printf("bottom-up-end\n");
 }
