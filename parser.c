@@ -169,6 +169,8 @@ void syntax_fun_dec_def_call(){
 
         //token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != RBR) errorMessage(ERR_SYNTAX, "Očekával se znak ) v deklaraci funkce");
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        if(token != DOUBLEDOT) errorMessage(ERR_SYNTAX, "Očekával se znak : v deklaraci funkce");
         syntax_type_rtrn();
 
         syntax_fun_dec_def_call();
@@ -233,7 +235,6 @@ void syntax_param_type(){
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(syntax_type()){
         syntax_param_type2();
-        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
     //else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
 }
@@ -247,7 +248,6 @@ void syntax_param_type2(){
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(syntax_type()) syntax_param_type2();
         else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
-        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
     //else errorMessage(ERR_SYNTAX, "Očekával se znak  ','");
 }
