@@ -77,7 +77,7 @@ int getToken(string *attribute){
                 if (c == '\\' || c == '\"'
                  || c == 't'  || c == 'n')      {state = S_STRSTART; strAddChar(attribute, c);}
                 else if (c >= 0 && c <= 2)      {state = S_STR2; strAddChar(attribute, c);}
-                else                            {sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); errorMessage(ERR_LEXICAL, eMessage);}
+                else                            {/*sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); */errorMessage(ERR_LEXICAL, "Neplatná escape sekvence");}
                 break;
             case S_STR2:
                 col++;
