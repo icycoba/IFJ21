@@ -46,11 +46,13 @@ typedef struct varTableNode {
     struct varTableNode *rptr; 
 } *varTableNodePtr;
 
-
 typedef struct funcTableData{
     //TODO seznam parametru, jejich typu
     //TODO -II- navratove typy
+    bool defined;
     bool declared;
+    int paramCount;
+    int returnParamCount;
 } *funcTableDataPtr;
 
 typedef struct funcTableNode{
@@ -74,8 +76,15 @@ void replaceByRightmostFunc(funcTableNodePtr replacedPtr, funcTableNodePtr *func
 void funcTableDelete(funcTableNodePtr *funcTree, string key);
 void funcTableDispose(funcTableNodePtr *funcTree);
 
+// Nejsem si jisty jestli tohle bude potreba, ale pro jistotu
+void varTypeAdd(varTableNodePtr *tree, string key, sType type);
+void varAttributeAdd(varTableNodePtr *tree, string key, string attribute);
 
-void funcParamsAppend();
+// Pridani parametru, navratovych hodnot a jejich typu
+void funcParamsAdd();
+void funcReturnParamsAdd();
+void funcParamsTypesAdd();
+void funcReturnParamsTypesAdd();
 
 //bool isDeclared(varTableNodePtr *tree, funcTableNodePtr *funcTree, string key);
 //bool isFunc(varTableNodePtr *tree, funcTableNodePtr *funcTree, string key);

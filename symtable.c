@@ -199,9 +199,19 @@ void funcTableDispose(funcTableNodePtr *funcTree){
  * 1  ... FUNC
  */
 int getType(varTableNodePtr *tree, funcTableNodePtr *funcTree, string key){
-    if(varTableSearch(tree, key)){
+    if(varTableSearch(&(*tree), key)){
         return -1;
-    } else if (funcTableSearch(funcTree, key)){
+    } else if (funcTableSearch(&(*funcTree), key)){
         return 1;
     } else return 0;
+}
+
+void varTypeAdd(varTableNodePtr *tree, string key, sType type){
+    (*tree) = varTableSearch(&(*tree), key);
+    (*tree)->data->type = type;
+}
+
+void varAttributeAdd(varTableNodePtr *tree, string key, string attribute){
+    (*tree) = varTableSearch(&(*tree), key);
+    (*tree)->data->attribute = attribute;
 }
