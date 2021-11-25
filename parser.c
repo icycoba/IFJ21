@@ -93,6 +93,7 @@ void syntax_program(){
 // <prolog> -> KW_REQUIRE "ifj21"
 void syntax_prolog(){
     printf("prolog\n");
+    //printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if (token != KW_REQUIRE) errorMessage(ERR_SYNTAX, "V prologu chybí klíčové slovo require");
 
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));

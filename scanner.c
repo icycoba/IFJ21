@@ -70,24 +70,47 @@ int getToken(string *attribute){
                 if (c == '\\')                  {state = S_STR1; strAddChar(attribute, c);}
                 else if (c > 31 && c != '\"')   {state = S_STRSTART; strAddChar(attribute, c);}
                 else if (c == '\"')             {state = STRING; strAddChar(attribute, c); return STRING;}
-                else                            {sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); errorMessage(ERR_LEXICAL, eMessage);}
+                else                            {errorMessage(ERR_LEXICAL, "V řetězci se objevil neočekávaný znak");}
                 break;
             case S_STR1:
                 col++;
                 if (c == '\\' || c == '\"'
                  || c == 't'  || c == 'n')      {state = S_STRSTART; strAddChar(attribute, c);}
-                else if (c >= 0 && c <= 2)      {state = S_STR2; strAddChar(attribute, c);}
-                else                            {/*sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); */errorMessage(ERR_LEXICAL, "Neplatná escape sekvence");}
+                else if (c == '2')              {state = S_STR2; strAddChar(attribute, c);}
+                else if (c == '0')              {state = S_STR2A; strAddChar(attribute, c);}
+                else if (c == '1')              {state = S_STR2B; strAddChar(attribute, c);}
+                else                            {errorMessage(ERR_LEXICAL, "Neplatná escape sekvence");}
                 break;
             case S_STR2:
                 col++;
-                if (c >= 0 && c <= 5)           {state = S_STR3; strAddChar(attribute, c);}
-                else                            {sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); errorMessage(ERR_LEXICAL, eMessage);}
+                if (c >= '0' && c <= '5')       {state = S_STR3; strAddChar(attribute, c);}
+                else                            {errorMessage(ERR_LEXICAL, "Chyba ve druhém čísle escape sekvence");}
+                break;
+            case S_STR2A:
+                col++;
+                if (c == '0')                   {state = S_STR3A; strAddChar(attribute, c);}
+                else if (c >= '1' && c <= '9')  {state = S_STR3B; strAddChar(attribute, c);}
+                else                            {errorMessage(ERR_LEXICAL, "Chyba ve druhém čísle escape sekvence");}
+                break;
+            case S_STR2B:
+                col++;
+                if (c >= '0' && c <= '5')       {state = S_STR3; strAddChar(attribute, c);}
+                else                            {errorMessage(ERR_LEXICAL, "Chyba ve druhém čísle escape sekvence");}
                 break;
             case S_STR3:
                 col++;
-                if (c >= 1 && c <= 5)           {state = S_STRSTART; strAddChar(attribute, c);}
-                else                            {sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); errorMessage(ERR_LEXICAL, eMessage);}
+                if (c >= '1' && c <= '5')       {state = S_STRSTART; strAddChar(attribute, c);}
+                else                            {errorMessage(ERR_LEXICAL, "Chyba ve třetím čísle escape sekvence");}
+                break;
+            case S_STR3A:
+                col++;
+                if (c >= '1' && c <= '9')       {state = S_STRSTART; strAddChar(attribute, c);}
+                else                            {errorMessage(ERR_LEXICAL, "Chyba ve třetím čísle escape sekvence");}
+                break;
+            case S_STR3B:
+                col++;
+                if (c >= '0' && c <= '9')       {state = S_STRSTART; strAddChar(attribute, c);}
+                else                            {errorMessage(ERR_LEXICAL, "Chyba ve třetím čísle escape sekvence");}
                 break;
             case S_INT:
                 col++;
@@ -101,12 +124,12 @@ int getToken(string *attribute){
                 if (c == '.')                   {state = S_DOUBLE1; strAddChar(attribute, c);}
                 else if (c == 'e' || c == 'E')  {state = S_EXP1; strAddChar(attribute, c);}
                 else if (c >= '1' && c <= '9')  {state = S_INT; strAddChar(attribute, c);}
-                else if (c == '0')              {/*sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c);*/ errorMessage(ERR_LEXICAL, "Dvě nuly nemohou být za sebou");}
+                else if (c == '0')              {errorMessage(ERR_LEXICAL, "Dvě nuly nemohou být za sebou");}
                 else                            {strAddChar(attribute, '0'); ungetc(c, stdin); return ZERO;}
             case S_DOUBLE1:
                 col++;
                 if (c >= '0' && c <= '9')       {state = S_DOUBLE; strAddChar(attribute, c);}
-                else                            {sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); errorMessage(ERR_LEXICAL, eMessage);}
+                else                            {errorMessage(ERR_LEXICAL, "Chyba v zápise double, tečku musí následovat číslo");}
                 break;
             case S_DOUBLE:
                 col++;
@@ -118,12 +141,12 @@ int getToken(string *attribute){
                 col++;
                 if (c == '+' || c == '-')       {state = S_EXP2; strAddChar(attribute, c);}
                 else if (c >= '0' && c <= '9')  {state = S_EXP; strAddChar(attribute, c);}
-                else                            {sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); errorMessage(ERR_LEXICAL, eMessage);}
+                else                            {errorMessage(ERR_LEXICAL, "Chyba v zápise exp");}
                 break;
             case S_EXP2:
                 col++;
                 if (c >= '0' && c <= '9')       {state = S_EXP; strAddChar(attribute, c);}
-                else                            {sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); errorMessage(ERR_LEXICAL, eMessage);}
+                else                            {errorMessage(ERR_LEXICAL, "Chyba v zápise exp");}
                 break;
             case S_EXP:
                 col++;
@@ -178,16 +201,19 @@ int getToken(string *attribute){
                 col++;
                 if (c == '\n')                  state = S_START;//return COMM_LINE_END;
                 else if (c == '[')              state = S_BLOCK;
+                else if (c == EOF)              return EOFILE;
                 else                            state = S_COMM_LINE;
                 break;
             case S_BLOCK:
                 col++;
                 if (c == ']')                   state = S_BLOCK_END1;
+                else if (c == EOF)              errorMessage(ERR_LEXICAL, "Neukončený komentář");
                 else                            state = S_BLOCK;
                 break;
             case S_BLOCK_END1:
                 col++;
                 if (c == ']')                   state = S_START;//return BLOCK_END;
+                else if (c == EOF)              errorMessage(ERR_LEXICAL, "Neukončený komentář");
                 else                            state = S_BLOCK;
                 break;
             case S_DIV:
@@ -213,7 +239,7 @@ int getToken(string *attribute){
             case S_NEQ:
                 col++;
                 if (c == '=')                   return NEQUAL;
-                else                            {sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); errorMessage(ERR_LEXICAL, eMessage);}
+                else                            {errorMessage(ERR_LEXICAL, "Znak ~ musí následovat =");}
                 break;
             default:
                 break;
@@ -245,7 +271,19 @@ const char *printState(int state){
     case S_STR2:
         return "S_STR2";
         break;
+    case S_STR2A:
+        return "S_STR2A";
+        break;
+    case S_STR2B:
+        return "S_STR2B";
+        break;
     case S_STR3:
+        return "S_STR3";
+        break;
+    case S_STR3A:
+        return "S_STR3";
+        break;
+    case S_STR3B:
         return "S_STR3";
         break;
     case S_INT:
