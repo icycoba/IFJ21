@@ -37,17 +37,21 @@ int parser(){
 
 void bottom_up(){
     printf("bottom-up\n");
-    //Stack *s;
-    //stack_init(s);
+    Stack *s;
+    stack_init(s);
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     while(token != KW_THEN && token != KW_DO && token != EOFILE){
         if(stack_isEmpty(s)){
-            stack_push(s, token);
+            if(token!=RBR){
+                stack_push(s, token);
+            }
         }
         else{
-            stack_push(s, token);
-            if(s->arr[s->top] == ID&&(s->arr[s->top])){
-                
+            if(s->arr[s->top]==ID&&(token!=LEN || token!=LBR || token!=ID)){
+                stack_pop(s);
+            }
+            else if(s->arr[s->top]==RBR&&(token!=LEN || token!=LBR || token != ID)){
+                stack_push(s, token);
             }
         }
         
