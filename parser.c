@@ -20,7 +20,7 @@
  * @brief  Funkce, která obstarává chod syntaktické a sémantiské analýzy
 */
 int parser(){
-    symTableInit(&funcTable);
+    funcTableInit(&funcTable);
     if(strInit(&attribute)) errorMessage(ERR_INTERNAL, "Chyba alokace řetězce");
 
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
@@ -30,7 +30,7 @@ int parser(){
     if (token != EOFILE) errorMessage(ERR_SYNTAX, "Chybí EOF");
 
     strFree(&attribute);
-    symTableDispose(&funcTable);
+    funcTableDispose(&funcTable);
     return SYNTAX_OK;  
 }
 
@@ -75,10 +75,10 @@ void syntax_fun_dec_def_call(){
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != ID) errorMessage(ERR_SYNTAX /*MOZNA ERR_SYNTAX TODO nejsem si jisty jaky tady bude error -xhlins01*/, "Pokus o definici non-ID");
         //je atribut jiz declared?
-        if(symTableSearch(&funcTable, attribute)){
+        if(funcTableSearch(&funcTable, attribute)){
             errorMessage(ERR_NONDEF, "Pokus o redeklaraci funkce");
         } else{
-            symTableInsert(&funcTable, attribute, NULL);
+            funcTableInsert(&funcTable, attribute, NULL);
         }
 
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
