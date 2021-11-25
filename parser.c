@@ -44,6 +44,12 @@ void bottom_up(){
         if(stack_isEmpty(s)){
             stack_push(s, token);
         }
+        else{
+            stack_push(s, token);
+            if(s->arr[s->top] == ID&&(s->arr[s->top])){
+                
+            }
+        }
         
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
