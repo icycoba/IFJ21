@@ -98,9 +98,9 @@ int getToken(string *attribute){
                 break;
             case S_ZERO:
                 col++;
-                if (c == '.')                   {strAddChar(attribute, c); state = S_DOUBLE1; strAddChar(attribute, c);}
-                else if (c == 'e' || c == 'E')  {strAddChar(attribute, c); state = S_EXP1; strAddChar(attribute, c);}
-                else if (c >= '1' && c <= '9')  {state = S_INT;}
+                if (c == '.')                   {state = S_DOUBLE1; strAddChar(attribute, c);}
+                else if (c == 'e' || c == 'E')  {state = S_EXP1; strAddChar(attribute, c);}
+                else if (c >= '1' && c <= '9')  {state = S_INT; strAddChar(attribute, c);}
                 else if (c == '0')              {sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); errorMessage(ERR_LEXICAL, eMessage);}
                 else                            {strAddChar(attribute, c); ungetc(c, stdin); return ZERO;}
             case S_DOUBLE1:
