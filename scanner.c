@@ -15,7 +15,6 @@
 #include "scanner.h"
 
 unsigned int line, col;
-
 /**
  * @brief Funkce, která znak po znaku zpracovává standartní vstup na token.
  * 
