@@ -51,8 +51,12 @@ void bottom_up(){
                 stack_pop(s);
             }
             else if(s->arr[s->top]==RBR&&(token!=LEN || token!=LBR || token != ID)){
+                stack_pop(s);
+            }
+            else if(s->arr[s->top]==LBR){
                 stack_push(s, token);
             }
+            else if(s->arr[s->top]==)
         }
         
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
