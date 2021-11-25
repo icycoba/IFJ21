@@ -42,9 +42,7 @@ void bottom_up(){
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     while((token >= STRING && token <= RBR) || token == LEN || token == ID || token == ZERO || token == KW_NIL || token == CONCAT){
         /*if(stack_isEmpty(s)){
-            if(token!=RBR){
-                stack_push(s, token);
-            }
+            stack_push(s, token);
         }
         else{
             if(s->arr[s->top]==ID&&(token!=LBR)){
@@ -91,6 +89,25 @@ void bottom_up(){
                 else{
                     stack_push(s, token);
                 }
+            }
+            else if(s->arr[s->top] == MUL || s->arr[s->top] == DIV || s->arr[s->top]==DIV_WHOLE){
+                if(token == LEN || token == LBR || token == ID){
+                    stack_push(s, token);
+                }
+                else{
+                    stack_pop(s);
+                }
+            }
+            else if(s->arr[s->top] == LEN){
+                if(token == LBR || token == ID){
+                    stack_push(s, token);
+                }
+                else{
+                    stack_pop(s);
+                }
+            }
+            else{
+                errorMessage(ERR_SYNTAX, "Chyba precedence");
             }
 
             printf("STACK_TOP: %d", s->arr[s->top]);
