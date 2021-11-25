@@ -66,6 +66,6 @@ bool syntax_type();
 void stack_init(Stack *);
 int stack_isFull(const Stack *);
 int stack_isEmpty(const Stack *);
-void stack_push(Stack *);
+void stack_push(Stack *, int);
 void stack_pop(Stack *);
 void stack_top(const Stack *, int *);

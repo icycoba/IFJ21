@@ -36,9 +36,18 @@ int parser(){
 
 void bottom_up(){
     printf("bottom-up\n");
+    Stack *s;
+    stack_init(s);
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     while(token != KW_THEN && token != KW_DO && token != EOFILE){
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        if(token == ID){
+            stack_push(s, token);
+            
+        }
+        else if(token == LEN){
+
+        }
     }
 }
 
@@ -430,7 +439,7 @@ int stack_isEmpty(const Stack *s){
 }
 
 // Uložení tokenu na zásobník
-void stack_push(Stack *s){
+void stack_push(Stack *s, int token){
     if(!stack_isFull(s)){
         s->top++;
         s->arr[s->top]=token;
@@ -447,7 +456,6 @@ void stack_pop(Stack *s){
 }
 
 // Vracení znaku na vrcholu zásobníku
-
 void stack_top(const Stack *s, int *tokenPtr){
     if(stack_isEmpty(s)){
         errorMessage(ERR_INTERNAL, "Nenalezen vrchol zásobníku");
