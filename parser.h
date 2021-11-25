@@ -70,3 +70,4 @@ int stack_isEmpty(const Stack *);
 void stack_push(Stack *, int);
 void stack_pop(Stack *);
 void stack_top(const Stack *, int *);
+void stack_delete(Stack *);

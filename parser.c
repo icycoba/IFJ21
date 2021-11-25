@@ -47,16 +47,32 @@ void bottom_up(){
             }
         }
         else{
-            if(s->arr[s->top]==ID&&(token!=LEN || token!=LBR || token!=ID)){
+            if(s->arr[s->top]==ID&&(token!=LBR)){
                 stack_pop(s);
             }
-            else if(s->arr[s->top]==RBR&&(token!=LEN || token!=LBR || token != ID)){
+            else if(s->arr[s->top]==RBR&&(token!=LBR)){
+                stack_pop(s);
+            }
+            else if(s->arr[s->top]==LBR){
                 stack_push(s, token);
             }
+            else if(s->arr[s->top]==GT || s->arr[s->top]==GTE || s->arr[s->top]==LT || s->arr[s->top]==LTE || s->arr[s->top]==EQUAL || s->arr[s->top]==NEQUAL){
+                if(token == GT ||token == GTE ||token == LT ||token == LTE ||token == EQUAL ||token == NEQUAL){
+                    stack_pop(s);
+                }
+                else if(token == RBR){
+                    stack_pop(s);
+                }
+                else{
+                    stack_push(s, token);
+                }
+            }
+        }
         }*/
         
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
+    //if(!stack_isEmpty(s)) stack_delete(s);
     printf("bottom-up-end\n");
 }
 
@@ -535,4 +551,11 @@ void stack_top(const Stack *s, int *tokenPtr){
         errorMessage(ERR_INTERNAL, "Nenalezen vrchol zásobníku");
     }
     else *tokenPtr = s->arr[(s->top)];
+}
+
+// Odstranění zásobníku
+void stack_delete(Stack *s){
+    while(!stack_isEmpty(s)){
+        stack_pop(s);
+    }
 }
