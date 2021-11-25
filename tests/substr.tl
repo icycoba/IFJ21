@@ -3,7 +3,7 @@ require "ifj21"
 function main()
   local s1 : string = "Toto je nejaky text"
   local s2 : string = s1 .. ", ktery jeste trochu obohatime"
-  write(s1, "\310", s2, "\n")
+  write(s1, "\010", s2, "\n")
 
   local s1len : integer = #s1
   local s1len4 : integer = #s1 - 3 
