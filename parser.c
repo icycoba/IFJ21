@@ -31,19 +31,19 @@ int parser(){
 
     strFree(&attribute);
     funcTableDispose(&funcTable);
-    printf("syntakticka analyza probehla bez problemu");
+    printf("syntakticka analyza probehla bez problemu\n");
     return SYNTAX_OK;  
 }
 
 void bottom_up(){
     printf("bottom-up\n");
-    Stack *s;
-    stack_init(s);
+    //Stack *s;
+    //stack_init(s);
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-    while(token != KW_THEN && token != KW_DO && token != EOFILE){
-        if(stack_isEmpty(s)){
-            stack_push(s, token);
-        }
+    while((token >= STRING && token <= NEQUAL) || token == LEN || token == ID){
+        //if(stack_isEmpty(s)){
+        //    stack_push(s, token);
+        //}
         
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
