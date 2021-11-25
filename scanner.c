@@ -44,7 +44,7 @@ int getToken(string *attribute){
                 else if (c == '<')              {state = S_LT;}
                 else if (c == '=')              {state = S_ASSIGN;}
                 else if (c == '~')              {state = S_NEQ;}
-                else if (isalpha(c))            {state = S_ID; strAddChar(attribute, c);}
+                else if (isalpha(c) || c == '_'){state = S_ID; strAddChar(attribute, c);}
 
                 else if (c == ',')              return COMMA;    
                 else if (c == ':')              return DOUBLEDOT;
