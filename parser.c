@@ -37,10 +37,10 @@ int parser(){
 
 void bottom_up(){
     printf("bottom-up\n");
-    //Stack *s;
-    //stack_init(s);
+    Stack *s;
+    stack_init(s);
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-    while(token != KW_THEN && token != KW_DO && token != EOFILE){
+    while((token >= STRING && token <= NEQUAL) || token == LEN || token == ID){
         if(stack_isEmpty(s)){
             stack_push(s, token);
         }
@@ -420,7 +420,7 @@ void syntax_var_init(){
 // <init> -> <fun_call>
 void syntax_init(){
     printf("init\n");
-    if(token >= STRING && token <= EXP){
+    if(token == LEN ||(token >= STRING && token <= EXP)){
         bottom_up();
     }
     else if(token == ID || (token <= F_CHR && token >= F_READS)){
@@ -437,7 +437,7 @@ void syntax_init(){
  // <expr> -> expression <expr2>
 void syntax_expr(){
     printf("expr\n");
-    if(token >= STRING && token <= EXP){
+    if(token == LEN || (token >= STRING && token <= EXP)){
         bottom_up();
         syntax_expr2();
     }
