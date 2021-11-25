@@ -30,12 +30,8 @@ int parser(){
     if (token != EOFILE) errorMessage(ERR_SYNTAX, "Chybí EOF");
 
     strFree(&attribute);
-<<<<<<< HEAD
-    symTableDispose(&funcTable);
-    printf("syntakticka analyza probehla bez problemu\n");
-=======
     funcTableDispose(&funcTable);
->>>>>>> 3c30fb03b32a0824d1546c78b73291ad5a36bafb
+    printf("syntakticka analyza probehla bez problemu");
     return SYNTAX_OK;  
 }
 

@@ -16,7 +16,7 @@ function program()
     -- nekonecny cyklus (7...)
     write("Insert non-empty input for quiting, otherwise next iteration.\n")
     local inp : string = reads()
-    if #inp ~= 0 then return else end  -- extra moznost prerusit nekonecny cyklus
+    if #inp ~= 1 then return else end  -- extra moznost prerusit nekonecny cyklus
   end
 end
 program()
