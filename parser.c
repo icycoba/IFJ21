@@ -40,7 +40,7 @@ void bottom_up(){
     //Stack *s;
     //stack_init(s);
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-    while((token >= STRING && token <= RBR) || token == LEN || token == ID || token == ZERO || token == KW_NIL){
+    while((token >= STRING && token <= RBR) || token == LEN || token == ID || token == ZERO || token == KW_NIL || token == CONCAT){
         /*if(stack_isEmpty(s)){
             if(token!=RBR){
                 stack_push(s, token);
@@ -201,9 +201,11 @@ void syntax_fun_call(){
     printf("fun_call\n");    
     if (token == LBR){
         syntax_fun_call_params();
+        
         //token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != RBR) errorMessage(ERR_SYNTAX, "Očekával se se znak ')'");
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        printf("yeah\n");
     }
     else errorMessage(ERR_SYNTAX, "Očekával se znak '('");
 }
@@ -397,7 +399,7 @@ void syntax_stmt(){
             syntax_expr();
         }
         else if(token == ASSIGN){
-            token = getToken(&attribute);printf("%-15s |%s\n", printState(token), strGetStr(&attribute));            
+                     
             syntax_expr();
         }
         else errorMessage(ERR_SYNTAX, "Očekával se znak , nebo ( nebo =");
@@ -426,29 +428,6 @@ void syntax_else(){
 
 }
 
-// <ID_assign_or_fun> -> <fun_call>
-// <ID_assign_or_fun> -> <ID_next>   ASSIGN      <expr>  <expr2>
-//void syntax_ID_assign_or_fun(){
-//   printf("id-or-fun\n");
-//    token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-//    if(token == LBR){
-//       syntax_fun_call();
-//    }
-//    else if(token == COMMA){
-//        syntax_ID_next();        
-//        if(token != ASSIGN) errorMessage(ERR_SYNTAX, "Očekával se znak =");
-//        bottom_up();
-//        syntax_expr2();
-//    }
-//    else if(token == ASSIGN){
-//        token = getToken(&attribute);printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-//        if(token != ID && token != INT) errorMessage(ERR_SYNTAX, "Očekával se znak id nebo int");
-//        //bottom_up();
-//        syntax_expr2();
-//
-//    }
-//   else errorMessage(ERR_SYNTAX, "Očekával se znak , nebo (");
-//}
 
 // <var_init> -> ASSIGN <init>
 // <var_init> -> epsilon
@@ -473,7 +452,7 @@ void syntax_init(){
 
         if(token == LBR) syntax_fun_call();
 
-        else if(token >= ADD && token <= DIV_WHOLE) bottom_up();
+        else if((token >= ADD && token <= DIV_WHOLE) || token == CONCAT) bottom_up();
     }
     else errorMessage(ERR_SYNTAX, "Očekával se vyraz nebo volani funkce");
 }
@@ -482,6 +461,7 @@ void syntax_init(){
  // <expr> -> expression <expr2>
 void syntax_expr(){
     printf("expr\n");
+    token = getToken(&attribute);printf("%-15s |%s\n", printState(token), strGetStr(&attribute));   
     if(token == LEN || token == RBR || token == LBR || token == ZERO || token == KW_NIL || (token >= STRING && token <= EXP)){
         bottom_up();
         syntax_expr2();
@@ -509,7 +489,6 @@ void syntax_expr2(){
         if ((token >= STRING && token <= NEQUAL) || token == LEN) errorMessage(ERR_SYNTAX, "Očekával se vyraz");  
         bottom_up();
         syntax_expr2();
-        token = getToken(&attribute);printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
 }
 
