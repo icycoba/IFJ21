@@ -47,16 +47,18 @@ void bottom_up(){
             }
         }
         else{
-            if(s->arr[s->top]==ID&&(token!=LEN || token!=LBR || token!=ID)){
+            if(s->arr[s->top]==ID&&(token!=LBR){
                 stack_pop(s);
             }
-            else if(s->arr[s->top]==RBR&&(token!=LEN || token!=LBR || token != ID)){
+            else if(s->arr[s->top]==RBR&&(token!=LBR)){
                 stack_pop(s);
             }
             else if(s->arr[s->top]==LBR){
                 stack_push(s, token);
             }
-            else if(s->arr[s->top]==)
+            else if(s->arr[s->top]==GT || s->arr[s->top]==GTE || s->arr[s->top]==LT || s->arr[s->top]==LTE || s->arr[s->top]==EQUAL || s->arr[s->top]==NEQUAL){
+                
+            }
         }
         
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
