@@ -58,7 +58,13 @@ void bottom_up(){
             }
             else if(s->arr[s->top]==GT || s->arr[s->top]==GTE || s->arr[s->top]==LT || s->arr[s->top]==LTE || s->arr[s->top]==EQUAL || s->arr[s->top]==NEQUAL){
                 if(token == GT ||token == GTE ||token == LT ||token == LTE ||token == EQUAL ||token == NEQUAL){
-
+                    stack_pop(s);
+                }
+                else if(token == RBR){
+                    stack_pop(s);
+                }
+                else{
+                    stack_push(s, token);
                 }
             }
         }
