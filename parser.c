@@ -410,3 +410,47 @@ void syntax_ID_next(){
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == COMMA) syntax_ID_next();
 }
+
+// Inicializace zásobníku
+void stack_init(Stack *s){
+    if(s==NULL){
+        errorMessage(ERR_INTERNAL, "Chyba inicializace zásobníku");
+    }
+    else s->top = -1;
+}
+
+// Je zásobník plný?
+int stack_isFull(const Stack *s){
+    return (s->top == STACK_MAX_SIZE-1);
+}
+
+// Je záspbník prázdný?
+int stack_isEmpty(const Stack *s){
+    return (s->top == STACK_MAX_SIZE - 1);
+}
+
+// Uložení tokenu na zásobník
+void stack_push(Stack *s){
+    if(!stack_isFull(s)){
+        s->top++;
+        s->arr[s->top]=token;
+    }
+    else{
+        errorMessage(ERR_INTERNAL, "Chyba vložení tokenu na zásobník");
+    }
+}
+
+// Odstranění tokenu z vrcholu zásobníku
+void stack_pop(Stack *s){
+    if(stack_isEmpty(s)) return;
+    else s->top--;
+}
+
+// Vracení znaku na vrcholu zásobníku
+
+void stack_top(const Stack *s, int *tokenPtr){
+    if(stack_isEmpty(s)){
+        errorMessage(ERR_INTERNAL, "Nenalezen vrchol zásobníku");
+    }
+    else *tokenPtr = s->arr[(s->top)];
+}
