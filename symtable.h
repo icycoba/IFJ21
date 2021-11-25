@@ -81,10 +81,10 @@ void varTypeAdd(varTableNodePtr *tree, string key, sType type);
 void varAttributeAdd(varTableNodePtr *tree, string key, string attribute);
 
 // Pridani parametru, navratovych hodnot a jejich typu
-void funcParamsAdd();
-void funcReturnParamsAdd();
-void funcParamsTypesAdd();
-void funcReturnParamsTypesAdd();
+void funcParamsAdd(funcTableNodePtr *funcTree, string key);
+void funcReturnParamsAdd(funcTableNodePtr *funcTree, string key);
+void funcParamsTypesAdd(funcTableNodePtr *funcTree, string key);
+void funcReturnParamsTypesAdd(funcTableNodePtr *funcTree, string key);
 
 //bool isDeclared(varTableNodePtr *tree, funcTableNodePtr *funcTree, string key);
 //bool isFunc(varTableNodePtr *tree, funcTableNodePtr *funcTree, string key);
