@@ -159,9 +159,11 @@ void syntax_fun_call(){
     printf("fun_call\n");    
     if (token == LBR){
         syntax_fun_call_params();
+        
         //token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != RBR) errorMessage(ERR_SYNTAX, "Očekával se se znak ')'");
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        printf("yeah\n");
     }
     else errorMessage(ERR_SYNTAX, "Očekával se znak '('");
 }

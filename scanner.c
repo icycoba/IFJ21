@@ -171,6 +171,7 @@ int getToken(string *attribute){
                 col++;
                 if (c == '\n')                  state = S_START;//return COMM_LINE_END;
                 else if (c == '[')              state = S_BLOCK1;
+                else if (c == EOF)              return EOFILE;
                 else                            state = S_COMM_LINE;
                 break;
             case S_BLOCK1:
