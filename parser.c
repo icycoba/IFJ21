@@ -37,11 +37,11 @@ int parser(){
 
 void bottom_up(){
     printf("bottom-up\n");
-    Stack *s;
-    stack_init(s);
+    //Stack *s;
+    //stack_init(s);
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-    while((token >= STRING && token <= RBR) || token == LEN || token == ID || token == ZERO){
-        if(stack_isEmpty(s)){
+    while((token >= STRING && token <= RBR) || token == LEN || token == ID || token == ZERO || token == KW_NIL){
+        /*if(stack_isEmpty(s)){
             if(token!=RBR){
                 stack_push(s, token);
             }
@@ -68,9 +68,11 @@ void bottom_up(){
                 }
             }
         }
+        }*/
+        
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
-    if(!stack_isEmpty(s)) stack_delete(s);
+    //if(!stack_isEmpty(s)) stack_delete(s);
     printf("bottom-up-end\n");
 }
 
@@ -437,7 +439,7 @@ void syntax_var_init(){
 // <init> -> <fun_call>
 void syntax_init(){
     printf("init\n");
-    if(token == LEN || token == RBR || token == LBR || (token >= STRING && token <= EXP)){
+    if(token == LEN || token == RBR || token == LBR || token == ZERO || token == KW_NIL || (token >= STRING && token <= EXP)){
         bottom_up();
     }
     else if(token == ID || (token <= F_CHR && token >= F_READS)){
@@ -454,7 +456,7 @@ void syntax_init(){
  // <expr> -> expression <expr2>
 void syntax_expr(){
     printf("expr\n");
-    if(token == LEN || token == RBR || token == LBR || (token >= STRING && token <= EXP)){
+    if(token == LEN || token == RBR || token == LBR || token == ZERO || token == KW_NIL || (token >= STRING && token <= EXP)){
         bottom_up();
         syntax_expr2();
     }
@@ -490,7 +492,7 @@ void syntax_expr2(){
 // <type> -> KW_NUM
 bool syntax_type(){
     printf("type\n");
-    if(token == KW_STR || token == KW_INT || token == KW_NUM) return true;
+    if(token == KW_STR || token == KW_INT || token == KW_NUM || token == KW_NIL) return true;
     else return false;
 }
 

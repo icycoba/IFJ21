@@ -63,14 +63,14 @@ typedef struct funcTableNode{
 } *funcTableNodePtr;
 
 void varTableInit(varTableNodePtr *tree);
-varTableDataPtr varTableSearch(varTableNodePtr *tree, string key);
+varTableNodePtr varTableSearch(varTableNodePtr *tree, string key);
 void varTableInsert(varTableNodePtr *tree, string key, varTableDataPtr data);
 void replaceByRightmost(varTableNodePtr replacedPtr, varTableNodePtr *tree);
 void varTableDelete(varTableNodePtr *tree, string key);
 void varTableDispose(varTableNodePtr *tree);
 
 void funcTableInit(funcTableNodePtr *funcTree);
-funcTableDataPtr funcTableSearch(funcTableNodePtr *funcTree, string key);
+funcTableNodePtr funcTableSearch(funcTableNodePtr *funcTree, string key);
 void funcTableInsert(funcTableNodePtr *funcTree, string key, funcTableDataPtr data);
 void replaceByRightmostFunc(funcTableNodePtr replacedPtr, funcTableNodePtr *funcTree);
 void funcTableDelete(funcTableNodePtr *funcTree, string key);

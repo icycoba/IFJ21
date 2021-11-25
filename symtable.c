@@ -24,7 +24,7 @@ void varTableInit(varTableNodePtr *tree){
 /**
  *  @brief Hledání uzlu ve stromě podle identifikátoru
  **/
-varTableDataPtr varTableSearch(varTableNodePtr *tree, string key){
+varTableNodePtr varTableSearch(varTableNodePtr *tree, string key){
     if(!(*tree)) return NULL;
 
     else if (strCmpString(&key, &(*tree)->key) < 0)
@@ -116,7 +116,7 @@ void funcTableInit(funcTableNodePtr *funcTree){
     *funcTree = NULL;
 }
 
-funcTableDataPtr funcTableSearch(funcTableNodePtr *funcTree, string key){
+funcTableNodePtr funcTableSearch(funcTableNodePtr *funcTree, string key){
     if(!(*funcTree)) return NULL;
 
     else if (strCmpString(&key, &(*funcTree)->key) < 0)
