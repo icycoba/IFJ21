@@ -106,9 +106,7 @@ void bottom_up(){
                     stack_pop(s);
                 }
             }
-            else{
-                errorMessage(ERR_SYNTAX, "Chyba precedence");
-            }
+            else errorMessage(ERR_SYNTAX, "Chyba precedence");
 
             printf("STACK_TOP: %d", s->arr[s->top]);
         }*/
