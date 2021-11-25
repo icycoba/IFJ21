@@ -37,11 +37,11 @@ int parser(){
 
 void bottom_up(){
     printf("bottom-up\n");
-    Stack *s;
-    stack_init(s);
+    //Stack *s;
+    //stack_init(s);
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     while((token >= STRING && token <= RBR) || token == LEN || token == ID || token == ZERO){
-        if(stack_isEmpty(s)){
+        /*if(stack_isEmpty(s)){
             if(token!=RBR){
                 stack_push(s, token);
             }
@@ -53,7 +53,7 @@ void bottom_up(){
             else if(s->arr[s->top]==RBR&&(token!=LEN || token!=LBR || token != ID)){
                 stack_push(s, token);
             }
-        }
+        }*/
         
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }

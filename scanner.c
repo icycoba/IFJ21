@@ -101,7 +101,7 @@ int getToken(string *attribute){
                 if (c == '.')                   {state = S_DOUBLE1; strAddChar(attribute, c);}
                 else if (c == 'e' || c == 'E')  {state = S_EXP1; strAddChar(attribute, c);}
                 else if (c >= '1' && c <= '9')  {state = S_INT; strAddChar(attribute, c);}
-                else if (c == '0')              {sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c); errorMessage(ERR_LEXICAL, eMessage);}
+                else if (c == '0')              {/*sprintf(eMessage, "[%d: %d] Objevil se neočekávaný znak %c", line, col, c);*/ errorMessage(ERR_LEXICAL, "Dvě nuly nemohou být za sebou");}
                 else                            {strAddChar(attribute, '0'); ungetc(c, stdin); return ZERO;}
             case S_DOUBLE1:
                 col++;
