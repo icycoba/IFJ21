@@ -1,0 +1,1 @@
+require "ifj21"function main()local x:integer=10local y:string="retezec"local z:number=10.0 end main()

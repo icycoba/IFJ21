@@ -64,15 +64,12 @@ def main():
                 numberOfTests += 1
                 test(folder, testFile, outDict)
     
-    os.system("rm outTemp errTemp 2>/dev/tmp")
+    os.system("rm outTemp errTemp")
     
     print(f"{numberOfTests - len(outDict)}/{numberOfTests} testů proběhlo úspěšně.")
     if(len(outDict) > 0):
         for key in outDict.keys():
             print(f"V testu \"{key}\" nastala chyba: {outDict[key]}.")
-
-
-
 
 if __name__ == "__main__":
     main()

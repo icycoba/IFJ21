@@ -51,10 +51,10 @@ int getToken(string *attribute){
                 else if (c == '*')              return MUL;
                 else if (c == '(')              return LBR;
                 else if (c == ')')              return RBR;
-                else if (c == '[')              return LSBR;
-                else if (c == ']')              return RSBR;
-                else if (c == '{')              return LCBR;
-                else if (c == '}')              return RCBR;
+                //else if (c == '[')              return LSBR;
+                //else if (c == ']')              return RSBR;
+                //else if (c == '{')              return LCBR;
+                //else if (c == '}')              return RCBR;
                 else if (c == '#')              return LEN;
                 else if (c == EOF)              return EOFILE;
                 else                            return UNKNOWN;
@@ -241,6 +241,7 @@ int getToken(string *attribute){
                 else                            {errorMessage(ERR_LEXICAL, "Znak ~ musí následovat =");}
                 break;
             default:
+                errorMessage(ERR_LEXICAL, "Neznámý token");
                 break;
         }
     }
@@ -413,18 +414,18 @@ const char *printState(int state){
     case RBR:
         return "RBR";
         break;
-    case LSBR:
-        return "LSBR";
-        break;
-    case RSBR:
-        return "RSBR";
-        break;
-    case LCBR:
-        return "LCBR";
-        break;
-    case RCBR:
-        return "RCBR";
-        break;
+    //case LSBR:
+    //    return "LSBR";
+    //    break;
+    //case RSBR:
+    //    return "RSBR";
+    //    break;
+    //case LCBR:
+    //    return "LCBR";
+    //    break;
+    //case RCBR:
+    //    return "RCBR";
+    //    break;
     case LEN:
         return "LEN";
         break;
