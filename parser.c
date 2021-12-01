@@ -20,6 +20,7 @@
  * @brief  Funkce, která obstarává chod syntaktické a sémantiské analýzy
 */
 int parser(){
+    varTableInit(&varTable);
     funcTableInit(&funcTable);
     if(strInit(&attribute)) errorMessage(ERR_INTERNAL, "Chyba alokace řetězce");
 
@@ -31,14 +32,16 @@ int parser(){
 
     strFree(&attribute);
     funcTableDispose(&funcTable);
+    varTableDispose(&varTable);
     ////printf("syntakticka analyza probehla bez problemu\n");
     return SYNTAX_OK;  
 }
-
+        
 void bottom_up(){
     ////printf("bottom-up\n");
     //Stack *s;
-    //stack_init(s);
+    //s = (Stack *) malloc(sizeof(Stack));
+    //stack_init(s);    
     token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     while((token >= STRING && token <= RBR) || token == LEN || token == ID || token == ZERO || token == KW_NIL || token == CONCAT){
         /*if(stack_isEmpty(s)){
@@ -534,7 +537,7 @@ void stack_init(Stack *s){
     if(s==NULL){
         errorMessage(ERR_INTERNAL, "Chyba inicializace zásobníku");
     }
-    else s->top = -1;
+    s->top = -1;
 }
 
 // Je zásobník plný?

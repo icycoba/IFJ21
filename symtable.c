@@ -14,6 +14,12 @@
 
 #include "symtable.h"
 
+
+//--------------------------//
+////        proměné       ////
+//--------------------------//
+
+
 /**
  *  @brief Inicializace BVS 
  **/
@@ -33,34 +39,69 @@ varTableNodePtr varTableSearch(varTableNodePtr *tree, string key){
     else if (strCmpString(&key, &(*tree)->key) > 0)
         return varTableSearch(&(*tree)->rptr, key);
 
-    else return NULL;
+    else return *tree;
 }
 
 /**
  *  @brief Vložení nového uzlu do stromu
  **/
-void varTableInsert(varTableNodePtr *tree, string key, varTableDataPtr data){
-    if(!(*tree)){
+void varTableInsert(varTableNodePtr *tree, string key){
+    if((*tree) == NULL){
         varTableNodePtr temp = malloc(sizeof(struct varTableNode));
         if(temp == NULL) return;
 
-        temp->data = data;
-        temp->key = key;
+        
+        string new;
+        if(strInit(&new)) errorMessage(ERR_INTERNAL, "Chyba alokace řetězce");
+        strCopyString(&new, &key);
+        temp->key = new;
+
+
+        temp->type = T_NIL;
+        temp->scope = 0;
         temp->lptr = NULL;
         temp->rptr = NULL;
-
+        *tree = temp;
+        
+        
         return;
     }
 
-    if (strCmpString(&key, &(*tree)->key) < 0){
-        varTableInsert(&(*tree)->lptr, key, data);
+    else if (strCmpString(&key, &(*tree)->key) < 0){
+        varTableInsert(&(*tree)->lptr, key);
         return;
     }
     else if (strCmpString(&key, &(*tree)->key) > 0){
-        varTableInsert(&(*tree)->rptr, key, data);
+        varTableInsert(&(*tree)->rptr, key);
         return;
     } 
 }
+
+void varTypeAdd(varTableNodePtr *tree, string key, sType type){
+    (*tree) = varTableSearch(&(*tree), key);
+    (*tree)->type = type;
+}
+
+void scopeAdd(varTableNodePtr *tree){
+    if (*tree != NULL){
+        scopeAdd(&(*tree)->lptr);
+        (*tree)->scope++;
+        scopeAdd(&(*tree)->rptr);
+    }
+
+}
+
+void scopeSub(varTableNodePtr *tree){
+    if (*tree != NULL){
+        scopeSub(&(*tree)->lptr);
+        (*tree)->scope--;
+        if((*tree)->scope < 0)  varTableDelete(&(*tree), (*tree)->key);
+        scopeSub(&(*tree)->rptr);
+    }
+}
+
+
+
 
 /**
  *  @brief Pomocná funkce pro vyhledání, přesun a uvolnění nejpravějšího uzlu
@@ -75,6 +116,7 @@ void replaceByRightmost(varTableNodePtr replacedPtr, varTableNodePtr *tree){
         replacedPtr->key = (*tree)->key;
         varTableNodePtr tmp = (*tree);
         (*tree) = (*tree)->lptr;
+        strFree(&tmp->key);
         free(tmp);
     }
 }
@@ -108,9 +150,17 @@ void varTableDispose(varTableNodePtr *tree){
 
     varTableDispose(&(*tree)->lptr);
     varTableDispose(&(*tree)->rptr);
+    strFree(&(*tree)->key);
     free(*tree);
     *tree = NULL;
 }
+
+
+//--------------------------//
+////        funkce        ////
+//--------------------------//
+
+
 
 void funcTableInit(funcTableNodePtr *funcTree){
     *funcTree = NULL;
@@ -206,12 +256,12 @@ int getType(varTableNodePtr *tree, funcTableNodePtr *funcTree, string key){
     } else return 0;
 }
 
-void varTypeAdd(varTableNodePtr *tree, string key, sType type){
-    (*tree) = varTableSearch(&(*tree), key);
-    (*tree)->data->type = type;
+void simple_print(varTableNodePtr *tree){
+    if (*tree != NULL){
+        simple_print(&(*tree)->lptr);
+        printf("[%s, %d]  ",strGetStr(&(*tree)->key), (*tree)->scope);
+        simple_print(&(*tree)->rptr);
+    }
 }
 
-void varAttributeAdd(varTableNodePtr *tree, string key, string attribute){
-    (*tree) = varTableSearch(&(*tree), key);
-    (*tree)->data->attribute = attribute;
-}
+

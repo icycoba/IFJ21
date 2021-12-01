@@ -30,17 +30,19 @@ typedef enum{
 /**
  *  @brief Data uzlu 
  **/
-typedef struct varTableData {
-    sType type;
-    string attribute;
-    int scope;
-} *varTableDataPtr;
+//typedef struct varTableData {
+//    sType type;
+//    string attribute;
+//    int scope;
+//} *varTableDataPtr;
 
 /**
  *  @brief Uzel stromu
  **/
 typedef struct varTableNode {
     string key;
+    sType type;
+    int scope;
     struct varTableData *data;
     struct varTableNode *lptr;
     struct varTableNode *rptr; 
@@ -64,7 +66,10 @@ typedef struct funcTableNode{
 
 void varTableInit(varTableNodePtr *tree);
 varTableNodePtr varTableSearch(varTableNodePtr *tree, string key);
-void varTableInsert(varTableNodePtr *tree, string key, varTableDataPtr data);
+void varTableInsert(varTableNodePtr *tree, string key);
+void varTypeAdd(varTableNodePtr *tree, string key, sType type);
+void scopeAdd(varTableNodePtr *tree);
+void scopeSub(varTableNodePtr *tree);
 void replaceByRightmost(varTableNodePtr replacedPtr, varTableNodePtr *tree);
 void varTableDelete(varTableNodePtr *tree, string key);
 void varTableDispose(varTableNodePtr *tree);
@@ -77,8 +82,6 @@ void funcTableDelete(funcTableNodePtr *funcTree, string key);
 void funcTableDispose(funcTableNodePtr *funcTree);
 
 // Nejsem si jisty jestli tohle bude potreba, ale pro jistotu
-void varTypeAdd(varTableNodePtr *tree, string key, sType type);
-void varAttributeAdd(varTableNodePtr *tree, string key, string attribute);
 
 // Pridani parametru, navratovych hodnot a jejich typu
 void funcParamsAdd(funcTableNodePtr *funcTree, string key);
@@ -90,3 +93,4 @@ void funcReturnParamsTypesAdd(funcTableNodePtr *funcTree, string key);
 //bool isFunc(varTableNodePtr *tree, funcTableNodePtr *funcTree, string key);
 
 int getType(varTableNodePtr *tree, funcTableNodePtr *funcTree, string key);
+void simple_print(varTableNodePtr *tree);
