@@ -39,14 +39,11 @@ int parser(){
         
 void bottom_up(){
     ////printf("bottom-up\n");
-    //Stack *s;
-    //s = (Stack *) malloc(sizeof(Stack));
-    //stack_init(s);    
-    token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-    while((token >= STRING && token <= RBR) || token == LEN || token == ID || token == ZERO || token == KW_NIL || token == CONCAT){
-        /*if(stack_isEmpty(s)){
-            stack_push(s, token);
-        }
+    Stack *s;
+    //stack_init(s);
+    token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+    //while((token >= STRING && token <= RBR) || token == LEN || token == ID || token == ZERO || token == KW_NIL || token == CONCAT){
+        if(stack_isEmpty(s))stack_push(s, token);
         else{
             if(s->arr[s->top]==ID&&(token!=LBR)){
                 stack_pop(s);
@@ -111,13 +108,12 @@ void bottom_up(){
             }
             else errorMessage(ERR_SYNTAX, "Chyba precedence");
 
-            //printf("STACK_TOP: %d", s->arr[s->top]);
-        }*/
-        
-        token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-    }
-    //if(!stack_isEmpty(s)) stack_delete(s);
-    ////printf("bottom-up-end\n");
+            printf("STACK_TOP: %d", s->arr[s->top]);
+        }
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+    //}
+    stack_delete(s);
+    printf("bottom-up-end\n");
 }
 
 //// každá syntax funkce je jeden neterminál v gramatice ////
@@ -547,11 +543,13 @@ int stack_isFull(const Stack *s){
 
 // Je záspbník prázdný?
 int stack_isEmpty(const Stack *s){
-    return (s->top == STACK_MAX_SIZE - 1);
+    printf("Vidím ťa");
+    return (s->top == -1);
 }
 
 // Uložení tokenu na zásobník
 void stack_push(Stack *s, int token){
+    printf("Vidím ťa2");
     if(!stack_isFull(s)){
         s->top++;
         s->arr[s->top]=token;
@@ -563,6 +561,7 @@ void stack_push(Stack *s, int token){
 
 // Odstranění tokenu z vrcholu zásobníku
 void stack_pop(Stack *s){
+    printf("Nevidím ťa");
     if(stack_isEmpty(s)) return;
     else s->top--;
 }
