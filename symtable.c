@@ -15,6 +15,7 @@
 #include "symtable.h"
 
 
+
 //--------------------------//
 ////        proměné       ////
 //--------------------------//
@@ -94,9 +95,10 @@ void scopeAdd(varTableNodePtr *tree){
 void scopeSub(varTableNodePtr *tree){
     if (*tree != NULL){
         scopeSub(&(*tree)->lptr);
-        (*tree)->scope--;
+        (*tree)->scope--;        
+        scopeSub(&(*tree)->rptr);        
         if((*tree)->scope < 0)  varTableDelete(&(*tree), (*tree)->key);
-        scopeSub(&(*tree)->rptr);
+        
     }
 }
 
@@ -113,6 +115,10 @@ void replaceByRightmost(varTableNodePtr replacedPtr, varTableNodePtr *tree){
         replaceByRightmost(replacedPtr, &(*tree)->rptr);
     } else{
         replacedPtr->data = (*tree)->data;
+        //string new;
+        //if(strInit(&new)) errorMessage(ERR_INTERNAL, "Chyba alokace řetězce");
+        //strCopyString(&new, &(*tree)->key);
+        //replacedPtr->key = new;
         replacedPtr->key = (*tree)->key;
         varTableNodePtr tmp = (*tree);
         (*tree) = (*tree)->lptr;
@@ -175,30 +181,63 @@ funcTableNodePtr funcTableSearch(funcTableNodePtr *funcTree, string key){
     else if (strCmpString(&key, &(*funcTree)->key) > 0)
         return funcTableSearch(&(*funcTree)->rptr, key);
 
-    else return NULL;
+    else return *funcTree;
 }
 
-void funcTableInsert(funcTableNodePtr *funcTree, string key, funcTableDataPtr data){
+void funcTableInsert(funcTableNodePtr *funcTree, string key){
     if(!(*funcTree)){
         funcTableNodePtr temp = malloc(sizeof(struct funcTableNode));
         if(temp == NULL) return;
 
-        temp->data = data;
-        temp->key = key;
+        string new;
+        if(strInit(&new)) errorMessage(ERR_INTERNAL, "Chyba alokace řetězce");
+        strCopyString(&new, &key);
+
+        temp->key = new;
+
+        DLList param;
+        DLL_Init(&param);
+        temp->param = param;
+        DLList returnParam;
+        DLL_Init(&returnParam);
+
+        temp->returnParam = returnParam;
+        temp->defined = false;
         temp->lptr = NULL;
         temp->rptr = NULL;
+        *funcTree = temp;
 
         return;
     }
 
     if (strCmpString(&key, &(*funcTree)->key) < 0){
-        funcTableInsert(&(*funcTree)->lptr, key, data);
+        funcTableInsert(&(*funcTree)->lptr, key);
         return;
     }
     else if (strCmpString(&key, &(*funcTree)->key) > 0){
-        funcTableInsert(&(*funcTree)->rptr, key, data);
+        funcTableInsert(&(*funcTree)->rptr, key);
         return;
     } 
+}
+
+
+void addParam(funcTableNodePtr *funcTree, string key, string param){
+    *funcTree = funcTableSearch(&(*funcTree), key);
+    DLL_InsertLast(&(*funcTree)->param, param);
+}
+
+
+void addReturnParam(funcTableNodePtr *funcTree, string key, string returnParam){
+    *funcTree = funcTableSearch(&(*funcTree), key);
+    DLL_InsertLast(&(*funcTree)->returnParam, returnParam);
+}
+
+
+
+void funcDefined(funcTableNodePtr *funcTree, string key){
+        *funcTree = funcTableSearch(&(*funcTree), key);
+        (*funcTree)->defined = true;
+
 }
 
 void replaceByRightmostFunc(funcTableNodePtr replacedPtr, funcTableNodePtr *funcTree){
@@ -207,7 +246,9 @@ void replaceByRightmostFunc(funcTableNodePtr replacedPtr, funcTableNodePtr *func
     if((*funcTree)->rptr != NULL){
         replaceByRightmostFunc(replacedPtr, &(*funcTree)->rptr);
     } else{
-        replacedPtr->data = (*funcTree)->data;
+        replacedPtr->defined = (*funcTree)->defined;
+        replacedPtr->param = (*funcTree)->param;
+        replacedPtr->returnParam = (*funcTree)->returnParam;
         replacedPtr->key = (*funcTree)->key;
         funcTableNodePtr tmp = (*funcTree);
         (*funcTree) = (*funcTree)->lptr;
@@ -238,6 +279,8 @@ void funcTableDispose(funcTableNodePtr *funcTree){
 
     funcTableDispose(&(*funcTree)->lptr);
     funcTableDispose(&(*funcTree)->rptr);
+    DLL_Dispose(&(*funcTree)->param);
+    DLL_Dispose(&(*funcTree)->returnParam);
     free(*funcTree);
     *funcTree = NULL;
 }

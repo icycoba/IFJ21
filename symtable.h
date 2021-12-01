@@ -19,6 +19,8 @@
 
 #include "error.h"
 #include "str.h"
+#include "list.h"
+
 
 typedef enum{
     T_NIL,
@@ -48,18 +50,19 @@ typedef struct varTableNode {
     struct varTableNode *rptr; 
 } *varTableNodePtr;
 
-typedef struct funcTableData{
-    //TODO seznam parametru, jejich typu
-    //TODO -II- navratove typy
-    bool defined;
-    bool declared;
-    int paramCount;
-    int returnParamCount;
-} *funcTableDataPtr;
+//typedef struct funcTableData{
+//    //TODO seznam parametru, jejich typu
+//    //TODO -II- navratove typy
+//    bool defined;
+//    int paramCount;
+//    int returnParamCount;
+//} *funcTableDataPtr;
 
 typedef struct funcTableNode{
     string key;
-    struct funcTableData *data;
+    bool defined;
+    DLList param;
+    DLList returnParam;
     struct funcTableNode *lptr;
     struct funcTableNode *rptr;
 } *funcTableNodePtr;
@@ -76,7 +79,8 @@ void varTableDispose(varTableNodePtr *tree);
 
 void funcTableInit(funcTableNodePtr *funcTree);
 funcTableNodePtr funcTableSearch(funcTableNodePtr *funcTree, string key);
-void funcTableInsert(funcTableNodePtr *funcTree, string key, funcTableDataPtr data);
+void funcTableInsert(funcTableNodePtr *funcTree, string key);
+void funcDefined(funcTableNodePtr *funcTree, string key);
 void replaceByRightmostFunc(funcTableNodePtr replacedPtr, funcTableNodePtr *funcTree);
 void funcTableDelete(funcTableNodePtr *funcTree, string key);
 void funcTableDispose(funcTableNodePtr *funcTree);
@@ -88,6 +92,11 @@ void funcParamsAdd(funcTableNodePtr *funcTree, string key);
 void funcReturnParamsAdd(funcTableNodePtr *funcTree, string key);
 void funcParamsTypesAdd(funcTableNodePtr *funcTree, string key);
 void funcReturnParamsTypesAdd(funcTableNodePtr *funcTree, string key);
+
+void addParam(funcTableNodePtr *funcTree, string key, string param);
+void addReturnParam(funcTableNodePtr *funcTree, string key, string returnParam);
+void funcDefined(funcTableNodePtr *funcTree, string key);
+
 
 //bool isDeclared(varTableNodePtr *tree, funcTableNodePtr *funcTree, string key);
 //bool isFunc(varTableNodePtr *tree, funcTableNodePtr *funcTree, string key);

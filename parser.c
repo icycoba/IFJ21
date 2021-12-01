@@ -153,7 +153,7 @@ void syntax_fun_dec_def_call(){
         if(funcTableSearch(&funcTable, attribute)){
             errorMessage(ERR_NONDEF, "Pokus o redeklaraci funkce");
         } else{
-            funcTableInsert(&funcTable, attribute, NULL);
+            funcTableInsert(&funcTable, attribute);
         }
 
         token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
