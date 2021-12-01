@@ -55,6 +55,11 @@ int strAddChar(string *s1, char c){
     return STR_SUCCESS;
 }
 
+int strAddString(string *s1, char *c){    
+    for(int i = 0; i < strlen(c); i++)
+        strAddChar(s1, c[i]);
+}
+
 //  Překopíruje řetězec s2 do s1
 int strCopyString(string *s1, string *s2){
     int newLength = s2->length;

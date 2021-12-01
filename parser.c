@@ -20,6 +20,7 @@
  * @brief  Funkce, která obstarává chod syntaktické a sémantiské analýzy
 */
 int parser(){
+    varTableInit(&varTable);
     funcTableInit(&funcTable);
     if(strInit(&attribute)) errorMessage(ERR_INTERNAL, "Chyba alokace řetězce");
     if(strInit(&attributeTemp)) errorMessage(ERR_INTERNAL, "Chyba alokace dočasného řetězce");
@@ -32,13 +33,15 @@ int parser(){
 
     strFree(&attribute);
     funcTableDispose(&funcTable);
+    varTableDispose(&varTable);
     ////printf("syntakticka analyza probehla bez problemu\n");
     return SYNTAX_OK;  
 }
-
+        
 void bottom_up(){
     ////printf("bottom-up\n");
     Stack *s;
+<<<<<<< HEAD
     s = (Stack *) malloc(sizeof(Stack));
     stack_init(s);
     token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
@@ -46,6 +49,12 @@ void bottom_up(){
         /*if(stack_isEmpty(s)){
             stack_push(s, token);
         }
+=======
+    //stack_init(s);
+    token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+    //while((token >= STRING && token <= RBR) || token == LEN || token == ID || token == ZERO || token == KW_NIL || token == CONCAT){
+        if(stack_isEmpty(s))stack_push(s, token);
+>>>>>>> 9c89f8306ad19449ee353e5eb02ef1132b231ee9
         else{
             if(s->arr[s->top]==ID&&(token!=LBR)){
                 stack_pop(s);
@@ -110,13 +119,12 @@ void bottom_up(){
             }
             else errorMessage(ERR_SYNTAX, "Chyba precedence");
 
-            //printf("STACK_TOP: %d", s->arr[s->top]);
-        }*/
-        
-        token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-    }
-    //if(!stack_isEmpty(s)) stack_delete(s);
-    ////printf("bottom-up-end\n");
+            printf("STACK_TOP: %d", s->arr[s->top]);
+        }
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+    //}
+    stack_delete(s);
+    printf("bottom-up-end\n");
 }
 
 //// každá syntax funkce je jeden neterminál v gramatice ////
@@ -157,7 +165,7 @@ void syntax_fun_dec_def_call(){
         if(funcTableSearch(&funcTable, attribute)){
             errorMessage(ERR_NONDEF, "Pokus o redeklaraci funkce");
         } else{
-            funcTableInsert(&funcTable, attribute, NULL);
+            funcTableInsert(&funcTable, attribute);
         }
 
         token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
@@ -544,7 +552,7 @@ void stack_init(Stack *s){
     if(s==NULL){
         errorMessage(ERR_INTERNAL, "Chyba inicializace zásobníku");
     }
-    else s->top = -1;
+    s->top = -1;
 }
 
 // Je zásobník plný?
@@ -554,11 +562,13 @@ int stack_isFull(const Stack *s){
 
 // Je záspbník prázdný?
 int stack_isEmpty(const Stack *s){
-    return (s->top == STACK_MAX_SIZE - 1);
+    printf("Vidím ťa");
+    return (s->top == -1);
 }
 
 // Uložení tokenu na zásobník
 void stack_push(Stack *s, int token){
+    printf("Vidím ťa2");
     if(!stack_isFull(s)){
         s->top++;
         s->arr[s->top]=token;
@@ -570,6 +580,7 @@ void stack_push(Stack *s, int token){
 
 // Odstranění tokenu z vrcholu zásobníku
 void stack_pop(Stack *s){
+    printf("Nevidím ťa");
     if(stack_isEmpty(s)) return;
     else s->top--;
 }
