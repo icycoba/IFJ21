@@ -41,7 +41,6 @@ int parser(){
 void bottom_up(){
     ////printf("bottom-up\n");
     Stack *s;
-<<<<<<< HEAD
     s = (Stack *) malloc(sizeof(Stack));
     stack_init(s);
     token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
@@ -49,12 +48,6 @@ void bottom_up(){
         /*if(stack_isEmpty(s)){
             stack_push(s, token);
         }
-=======
-    //stack_init(s);
-    token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-    //while((token >= STRING && token <= RBR) || token == LEN || token == ID || token == ZERO || token == KW_NIL || token == CONCAT){
-        if(stack_isEmpty(s))stack_push(s, token);
->>>>>>> 9c89f8306ad19449ee353e5eb02ef1132b231ee9
         else{
             if(s->arr[s->top]==ID&&(token!=LBR)){
                 stack_pop(s);
@@ -119,7 +112,7 @@ void bottom_up(){
             }
             else errorMessage(ERR_SYNTAX, "Chyba precedence");
 
-            printf("STACK_TOP: %d", s->arr[s->top]);
+            printf("STACK_TOP: %d", s->arr[s->top]);*/
         }
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     //}
