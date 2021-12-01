@@ -1,0 +1,62 @@
+.IFJcode21
+
+JUMP main
+
+LABEL alpha
+CREATEFRAME
+DEFVAR TF@a
+POPS TF@a
+PUSHFRAME
+DEFVAR LF@bool$
+GT LF@bool$ LF@a int@0
+JUMPIFEQ else1 LF@bool$ bool@true
+DEFVAR LF@funcret$$1
+PUSHS int@0
+POPFRAME
+RETURN
+
+JUMP endif1
+
+LABEL else1
+DEFVAR LF@result$1
+MOVE LF@result$1 int@0
+PUSHS LF@a
+CALL beta
+POPS LF@result
+DEFVAR LF@funcret$$1
+DEFVAR GF@temp$0
+ADD GF@temp$0 LF@result LF@a
+MOVE TF@funcret$$1 GF@temp$0
+PUSHS LF@funcret$$1
+POPFRAME
+RETURN
+
+LABEL endif1
+LABEL beta
+CREATEFRAME
+DEFVAR TF@a
+POPS TF@a
+PUSHFRAME
+DEFVAR GF@temp$1
+SUB GF@temp$1 LF@a int@1
+DEFVAR LF@b
+MOVE LF@b GF@temp$1
+DEFVAR LF@result
+MOVE LF@result int@0
+PUSHS LF@b
+CALL alpha
+POPS LF@result
+DEFVAR LF@funcret$
+PUSHS LF@result
+POPFRAME
+RETURN
+
+LABEL main
+DEFVAR GF@_
+DEFVAR GF@result
+MOVE GF@result int@0
+PUSHS int@20
+CALL alpha
+POPS GF@result
+WRITE GF@result
+EXIT int@0

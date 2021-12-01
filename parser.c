@@ -22,6 +22,7 @@
 int parser(){
     funcTableInit(&funcTable);
     if(strInit(&attribute)) errorMessage(ERR_INTERNAL, "Chyba alokace řetězce");
+    if(strInit(&attributeTemp)) errorMessage(ERR_INTERNAL, "Chyba alokace dočasného řetězce");
 
     token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     syntax_program();
@@ -37,8 +38,9 @@ int parser(){
 
 void bottom_up(){
     ////printf("bottom-up\n");
-    //Stack *s;
-    //stack_init(s);
+    Stack *s;
+    s = (Stack *) malloc(sizeof(Stack));
+    stack_init(s);
     token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     while((token >= STRING && token <= RBR) || token == LEN || token == ID || token == ZERO || token == KW_NIL || token == CONCAT){
         /*if(stack_isEmpty(s)){
@@ -139,6 +141,7 @@ void syntax_prolog(){
 
     token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if (token != STRING || strCmpConstStr(&attribute, "\"ifj21\"")) errorMessage(ERR_SYNTAX, "Klíčové slovo require musí následovat řetězec \"ifj21\"");
+    generateProlog();
 }
 
 // <fun_dec_def_call> -> KW_GLOBAL  ID DOUBLEDOT    KW_FUNC         LBR <param_type>    RBR     <type_rtrn> <fun_dec_def_call>
@@ -178,6 +181,7 @@ void syntax_fun_dec_def_call(){
     else if (token == KW_FUNC){
         token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if (token != ID) errorMessage(ERR_SYNTAX, "Očekával se token ID");
+        generateLabel(&attribute);
 
         // TODO sémantika
         token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
@@ -186,7 +190,6 @@ void syntax_fun_dec_def_call(){
         syntax_fun_params();
         if(token != RBR) errorMessage(ERR_SYNTAX, "Očekával se znak )");
 
-        //TODO scuffed cteni tokenu (demonstrovano na maluvce)
         token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token == DOUBLEDOT) syntax_type_rtrn();
         //syntax_type_rtrn();
@@ -200,6 +203,8 @@ void syntax_fun_dec_def_call(){
         syntax_fun_dec_def_call();
     }
     else if(token == ID){
+        generateMain();
+        generateCall(&attribute);
         token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         syntax_fun_call();
 
@@ -216,7 +221,8 @@ void syntax_fun_dec_def_call(){
 
 // <fun_call> -> ID LBR <fun_call_params> RBR
 void syntax_fun_call(){
-    //printf("fun_call\n");    
+    //printf("fun_call\n");
+    
     if (token == LBR){
         syntax_fun_call_params();
         
@@ -360,11 +366,12 @@ void syntax_stmt(){
         //printf("stmt-local\n");
         token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != ID) errorMessage(ERR_SYNTAX, "Očekával se token ID");
+        generateVar(&attribute);
 
         token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != DOUBLEDOT) errorMessage(ERR_SYNTAX, "Očekával se znak :");
 
-        token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(!syntax_type()) errorMessage(ERR_SYNTAX, "Očekával se typ");;
 
         syntax_var_init();
@@ -405,8 +412,11 @@ void syntax_stmt(){
     } 
     else if(token == ID || (token <= F_CHR && token >= F_READS)){
         //printf("stmt-id-or-fun\n");
+        strCopyString(&attributeTemp, &attribute);
+        
         token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token == LBR){
+            generateCall(&attributeTemp);
             syntax_fun_call();
         }
         else if(token == COMMA){

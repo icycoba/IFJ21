@@ -57,7 +57,7 @@ int getToken(string *attribute){
                 //else if (c == '}')              return RCBR;
                 else if (c == '#')              return LEN;
                 else if (c == EOF)              return EOFILE;
-                else                            return UNKNOWN;
+                else                            errorMessage(ERR_LEXICAL, "Neznámý token");;
                 break;
             case S_DOT:
                 col++;

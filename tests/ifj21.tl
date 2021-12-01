@@ -1,4 +1,4 @@
--- Zajisteni zakladni kompatibility IFJ21->Teal
+-- Zajisteni zakladni kompatibility IFJ21->Teal (v2021-11-25)
 
 function tointeger(f : number) : integer
   local _ : number
@@ -37,7 +37,7 @@ function reads() : string
   local ret : string
   local _ : string 
   ret, _ = io.read("*l")
-  return tostring(ret)
+  return ret   -- do not convert nil into string (as 'tostring(ret)' did)
 end
 
 function write(... : string | integer | number | boolean)  -- podpora boolean pro bonusove rozsireni
@@ -67,10 +67,10 @@ function substr(str : string, i : integer, j : integer) : string
   if str == nil or i == nil or j == nil then
     error("ERROR 8: Unexpected nil value in the parameters.")
   end
-  if i <= 0 or i > #str and j <= 0 or j > #str then  -- kontrola mezi
+  if i <= 0 or i > #str or j <= 0 or j > #str then  -- kontrola mezi
     return ""
   end
-  return string.sub(str, i, j)
+  return string.sub(str, i, j)   -- pro j < i jiz vraci ""
 end
 
 function ord(s : string, i : integer) : integer

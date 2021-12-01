@@ -1,0 +1,9 @@
+# Ukazka prace s datovym zasobnikem 
+.IFJcode21
+
+DEFVAR GF@var
+PUSHS int@42
+PUSHS int@15
+SUBS
+POPS GF@var
+WRITE GF@var

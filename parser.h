@@ -23,12 +23,14 @@
 
 #include "symtable.h"
 #include "scanner.h"
+#include "codegen.h"
 
 #define SYNTAX_OK 0
 #define STACK_MAX_SIZE 30
 
 int token;
 string attribute;
+string attributeTemp;
 
 funcTableNodePtr funcTable;
 varTableNodePtr varTable;

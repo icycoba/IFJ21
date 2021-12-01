@@ -1,0 +1,25 @@
+.IFJcode21
+
+JUMP $__main__
+
+LABEL $readi
+PUSHFRAME
+READ LF@%retval1 int
+POPFRAME
+RETURN
+
+LABEL main
+DEFVAR LF@x
+PUSHS int@
+POPS LF@x
+CREATEFRAME
+DEFVAR TF@%retval1
+CALL $readi
+WRITE TF@%retval1
+RETURN
+
+LABEL $__main__
+CREATEFRAME
+PUSHFRAME
+CALL main
+WRITE LF@x
