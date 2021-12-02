@@ -20,6 +20,7 @@
 #include "error.h"
 #include "str.h"
 #include "list.h"
+#include "scanner.h"
 
 
 typedef enum{
@@ -43,7 +44,7 @@ typedef enum{
  **/
 typedef struct varTableNode {
     string key;
-    sType type;
+    string type;
     int scope;
     struct varTableData *data;
     struct varTableNode *lptr;
@@ -61,6 +62,7 @@ typedef struct varTableNode {
 typedef struct funcTableNode{
     string key;
     bool defined;
+    bool declared;
     DLList param;
     DLList returnParam;
     struct funcTableNode *lptr;
@@ -70,7 +72,7 @@ typedef struct funcTableNode{
 void varTableInit(varTableNodePtr *tree);
 varTableNodePtr varTableSearch(varTableNodePtr *tree, string key);
 void varTableInsert(varTableNodePtr *tree, string key);
-void varTypeAdd(varTableNodePtr *tree, string key, sType type);
+void varTypeAdd(varTableNodePtr *tree, string key, string type);
 void scopeAdd(varTableNodePtr *tree);
 void scopeSub(varTableNodePtr *tree);
 void replaceByRightmost(varTableNodePtr replacedPtr, varTableNodePtr *tree);
@@ -96,10 +98,12 @@ void funcReturnParamsTypesAdd(funcTableNodePtr *funcTree, string key);
 void addParam(funcTableNodePtr *funcTree, string key, string param);
 void addReturnParam(funcTableNodePtr *funcTree, string key, string returnParam);
 void funcDefined(funcTableNodePtr *funcTree, string key);
-
+void funcDeclared(funcTableNodePtr *funcTree, string key);
 
 //bool isDeclared(varTableNodePtr *tree, funcTableNodePtr *funcTree, string key);
 //bool isFunc(varTableNodePtr *tree, funcTableNodePtr *funcTree, string key);
 
 int getType(varTableNodePtr *tree, funcTableNodePtr *funcTree, string key);
+sType typeConvertor(int state);
 void simple_print(varTableNodePtr *tree);
+void simple_print2(funcTableNodePtr *tree);

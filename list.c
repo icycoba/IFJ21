@@ -22,8 +22,7 @@ int solved;
  * Tato funkce bude volána z některých dále implementovaných operací.
  */
 void DLL_Error() {
-	printf("*ERROR* The program has performed an illegal operation.\n");
-	error_flag = TRUE;
+	errorMessage(ERR_INTERNAL, "Chyba alokace řetězce");
 }
 
 /**
@@ -125,6 +124,23 @@ void DLL_InsertLast( DLList *list, string data ) {
         list->firstElement = elemPtr;
 
     list->lastElement = elemPtr;   
+}
+
+int DLL_Compare(DLList *list1, DLList *list2){
+    DLLElementPtr first = malloc(sizeof(struct DLLElement));
+    DLLElementPtr second = malloc(sizeof(struct DLLElement));
+    first = list1->firstElement;
+    second = list2->firstElement;
+    while (list1 != NULL && list2 != NULL)
+    {
+        if(strCmpString(&first->data, &second->data)) break;
+        first = first->nextElement;
+        second = second->nextElement;
+    }
+    if (list1 == NULL && list2 == NULL) return 0;
+    
+    return 1; 
+
 }
 
 /**
