@@ -31,6 +31,10 @@
 int token;
 string attribute;
 string attributeTemp;
+string currentFunc;
+string currentVar;
+
+DLList currentList;
 
 funcTableNodePtr funcTable;
 varTableNodePtr varTable;

@@ -56,6 +56,8 @@ void DLL_InsertFirst( DLList *, string );
 
 void DLL_InsertLast( DLList *, string );
 
+int DLL_Compare(DLList *, DLList *);
+
 void DLL_First( DLList * );
 
 void DLL_Last( DLList * );

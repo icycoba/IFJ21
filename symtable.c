@@ -58,8 +58,11 @@ void varTableInsert(varTableNodePtr *tree, string key){
         strCopyString(&new, &key);
         temp->key = new;
 
+        string new2;
+        if(strInit(&new2)) errorMessage(ERR_INTERNAL, "Chyba alokace řetězce");
+        strAddString(&new2, "nil");
 
-        temp->type = T_NIL;
+        temp->type = new2;
         temp->scope = 0;
         temp->lptr = NULL;
         temp->rptr = NULL;
@@ -79,9 +82,10 @@ void varTableInsert(varTableNodePtr *tree, string key){
     } 
 }
 
-void varTypeAdd(varTableNodePtr *tree, string key, sType type){
-    (*tree) = varTableSearch(&(*tree), key);
-    (*tree)->type = type;
+void varTypeAdd(varTableNodePtr *tree, string key, string type){
+    varTableNodePtr new;
+    new = varTableSearch(&(*tree), key);
+    if(new != NULL)   new->type = type;
 }
 
 void scopeAdd(varTableNodePtr *tree){
@@ -124,6 +128,7 @@ void replaceByRightmost(varTableNodePtr replacedPtr, varTableNodePtr *tree){
         varTableNodePtr tmp = (*tree);
         (*tree) = (*tree)->lptr;
         strFree(&tmp->key);
+        strFree(&tmp->type);
         free(tmp);
     }
 }
@@ -158,6 +163,7 @@ void varTableDispose(varTableNodePtr *tree){
     varTableDispose(&(*tree)->lptr);
     varTableDispose(&(*tree)->rptr);
     strFree(&(*tree)->key);
+    strFree(&(*tree)->type);
     free(*tree);
     *tree = NULL;
 }
@@ -199,11 +205,13 @@ void funcTableInsert(funcTableNodePtr *funcTree, string key){
         DLList param;
         DLL_Init(&param);
         temp->param = param;
+        
         DLList returnParam;
         DLL_Init(&returnParam);
-
         temp->returnParam = returnParam;
+
         temp->defined = false;
+        temp->declared = false;
         temp->lptr = NULL;
         temp->rptr = NULL;
         *funcTree = temp;
@@ -223,21 +231,31 @@ void funcTableInsert(funcTableNodePtr *funcTree, string key){
 
 
 void addParam(funcTableNodePtr *funcTree, string key, string param){
-    *funcTree = funcTableSearch(&(*funcTree), key);
-    DLL_InsertLast(&(*funcTree)->param, param);
+    funcTableNodePtr new;
+    new = funcTableSearch(&(*funcTree), key);
+    if(new != NULL) DLL_InsertLast(&new->param, param);
 }
 
 
 void addReturnParam(funcTableNodePtr *funcTree, string key, string returnParam){
-    *funcTree = funcTableSearch(&(*funcTree), key);
-    DLL_InsertLast(&(*funcTree)->returnParam, returnParam);
+    funcTableNodePtr new;
+    new = funcTableSearch(&(*funcTree), key);
+    if(new != NULL) DLL_InsertLast(&new->returnParam, returnParam);
 }
 
 
 
 void funcDefined(funcTableNodePtr *funcTree, string key){
-        *funcTree = funcTableSearch(&(*funcTree), key);
-        (*funcTree)->defined = true;
+    funcTableNodePtr new;
+    new = funcTableSearch(&(*funcTree), key);
+    if(new != NULL) new->defined = true;
+
+}
+
+void funcDeclared(funcTableNodePtr *funcTree, string key){
+    funcTableNodePtr new;
+    new = funcTableSearch(&(*funcTree), key);
+    if(new != NULL) new->declared= true;
 
 }
 
@@ -300,11 +318,28 @@ int getType(varTableNodePtr *tree, funcTableNodePtr *funcTree, string key){
     } else return 0;
 }
 
+sType typeConvertor(int state){
+    if (state == KW_INT) return T_INT;
+    else if (state == KW_NIL) return T_NIL;
+    else if (state == KW_STR) return T_STRING;
+    else if (state == KW_NUM) return T_DOUBLE;
+    else errorMessage(ERR_SYNTAX, "Chyba ve volani funkce typeConvertor");
+
+}
+
 void simple_print(varTableNodePtr *tree){
     if (*tree != NULL){
         simple_print(&(*tree)->lptr);
         printf("[%s, %d]  ",strGetStr(&(*tree)->key), (*tree)->scope);
         simple_print(&(*tree)->rptr);
+    }
+}
+
+void simple_print2(funcTableNodePtr *tree){
+    if (*tree != NULL){
+        simple_print2(&(*tree)->lptr);
+        printf("[%s]  ",strGetStr(&(*tree)->key));
+        simple_print2(&(*tree)->rptr);
     }
 }
 

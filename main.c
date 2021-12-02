@@ -35,6 +35,7 @@ int main(){
     printf("Navratovy kod je %d\n", returnCode);
     return returnCode;
     */
+
     if(!parser()) return 0;
     else return ERR_INTERNAL;
 
@@ -63,9 +64,18 @@ int main(){
     varTableDelete(&varTable, key);
     simple_print(&varTable);
     printf("\n");
+    strClear(&key);
+    strAddString(&key, "local");
+
+    if(varTableSearch(&varTable, key)->type == T_NIL) printf("prvni\n");
+    varTypeAdd(&varTable, key, T_STRING);
+    if(varTableSearch(&varTable, key)->type == T_NIL) printf("druha\n");
+    if(varTableSearch(&varTable, key)->type == T_STRING) printf("povedlo se\n");
+
 
     scopeAdd(&varTable);
-
+    strClear(&key);
+    strAddString(&key, "koncat");
     varTableInsert(&varTable, key);
     simple_print(&varTable);
     printf("\n");
@@ -86,18 +96,25 @@ int main(){
     funcTableInit(&funcTable);
     string key;
     if(strInit(&key)) errorMessage(ERR_INTERNAL, "Chyba alokace řetězce");
+    string param;
+    if(strInit(&param)) errorMessage(ERR_INTERNAL, "Chyba alokace řetězce");
     strAddString(&key, "end");
 
 
     funcTableInsert(&funcTable, key);
     addParam(&funcTable, key, key);
-
-    printf("[%s, %s]\n", strGetStr(&funcTable->key), strGetStr(&funcTable->key));
     strClear(&key);
     strAddString(&key, "another");
-    
-    funcTableInsert(&funcTable, key);
-    addParam(&funcTable, key, key);
+    funcTableInsert(&funcTable, key);    
+    simple_print2(&funcTable);
+
+
+    strClear(&param);
+    strAddString(&param, "end");
+    addParam(&funcTable, param, key);
+    strClear(&key);
+    strAddString(&key, "end");
+    if(funcTableSearch(&funcTable, key) != NULL)printf("chyba");
     DLL_First(&funcTable->param);
     while (&funcTable->param.activeElement->data != NULL)
     {
