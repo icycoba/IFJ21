@@ -3,7 +3,8 @@
  *      Implementace překladače imperativního jazyka IFJ21
  * 
  * Autoři:
- *      @author Martin Hlinský (xhlins01)
+ *      @author Martin Hlinský  (xhlins01)
+ *      @author Jakub Ryšánek   (xrysan05)
  * 
  * Soubor:
  *      @file symtable.c
