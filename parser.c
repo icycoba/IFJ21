@@ -318,7 +318,7 @@ void syntax_fun_params(){
         if(token == DOUBLEDOT){
             token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
             if(syntax_type()){ 
-                varTypeAdd(&varTypeAdd, currentVar, attribute);
+                varTypeAdd(&varTable, currentVar, attribute);
                 if(!funcTableSearch(&funcTable, currentFunc)->declared && !funcTableSearch(&funcTable, currentFunc)->defined) addParam(&funcTable, currentFunc, attribute);
                 syntax_fun_params2();
             }
@@ -342,7 +342,7 @@ void syntax_fun_params2(){
             if(token == DOUBLEDOT){
                 token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
                 if(syntax_type()){
-                    varTypeAdd(&varTypeAdd, currentVar, attribute);
+                    varTypeAdd(&varTable, currentVar, attribute);
                     if(!funcTableSearch(&funcTable, currentFunc)->declared && !funcTableSearch(&funcTable, currentFunc)->defined) addParam(&funcTable, currentFunc, attribute);
                     syntax_fun_params2();
                     
@@ -360,6 +360,10 @@ void syntax_fun_params2(){
 // <fun_call_params> -> epsilon
 void syntax_fun_call_params(){
     //printf("fun_call_params\n");
+    simple_print2(&funcTable);
+    printf("\n");
+    simple_print(&varTable);
+    printf("\n");
     token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == ID || (token >= STRING && token <= EXP)) {
         syntax_fun_call_params2();
@@ -371,6 +375,10 @@ void syntax_fun_call_params(){
 // <fun_call_params2> -> epsilon
 void syntax_fun_call_params2(){
     //printf("fun_call_params2\n");
+
+
+
+
     token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == COMMA){
         token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
