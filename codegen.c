@@ -130,16 +130,40 @@ void generateVar(string *attribute){
     printf("DEFVAR LF@%s\n", strGetStr(attribute));
 }
 
+void generateVar2(int type){
+    switch(type){
+        case KW_NIL:
+            printf("co ti jebe -codegen\n");
+            break;
+        case KW_INT:
+            printf("PUSHS int@");
+            break;
+        case KW_NUM:
+            printf("PUSHS float@");
+            break;
+        case KW_STR:
+            printf("PUSHS string@");
+            break;
+        default:
+            break;
+    }
+    //printf("POPS LF@%s\n", strGetStr(attribute));
+}
+
 void generatePushS(sType type, string *attribute){
     switch(type){
         case T_NIL:
             printf("co ti jebe -codegen\n");
+            break;
         case T_INT:
             printf("PUSHS int@%s\n", strGetStr(attribute));
+            break;
         case T_DOUBLE:
             printf("PUSHS float@%s\n", strGetStr(attribute));
+            break;
         case T_STRING:
             printf("PUSHS string@%s\n", strGetStr(attribute));
+            break;
         default:
             break;
     }

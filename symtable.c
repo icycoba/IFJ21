@@ -163,7 +163,9 @@ void varTableDispose(varTableNodePtr *tree){
     varTableDispose(&(*tree)->lptr);
     varTableDispose(&(*tree)->rptr);
     strFree(&(*tree)->key);
+    strAddChar(&(*tree)->type, 'a');
     strFree(&(*tree)->type);
+    
     free(*tree);
     *tree = NULL;
 }

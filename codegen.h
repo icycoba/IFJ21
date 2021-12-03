@@ -26,6 +26,8 @@ void generateLabelEnd();
 void generateCall(string *attribute);
 void generateMain();
 void generateVar(string *attribute);
+void generateVar2(int type);
+void generateVar3();
 void generatePushS(sType type, string *attribute);
 void generatePopS(string *atrribute);
 
