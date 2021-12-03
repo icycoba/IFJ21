@@ -58,6 +58,8 @@ void DLL_InsertLast( DLList *, string );
 
 int DLL_Compare(DLList *, DLList *);
 
+int DLL_length(DLList *);
+
 void DLL_First( DLList * );
 
 void DLL_Last( DLList * );
