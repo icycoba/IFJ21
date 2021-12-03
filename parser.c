@@ -32,6 +32,8 @@ int parser(){
     strClear(&currentFunc);
     strAddString(&currentFunc, "reads");
     funcTableInsert(&funcTable, currentFunc);
+    funcDeclared(&funcTable, currentFunc);
+    funcDefined(&funcTable, currentFunc);
 
     strClear(&currentVar);
     strAddString(&currentVar, "string");
@@ -40,6 +42,8 @@ int parser(){
     strClear(&currentFunc);
     strAddString(&currentFunc, "readi");
     funcTableInsert(&funcTable, currentFunc);   
+    funcDeclared(&funcTable, currentFunc);
+    funcDefined(&funcTable, currentFunc);;
 
     strClear(&currentVar);
     strAddString(&currentVar, "integer");
@@ -48,6 +52,8 @@ int parser(){
     strClear(&currentFunc);
     strAddString(&currentFunc, "readn");
     funcTableInsert(&funcTable, currentFunc);
+    funcDeclared(&funcTable, currentFunc);
+    funcDefined(&funcTable, currentFunc);
 
     strClear(&currentVar);
     strAddString(&currentVar, "number");
@@ -56,10 +62,14 @@ int parser(){
     strClear(&currentFunc);
     strAddString(&currentFunc, "write");
     funcTableInsert(&funcTable, currentFunc);
+    funcDeclared(&funcTable, currentFunc);
+    funcDefined(&funcTable, currentFunc);
 
     strClear(&currentFunc);
     strAddString(&currentFunc, "tointeger");
     funcTableInsert(&funcTable, currentFunc);
+    funcDeclared(&funcTable, currentFunc);
+    funcDefined(&funcTable, currentFunc);
 
     strClear(&currentVar);
     strAddString(&currentVar, "number");
@@ -72,6 +82,8 @@ int parser(){
     strClear(&currentFunc);
     strAddString(&currentFunc, "substr");
     funcTableInsert(&funcTable, currentFunc);
+    funcDeclared(&funcTable, currentFunc);
+    funcDefined(&funcTable, currentFunc);
 
     strClear(&currentVar);
     strAddString(&currentVar, "string");
@@ -90,6 +102,8 @@ int parser(){
     strClear(&currentFunc);
     strAddString(&currentFunc, "ord");
     funcTableInsert(&funcTable, currentFunc);
+    funcDeclared(&funcTable, currentFunc);
+    funcDefined(&funcTable, currentFunc);
 
     strClear(&currentVar);
     strAddString(&currentVar, "string");
@@ -106,6 +120,8 @@ int parser(){
     strClear(&currentFunc);
     strAddString(&currentFunc, "chr");
     funcTableInsert(&funcTable, currentFunc);
+    funcDeclared(&funcTable, currentFunc);
+    funcDefined(&funcTable, currentFunc);
 
     strClear(&currentVar);
     strAddString(&currentVar, "integer");
@@ -123,6 +139,8 @@ int parser(){
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if (token != EOFILE) errorMessage(ERR_SYNTAX, "Chybí EOF");
 
+    controlDefined(&funcTable);
+
     strFree(&currentVar);
     strFree(&currentFunc);
     strFree(&attribute);
@@ -135,7 +153,7 @@ int parser(){
 }
         
 void bottom_up(){
-    //printf("bottom-up\n");
+    printf("bottom-up\n");
     Stack *s;
     s = (Stack *) malloc(sizeof(Stack));
     stack_init(s);
@@ -210,10 +228,10 @@ void bottom_up(){
 
             printf("STACK_TOP: %d", s->arr[s->top]);
         }*/
-        token = getToken(&attribute);// printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
     stack_delete(s);
-    //printf("bottom-up-end\n");
+    printf("bottom-up-end\n");
 }
 
 //// každá syntax funkce je jeden neterminál v gramatice ////
@@ -551,7 +569,9 @@ void syntax_stmt(){
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != ID) errorMessage(ERR_SYNTAX, "Očekával se token ID");
         
-        if(varTableSearch(&varTable, attribute)) errorMessage(ERR_NONDEF, "Pokus o redeklaraci proměnné");
+        if(varTableSearch(&varTable, attribute)){ 
+            if(varTableSearch(&varTable, attribute)->scope == 0) errorMessage(ERR_NONDEF, "Pokus o redeklaraci proměnné");
+        }
         
         else varTableInsert(&varTable, attribute);
         
@@ -565,7 +585,7 @@ void syntax_stmt(){
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(!syntax_type()) errorMessage(ERR_SYNTAX, "Očekával se typ");
         varTypeAdd(&varTable, currentVar, attribute);
-
+        
         syntax_var_init();
     }     
     else if(token == KW_IF){
@@ -576,10 +596,10 @@ void syntax_stmt(){
         if(token != KW_THEN) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"then\"");
 
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-        printf("befelemep4684165165165řščěš\n");
+        
+
         syntax_stmts();
         
-        printf("befelemepeseveze265464\n");
         if(token == KW_ELSE) syntax_else();
         
 
@@ -624,7 +644,7 @@ void syntax_stmt(){
                 token = getToken(&attribute);  printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
                 if(!(token == ID || (token >= STRING && token <= EXP))) errorMessage(ERR_SYNTAX, "Očekával se ID, int, string nebo number");
             }
-            if(token != RBR)errorMessage(ERR_SYNTAX, "Očekával se znak ')'");
+            if(token != RBR) errorMessage(ERR_SYNTAX, "Očekával se znak ')'");
             token = getToken(&attribute);
         }
         else if(funcTableSearch(&funcTable, currentVar)){
@@ -632,15 +652,28 @@ void syntax_stmt(){
             syntax_fun_call();
         }
         else if(varTableSearch(&varTable, currentVar)){
-            //DLL_InsertLast(&currentVar, attribute);
+            DLL_InsertLast(&currentList, varTableSearch(&varTable, currentVar)->type);
+
+            strCopyString(&currentVar, &attribute);
+
             token = getToken(&attribute);
             if(token == COMMA) syntax_ID_next(); 
 
             if(token != ASSIGN) errorMessage(ERR_SYNTAX, "Očekával se znak =");
             syntax_expr();
+
+            if(assignExpr.firstElement != NULL){
+                if(!DLL_Compare(&assignExpr, &currentList)) errorMessage(ERR_ASSIGN, "Prava a leva strana nema stejne typy nebo pocet parametru");
+                DLL_Dispose(&assignExpr);
+                DLL_Init(&assignExpr);
+            }
+            if(currentList.firstElement != NULL){
+                DLL_Dispose(&currentList);
+                DLL_Init(&currentList);
+            }
         }
         
-        else errorMessage(ERR_SYNTAX, "Očekával se znak , nebo ( nebo =");
+        else errorMessage(ERR_NONDEF, "Nedefinovana proměnná nebo funkce");
     } 
     else if(token == KW_RETURN){
         printf("stmt-return\n");
@@ -683,20 +716,43 @@ void syntax_var_init(){
 void syntax_init(){
     printf("init\n");
     if(token == LEN || token == LBR || token == ZERO || token == KW_NIL || (token >= STRING && token <= EXP)){
+        if(token == LEN || token == LBR || token == INT){
+            strClear(&attribute);
+            strAddString(&attribute, "integer");
+            if(strCmpString(&attribute, &varTableSearch(&varTable, currentVar)->type)) errorMessage(ERR_ASSIGN, "Špatný typ při inicializaci");
+        }
+        else if(token == STRING){
+            strClear(&attribute);
+            strAddString(&attribute, "string");
+            if(strCmpString(&attribute, &varTableSearch(&varTable, currentVar)->type)) errorMessage(ERR_ASSIGN, "Špatný typ při inicializaci");
+        }
+        else if(token == DOUBLE || token == EXP){
+            strClear(&attribute);
+            strAddString(&attribute, "number");
+            if(strCmpString(&attribute, &varTableSearch(&varTable, currentVar)->type)) errorMessage(ERR_ASSIGN, "Špatný typ při inicializaci");
+        }
+
         bottom_up();
     }
     else if(token == ID || (token <= F_CHR && token >= F_READS)){
-        strCopyString(&currentVar, &attribute);
+        
         //token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-        if(funcTableSearch(&funcTable, currentVar)){
+        if(funcTableSearch(&funcTable, attribute)){
+            if(DLL_length(&funcTableSearch(&funcTable, attribute)->returnParam) != 1) errorMessage(ERR_ASSIGN, "Funkce vraci spatny pocet parametru");
+
+            if(strCmpString(&varTableSearch(&varTable, currentVar)->type, &funcTableSearch(&funcTable, attribute)->returnParam.firstElement->data))
+                errorMessage(ERR_ASSIGN, "Funkce vraci spatny typ pri inicializaci funkce");
+
             token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
             syntax_fun_call();
         }
-        else if(varTableSearch(&varTable, currentVar)){
+        else if(varTableSearch(&varTable, attribute)){
+            if(strCmpString(&varTableSearch(&varTable, currentVar)->type, &varTableSearch(&varTable, attribute)->type))
+                errorMessage(ERR_ASSIGN, "Promenna ma spatny typ pri inicializaci funkce");
             bottom_up();
         }
         
-        else errorMessage(ERR_SYNTAX, "Očekával se ID funkce nebo promenne");
+        else errorMessage(ERR_NONDEF, "Nedefinovana funkce nebo promenna");
 
     }
     else errorMessage(ERR_SYNTAX, "Očekával se vyraz nebo volani funkce");
@@ -708,17 +764,40 @@ void syntax_expr(){
     printf("expr\n");
     token = getToken(&attribute);printf("%-15s |%s\n", printState(token), strGetStr(&attribute));   
     if(token == LEN || token == RBR || token == LBR || token == ZERO || token == KW_NIL || (token >= STRING && token <= EXP)){
+        if(token == LEN || token == LBR || token == INT){
+            strClear(&attribute);
+            strAddString(&attribute, "integer");
+            DLL_InsertLast(&assignExpr, attribute);
+        }
+        else if(token == STRING){
+            strClear(&attribute);
+            strAddString(&attribute, "string");
+            DLL_InsertLast(&assignExpr, attribute);
+        }
+        else if(token == DOUBLE || token == EXP){
+            strClear(&attribute);
+            strAddString(&attribute, "number");
+            DLL_InsertLast(&assignExpr, attribute);
+        }
         bottom_up();
         syntax_expr2();
     }
-    else if(token == ID){
+    else if(token == ID || (token <= F_CHR && token >= F_READS)){
         //token = getToken(&attribute);printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         strCopyString(&currentVar, &attribute);
         if(funcTableSearch(&funcTable, currentVar)){
+            
+            if(!DLL_Compare(&currentList, &funcTableSearch(&funcTable, currentVar)->returnParam)) 
+                errorMessage(ERR_ASSIGN, "Funkce vraci hodnoty ktere se neshoduji s identifikatory");
+
+            DLL_Dispose(&currentList);
+            DLL_Init(&currentList);
+
             token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
             syntax_fun_call();
         }
         else if(varTableSearch(&varTable, currentVar)){
+            DLL_InsertLast(&assignExpr, varTableSearch(&varTable, currentVar)->type);
             bottom_up();
             syntax_expr2();
         }       
@@ -733,7 +812,22 @@ void syntax_expr2(){
     printf("expr2\n");    
     if(token == COMMA){
         token = getToken(&attribute);printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-        if ((token >= STRING && token <= NEQUAL) || token == LEN) errorMessage(ERR_SYNTAX, "Očekával se vyraz");  
+        if (!((token >= STRING && token <= NEQUAL) || token == LEN)) errorMessage(ERR_SYNTAX, "Očekával se vyraz");  
+        if(token == LEN || token == LBR || token == INT){
+            strClear(&attribute);
+            strAddString(&attribute, "integer");
+            DLL_InsertLast(&assignExpr, attribute);
+        }
+        else if(token == STRING){
+            strClear(&attribute);
+            strAddString(&attribute, "string");
+            DLL_InsertLast(&assignExpr, attribute);
+        }
+        else if(token == DOUBLE || token == EXP){
+            strClear(&attribute);
+            strAddString(&attribute, "number");
+            DLL_InsertLast(&assignExpr, attribute);
+        }
         bottom_up();
         syntax_expr2();
     }
@@ -755,8 +849,9 @@ void syntax_ID_next(){
 
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token != ID) errorMessage(ERR_SYNTAX, "Očekávalo se ID");
-
-    //DLL_InsertLast(&currentVar, attribute);
+    
+    if(!varTableSearch(&varTable, attribute)) errorMessage(ERR_NONDEF, "Nedefinovana promenna v assign");
+    DLL_InsertLast(&currentList, varTableSearch(&varTable, attribute)->type);
 
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == COMMA) syntax_ID_next();

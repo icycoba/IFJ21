@@ -85,7 +85,7 @@ void varTableInsert(varTableNodePtr *tree, string key){
 void varTypeAdd(varTableNodePtr *tree, string key, string type){
     varTableNodePtr new;
     new = varTableSearch(&(*tree), key);
-    if(new != NULL)   new->type = type;
+    if(new != NULL)   strCopyString(&new->type, &type);
 }
 
 void scopeAdd(varTableNodePtr *tree){
@@ -119,11 +119,13 @@ void replaceByRightmost(varTableNodePtr replacedPtr, varTableNodePtr *tree){
     if((*tree)->rptr != NULL){
         replaceByRightmost(replacedPtr, &(*tree)->rptr);
     } else{
-        replacedPtr->data = (*tree)->data;
+        
         //string new;
         //if(strInit(&new)) errorMessage(ERR_INTERNAL, "Chyba alokace řetězce");
         //strCopyString(&new, &(*tree)->key);
         //replacedPtr->key = new;
+        replacedPtr->scope = (*tree)->scope;
+        replacedPtr->type = (*tree)->type;
         replacedPtr->key = (*tree)->key;
         varTableNodePtr tmp = (*tree);
         (*tree) = (*tree)->lptr;
@@ -304,6 +306,14 @@ void funcTableDispose(funcTableNodePtr *funcTree){
     DLL_Dispose(&(*funcTree)->returnParam);
     free(*funcTree);
     *funcTree = NULL;
+}
+
+void controlDefined(funcTableNodePtr *funcTree){
+    if (*funcTree != NULL){
+        controlDefined(&(*funcTree)->lptr);
+        if((*funcTree)->defined == false) errorMessage(ERR_NONDEF, "Funkce je deklarovana ale neni definovana");
+        controlDefined(&(*funcTree)->rptr);
+    }
 }
 
 /**

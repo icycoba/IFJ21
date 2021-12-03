@@ -47,7 +47,6 @@ typedef struct varTableNode {
     string key;
     string type;
     int scope;
-    struct varTableData *data;
     struct varTableNode *lptr;
     struct varTableNode *rptr; 
 } *varTableNodePtr;
@@ -87,6 +86,7 @@ void funcDefined(funcTableNodePtr *funcTree, string key);
 void replaceByRightmostFunc(funcTableNodePtr replacedPtr, funcTableNodePtr *funcTree);
 void funcTableDelete(funcTableNodePtr *funcTree, string key);
 void funcTableDispose(funcTableNodePtr *funcTree);
+void controlDefined(funcTableNodePtr *funcTree);
 
 // Nejsem si jisty jestli tohle bude potreba, ale pro jistotu
 

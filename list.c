@@ -140,7 +140,18 @@ int DLL_Compare(DLList *list1, DLList *list2){
     if (first == NULL && second == NULL) return 1;
     
     return 0; 
+}
 
+int DLL_length(DLList *list){
+    int count = 0;
+    DLL_First(list);
+    while (DLL_IsActive(list))
+    {
+        count++;
+        DLL_Next(list);
+    }
+    return count;
+    
 }
 
 /**
