@@ -219,6 +219,7 @@ void syntax_fun_dec_def_call(){
 
         
         if(token != KW_END) errorMessage(ERR_SYNTAX, "Očekávalo se klíčové slovo end na konci funkce");
+        printf("RETURN\n");
         scopeSub(&varTable);
 
         token = getToken(&attribute); ////printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
