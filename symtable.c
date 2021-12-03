@@ -338,9 +338,18 @@ void simple_print(varTableNodePtr *tree){
 }
 
 void simple_print2(funcTableNodePtr *tree){
+    //funcTableNodePtr new;
     if (*tree != NULL){
         simple_print2(&(*tree)->lptr);
         printf("[%s]  ",strGetStr(&(*tree)->key));
+        //new = funcTableSearch(tree, (*tree)->key);
+        //DLLElementPtr param = new->param.firstElement;
+        //while (param != NULL)
+        //{
+        //    printf("[%s]  ",strGetStr(&param->data));
+        //    param = param->nextElement;
+        //}
+        //printf("\n");
         simple_print2(&(*tree)->rptr);
     }
 }

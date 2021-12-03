@@ -131,15 +131,15 @@ int DLL_Compare(DLList *list1, DLList *list2){
     DLLElementPtr second = malloc(sizeof(struct DLLElement));
     first = list1->firstElement;
     second = list2->firstElement;
-    while (list1 != NULL && list2 != NULL)
-    {
+    while (first != NULL && second != NULL){
         if(strCmpString(&first->data, &second->data)) break;
+        
         first = first->nextElement;
         second = second->nextElement;
     }
-    if (list1 == NULL && list2 == NULL) return 0;
+    if (first == NULL && second == NULL) return 1;
     
-    return 1; 
+    return 0; 
 
 }
 
