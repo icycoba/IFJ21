@@ -133,7 +133,7 @@ int DLL_Compare(DLList *list1, DLList *list2){
     second = list2->firstElement;
     while (first != NULL && second != NULL){
         if(strCmpString(&first->data, &second->data)) break;
-        
+        printf("[%s, %s]", strGetStr(&first->data), strGetStr(&second->data));
         first = first->nextElement;
         second = second->nextElement;
     }
