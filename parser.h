@@ -36,6 +36,7 @@ string currentFunc;
 string currentVar;
 
 DLList currentList;
+DLList assignExpr;
 
 funcTableNodePtr funcTable;
 varTableNodePtr varTable;
