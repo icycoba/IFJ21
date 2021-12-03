@@ -6,7 +6,7 @@ s
 : 
 string 
 = 
-"\x3A0"write(s, "\n")
+"\0100"write(s, "\n")
 s = "a\255b"
 write(s
 , 

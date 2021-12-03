@@ -29,6 +29,7 @@
 #define STACK_MAX_SIZE 30
 
 int token;
+bool mainLabel = false;
 string attribute;
 string attributeTemp;
 string currentFunc;

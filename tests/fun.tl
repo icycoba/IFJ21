@@ -2,7 +2,7 @@ require "ifj21"
 
 global g : function (integer) : integer  -- deklarace funkce
 
-function f(x : integer) : integer
+function f(x : number) : integer
   if x < 10then return x-1
   else
     x = x - 1

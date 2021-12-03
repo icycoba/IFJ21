@@ -210,10 +210,10 @@ void bottom_up(){
 
             printf("STACK_TOP: %d", s->arr[s->top]);
         }*/
-        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute);// printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
     stack_delete(s);
-    printf("bottom-up-end\n");
+    //printf("bottom-up-end\n");
 }
 
 //// každá syntax funkce je jeden neterminál v gramatice ////
@@ -238,7 +238,10 @@ void syntax_prolog(){
 
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if (token != STRING || strCmpConstStr(&attribute, "\"ifj21\"")) errorMessage(ERR_SYNTAX, "Klíčové slovo require musí následovat řetězec \"ifj21\"");
-    generateProlog();
+    //generateProlog();
+
+    fprintf(stdout, ".IFJcode21\n");
+    fprintf(stdout, "JUMP $__main__\n");
 }
 
 // <fun_dec_def_call> -> KW_GLOBAL  ID DOUBLEDOT    KW_FUNC         LBR <param_type>    RBR     <type_rtrn> <fun_dec_def_call>
@@ -285,7 +288,8 @@ void syntax_fun_dec_def_call(){
         else {funcTableInsert(&funcTable, attribute);}
         
         strCopyString(&currentFunc, &attribute);
-        generateLabel(&attribute);
+        //generateLabel(&attribute);
+        fprintf(stdout, "LABEL $%s\n", strGetStr(&attribute));
 
         // TODO sémantika
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
@@ -312,12 +316,16 @@ void syntax_fun_dec_def_call(){
         syntax_fun_dec_def_call();
     }
     else if(token == ID){
-        generateMain();
-        printf("%s", strGetStr(&attribute));
-        simple_print2(&funcTable);
-        generateCall(&attribute);
-        
-        if(!funcTableSearch(&funcTable, attribute)) errorMessage(ERR_NONDEF, "Volání nedefinované funkce");
+        //generateMain();
+        //generateCall(&attribute);
+        if(!mainLabel){
+            fprintf(stdout, "LABEL $__main__\n");
+            fprintf(stdout, "CREATEFRAME\n");
+            fprintf(stdout, "PUSHFRAME\n");
+            mainLabel = true;
+        }
+
+        if(!funcTableSearch(&funcTable, attribute)) errorMessage(ERR_NONDEF, "Volání nedefinované funkce funkce");
         
         strCopyString(&currentVar, &attribute);
 
@@ -326,7 +334,7 @@ void syntax_fun_dec_def_call(){
 
         syntax_fun_dec_def_call();
     }
-    else{ 
+    else{
         if(token != EOFILE) errorMessage(ERR_SYNTAX, "Očekávalo se volani, deklarace nebo definice funkce");
     }
     //else{
@@ -398,7 +406,7 @@ void syntax_type_rtrn(){
 void syntax_type_rtrn2(){
     printf("type_rtrn2\n");  
 
-    if(!funcTableSearch(&funcTable, currentFunc)->declared && !funcTableSearch(&funcTable, currentFunc)->defined) addReturnParam(&funcTable, currentFunc, attribute);
+    if(!funcTableSearch(&funcTable, currentFunc)->declared && !funcTableSearch(&funcTable, currentFunc)->defined) {addReturnParam(&funcTable, currentFunc, attribute); printf("another return param in the wall\n");}
 
 
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
@@ -422,7 +430,9 @@ void syntax_fun_params(){
             token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
             if(syntax_type()){ 
                 varTypeAdd(&varTable, currentVar, attribute);
-                if(!funcTableSearch(&funcTable, currentFunc)->declared && !funcTableSearch(&funcTable, currentFunc)->defined) addParam(&funcTable, currentFunc, attribute);
+                printf("yep\n");
+                printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+                if(!funcTableSearch(&funcTable, currentFunc)->declared && !funcTableSearch(&funcTable, currentFunc)->defined) {addParam(&funcTable, currentFunc, attribute); printf("another param in the wall2\n");}
                 syntax_fun_params2();
             }
             else errorMessage(ERR_SYNTAX, "Očekával se typ funkce");
@@ -446,7 +456,7 @@ void syntax_fun_params2(){
                 token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
                 if(syntax_type()){
                     varTypeAdd(&varTable, currentVar, attribute);
-                    if(!funcTableSearch(&funcTable, currentFunc)->declared && !funcTableSearch(&funcTable, currentFunc)->defined) addParam(&funcTable, currentFunc, attribute);
+                    if(!funcTableSearch(&funcTable, currentFunc)->declared && !funcTableSearch(&funcTable, currentFunc)->defined) {addParam(&funcTable, currentFunc, attribute); printf("another param in the wall3\n");}
                     syntax_fun_params2();
                     
                 }
@@ -547,7 +557,7 @@ void syntax_stmt(){
         
         strCopyString(&currentVar, &attribute);
 
-        generateVar(&attribute);
+        //generateVar(&attribute);
 
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != DOUBLEDOT) errorMessage(ERR_SYNTAX, "Očekával se znak :");
@@ -767,13 +777,13 @@ int stack_isFull(const Stack *s){
 
 // Je záspbník prázdný?
 int stack_isEmpty(const Stack *s){
-    printf("Vidím ťa");
+    //printf("Vidím ťa");
     return (s->top == -1);
 }
 
 // Uložení tokenu na zásobník
 void stack_push(Stack *s, int token){
-    printf("Vidím ťa2");
+    //printf("Vidím ťa2");
     if(!stack_isFull(s)){
         s->top++;
         s->arr[s->top]=token;
