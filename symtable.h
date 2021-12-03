@@ -4,6 +4,7 @@
  * 
  * Autoři:
  *      @author Martin Hlinský (xhlins01)
+ *      @author Jakub Ryšánek   (xrysan05)
  * 
  * Soubor:
  *      @file symtable.h
