@@ -63,6 +63,7 @@ typedef struct funcTableNode{
     string key;
     bool defined;
     bool declared;
+    bool returned;
     DLList param;
     DLList returnParam;
     struct funcTableNode *lptr;
