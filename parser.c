@@ -20,6 +20,7 @@
  * @brief  Funkce, která obstarává chod syntaktické a sémantiské analýzy
 */
 bool mainLabel = false;
+string funcName;
 
 int parser(){
     varTableInit(&varTable);
@@ -355,14 +356,13 @@ void syntax_fun_dec_def_call(){
             fprintf(stdout, "PUSHFRAME\n");
             mainLabel = true;
         }
-
         if(!funcTableSearch(&funcTable, attribute)) errorMessage(ERR_NONDEF, "Volání nedefinované funkce funkce");
-        
         strCopyString(&currentVar, &attribute);
-        int tempToken=token;
-        //token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        strCopyString(&funcName, &attribute);
+        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        
         syntax_fun_call();
-
+        
         syntax_fun_dec_def_call();
     }
     else{
@@ -377,13 +377,11 @@ void syntax_fun_dec_def_call(){
 // <fun_call> -> ID LBR <fun_call_params> RBR
 void syntax_fun_call(){
     printf("fun_call\n");
-    strCopyString(&attributeTemp, &attribute);
-    token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     //token = getToken(&attribute);
     if (token == LBR){
         
         syntax_fun_call_params();
-        
+        fprintf(stdout, "CALL $%s\n", strGetStr(&funcName));
         //token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != RBR) errorMessage(ERR_SYNTAX, "Očekával se se znak ')'");
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
@@ -398,8 +396,6 @@ void syntax_fun_call(){
         
         DLL_Dispose(&currentList);
         DLL_Init(&currentList);
-
-        fprintf(stdout,"CALL $%s\n",  strGetStr(&attributeTemp));
         
     }
     else errorMessage(ERR_SYNTAX, "Očekával se znak '('");
@@ -681,7 +677,7 @@ void syntax_stmt(){
             token = getToken(&attribute);
         }
         else if(funcTableSearch(&funcTable, currentVar)){
-            generateCall(&attributeTemp);
+            strCopyString(&funcName, &attribute);
             syntax_fun_call();
         }
         else if(varTableSearch(&varTable, currentVar)){
@@ -807,6 +803,7 @@ void syntax_init(){
                 errorMessage(ERR_ASSIGN, "Funkce vraci spatny typ pri inicializaci funkce");
 
             strCopyString(&currentVar, &attribute);
+            strCopyString(&funcName, &attribute);
             token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
             syntax_fun_call();
         }
@@ -856,6 +853,8 @@ void syntax_expr(){
 
             DLL_Dispose(&currentList);
             DLL_Init(&currentList);
+
+            strCopyString(&funcName, &attribute);
 
             token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
             syntax_fun_call();
