@@ -20,6 +20,7 @@
  * @brief  Funkce, která obstarává chod syntaktické a sémantiské analýzy
 */
 bool mainLabel = false;
+
 int parser(){
     varTableInit(&varTable);
     funcTableInit(&funcTable);
@@ -315,6 +316,7 @@ void syntax_fun_dec_def_call(){
         strCopyString(&currentFunc, &attribute);
         //generateLabel(&attribute);
         fprintf(stdout, "LABEL $%s\n", strGetStr(&attribute));
+        fprintf(stdout, "CREATEFRAME\n");
 
         // TODO sémantika
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
@@ -357,8 +359,8 @@ void syntax_fun_dec_def_call(){
         if(!funcTableSearch(&funcTable, attribute)) errorMessage(ERR_NONDEF, "Volání nedefinované funkce funkce");
         
         strCopyString(&currentVar, &attribute);
-
-        token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        int tempToken=token;
+        //token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         syntax_fun_call();
 
         syntax_fun_dec_def_call();
@@ -375,13 +377,14 @@ void syntax_fun_dec_def_call(){
 // <fun_call> -> ID LBR <fun_call_params> RBR
 void syntax_fun_call(){
     printf("fun_call\n");
+    strCopyString(&attributeTemp, &attribute);
+    token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     //token = getToken(&attribute);
     if (token == LBR){
         
         syntax_fun_call_params();
         
         //token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-        
         if(token != RBR) errorMessage(ERR_SYNTAX, "Očekával se se znak ')'");
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         printf("yeah\n");
@@ -395,6 +398,8 @@ void syntax_fun_call(){
         
         DLL_Dispose(&currentList);
         DLL_Init(&currentList);
+
+        fprintf(stdout,"CALL $%s\n",  strGetStr(&attributeTemp));
         
     }
     else errorMessage(ERR_SYNTAX, "Očekával se znak '('");
@@ -455,15 +460,20 @@ void syntax_type_rtrn2(){
 void syntax_fun_params(){
     printf("fun_params\n");
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+    strCopyString(&attributeTemp, &attribute);
     if(token == ID){
         varTableInsert(&varTable, attribute);
         strCopyString(&currentVar, &attribute);
+        fprintf(stdout,"DEFVAR TF@%%%s\n",  strGetStr(&attribute));
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token == DOUBLEDOT){
             token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
             if(syntax_type()){ 
                 varTypeAdd(&varTable, currentVar, attribute);
                 printf("yep\n");
+                fprintf(stdout, "DEFVAR TF@%%%s\n", strGetStr(&attribute));
+                fprintf(stdout,"POPS TF@%%%s\n",  strGetStr(&attribute));
+                fprintf(stdout,"TYPE TF@%%%s TF@%%%s\n",  strGetStr(&attributeTemp), strGetStr(&attribute));
                 printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
                 if(!funcTableSearch(&funcTable, currentFunc)->declared && !funcTableSearch(&funcTable, currentFunc)->defined) {addParam(&funcTable, currentFunc, attribute); printf("another param in the wall2\n");}
                 syntax_fun_params2();
@@ -481,15 +491,20 @@ void syntax_fun_params2(){
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == COMMA){
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
+        strCopyString(&attributeTemp, &attribute);
         if(token == ID){   
             varTableInsert(&varTable, attribute);
             strCopyString(&currentVar, &attribute);
+            fprintf(stdout,"DEFVAR TF@%%%s\n",  strGetStr(&attribute));
             token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
             if(token == DOUBLEDOT){
                 token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
                 if(syntax_type()){
                     varTypeAdd(&varTable, currentVar, attribute);
                     if(!funcTableSearch(&funcTable, currentFunc)->declared && !funcTableSearch(&funcTable, currentFunc)->defined) {addParam(&funcTable, currentFunc, attribute); printf("another param in the wall3\n");}
+                    fprintf(stdout, "DEFVAR TF@%%%s\n", strGetStr(&attribute));
+                    fprintf(stdout,"POPS TF@%%%s\n",  strGetStr(&attribute));
+                    fprintf(stdout,"TYPE TF@%%%s TF@%%%s\n",  strGetStr(&attributeTemp), strGetStr(&attribute));
                     syntax_fun_params2();
                     
                 }
@@ -515,6 +530,7 @@ void syntax_fun_call_params(){
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     
     if(token == ID || (token >= STRING && token <= EXP)) {
+        fprintf(stdout, "DEFVAR TF@%%%s\n", strGetStr(&attribute));
         syntax_fun_call_params2();
         //token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         
@@ -551,8 +567,10 @@ void syntax_fun_call_params2(){
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == COMMA){
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
-        if(token == ID || (token >= STRING && token <= EXP)) syntax_fun_call_params2();           
-        
+        if(token == ID || (token >= STRING && token <= EXP)) {
+            fprintf(stdout,"DEFVAR TF%%%s\n",  strGetStr(&attribute));
+            syntax_fun_call_params2();
+        }
         else errorMessage(ERR_SYNTAX, "Očekávalo se ID");
         
     }
