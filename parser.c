@@ -19,8 +19,8 @@
 /**
  * @brief  Funkce, která obstarává chod syntaktické a sémantiské analýzy
 */
+bool mainLabel = false;
 int parser(){
-    mainLabel = false;
     varTableInit(&varTable);
     funcTableInit(&funcTable);
     DLL_Init(&currentList);
