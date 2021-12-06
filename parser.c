@@ -154,6 +154,8 @@ int parser(){
         
 void bottom_up(){
     printf("bottom-up\n");
+    int test;
+    test = token;
     Stack *s;
     s = (Stack *) malloc(sizeof(Stack));
     stack_init(s);
@@ -228,6 +230,10 @@ void bottom_up(){
 
             printf("STACK_TOP: %d", s->arr[s->top]);
         }*/
+        if((test >= STRING && test <= EXP) || test == ID){
+            if((token >= STRING && token <= EXP) || token == ID) break;            
+        }
+        test = token;
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
     stack_delete(s);
@@ -318,7 +324,7 @@ void syntax_fun_dec_def_call(){
 
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token == DOUBLEDOT) syntax_type_rtrn();
-
+       
         
         
         funcDefined(&funcTable, currentFunc);
@@ -330,6 +336,9 @@ void syntax_fun_dec_def_call(){
         printf("RETURN\n");
         scopeSub(&varTable);
 
+        if(DLL_length(&funcTableSearch(&funcTable, currentFunc)->returnParam) != 0 && funcTableSearch(&funcTable, currentFunc)->returned == false)
+            errorMessage(ERR_RETURN, "Chybí return ve funkci která má něco vracet");
+        
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         
         syntax_fun_dec_def_call();
@@ -377,11 +386,15 @@ void syntax_fun_call(){
         printf("yeah\n");
         simple_print(&varTable);
         simple_print2(&funcTable);
-        
+
+        printf("yeahdsfsd\n");
+        printf("%d, %d",DLL_length(&currentList), DLL_length(&funcTableSearch(&funcTable, currentVar)->param ));
+        printf("%s\n\n", strGetStr(&funcTableSearch(&funcTable, currentVar)->key));
         if(!DLL_Compare(&currentList, &funcTableSearch(&funcTable, currentVar)->param)) errorMessage(ERR_RETURN, "Parametry se neshoduji");
         
         DLL_Dispose(&currentList);
         DLL_Init(&currentList);
+        
     }
     else errorMessage(ERR_SYNTAX, "Očekával se znak '('");
 }
@@ -515,7 +528,7 @@ void syntax_fun_call_params2(){
     
     if(token == ID){
         if(varTableSearch(&varTable, attribute) == NULL) errorMessage(ERR_NONDEF, "Nedefinované proměná ve volání funkce");
-        DLL_InsertLast(&currentList, varTableSearch(&varTable, attribute)->key);
+        DLL_InsertLast(&currentList, varTableSearch(&varTable, attribute)->type);
     }
     else if(token == STRING){
         strClear(&attribute);
@@ -664,6 +677,7 @@ void syntax_stmt(){
             syntax_expr();
 
             if(assignExpr.firstElement != NULL){
+                printf("%d, %d",DLL_length(&currentList), DLL_length(&assignExpr));
                 if(!DLL_Compare(&assignExpr, &currentList)) errorMessage(ERR_ASSIGN, "Prava a leva strana nema stejne typy nebo pocet parametru");
                 DLL_Dispose(&assignExpr);
                 DLL_Init(&assignExpr);
@@ -680,9 +694,38 @@ void syntax_stmt(){
         printf("stmt-return\n");
         token = getToken(&attribute);printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if ((token >= STRING && token <= EXP) || token == LEN || token == ID){
+            if(token == LEN || token == LBR || token == INT){
+            strClear(&attribute);
+            strAddString(&attribute, "integer");
+            DLL_InsertLast(&assignExpr, attribute);
+            }
+            else if(token == STRING){
+                strClear(&attribute);
+                strAddString(&attribute, "string");
+                DLL_InsertLast(&assignExpr, attribute);
+            }
+            else if(token == DOUBLE || token == EXP){
+                strClear(&attribute);
+                strAddString(&attribute, "number");
+                DLL_InsertLast(&assignExpr, attribute);
+            }
+            else if(token == ID){ 
+                if(!varTableSearch(&varTable, attribute)) errorMessage(ERR_RETURN, "Nedefinovaná proměnná při return funkce");              
+                DLL_InsertLast(&assignExpr, varTableSearch(&varTable, attribute)->type);         
+            }
             bottom_up();
             syntax_expr2();
         }
+        
+        if(DLL_length(&assignExpr) != DLL_length(&funcTableSearch(&funcTable, currentFunc)->returnParam)) errorMessage(ERR_RETURN, "Špatný počet návratových parametrů");
+
+        if(assignExpr.firstElement != NULL){
+            if(!DLL_Compare(&assignExpr, &funcTableSearch(&funcTable, currentFunc)->returnParam)) errorMessage(ERR_ASSIGN, "Špatný typ návratových parametrů");
+            DLL_Dispose(&assignExpr);
+            DLL_Init(&assignExpr);
+        }
+        funcTableSearch(&funcTable, currentFunc)->returned = true;
+
     }
     else errorMessage(ERR_SYNTAX, "Očekával se statement");
 }
@@ -744,6 +787,7 @@ void syntax_init(){
             if(strCmpString(&varTableSearch(&varTable, currentVar)->type, &funcTableSearch(&funcTable, attribute)->returnParam.firstElement->data))
                 errorMessage(ERR_ASSIGN, "Funkce vraci spatny typ pri inicializaci funkce");
 
+            strCopyString(&currentVar, &attribute);
             token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
             syntax_fun_call();
         }
@@ -801,10 +845,10 @@ void syntax_expr(){
             DLL_InsertLast(&assignExpr, varTableSearch(&varTable, currentVar)->type);
             bottom_up();
             syntax_expr2();
-        }       
-        
-        else errorMessage(ERR_SYNTAX, "Očekával se vyraz nebo volani funkce");    
+        }  
+        else errorMessage(ERR_NONDEF, "Nedefinovany vyraz nebo volani funkce");  
     }
+    else errorMessage(ERR_SYNTAX, "Očekával se vyraz nebo volani funkce");  
 }
 
 // <expr2> -> COMMA expression <expr2>
@@ -829,6 +873,10 @@ void syntax_expr2(){
             strAddString(&attribute, "number");
             DLL_InsertLast(&assignExpr, attribute);
         }
+        else if(token == ID){
+            if(varTableSearch(&varTable, attribute) == NULL) errorMessage(ERR_NONDEF, "Nedefinované proměná ve vyrazu");
+            DLL_InsertLast(&assignExpr, varTableSearch(&varTable, currentVar)->type);            
+        }  
         bottom_up();
         syntax_expr2();
     }

@@ -214,6 +214,7 @@ void funcTableInsert(funcTableNodePtr *funcTree, string key){
         DLL_Init(&returnParam);
         temp->returnParam = returnParam;
 
+        temp->returned = false;
         temp->defined = false;
         temp->declared = false;
         temp->lptr = NULL;
