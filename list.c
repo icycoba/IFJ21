@@ -131,12 +131,10 @@ int DLL_Compare(DLList *list1, DLList *list2){
     DLLElementPtr first = malloc(sizeof(struct DLLElement));
     DLLElementPtr second = malloc(sizeof(struct DLLElement));
     
-    
-    printf("yeahasd\n");
     first = list1->firstElement;
     second = list2->firstElement;
     while (first != NULL && second != NULL){
-        printf("[%s, %s]", strGetStr(&first->data), strGetStr(&second->data));
+        fprintf(stderr, "[%s, %s]", strGetStr(&first->data), strGetStr(&second->data));
         if(strCmpString(&first->data, &second->data) && 
            (strCmpConstStr(&first->data,"integer") || strCmpConstStr((&second->data), "number"))) break;     
 

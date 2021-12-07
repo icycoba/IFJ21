@@ -40,7 +40,7 @@ void generateProlog(){
 }
 
 void generatePredefined(){
-    printf("LABEL $readi\n");
+    printf("\nLABEL $readi\n");
     printf("PUSHFRAME\n");
     //printf("DEFVAR LF@ret\n");
     printf("READ LF@%%retval%%1 int\n");
@@ -90,7 +90,7 @@ void generatePredefined(){
 
     printf("LABEL $chr\n");
 
-    printf("RETURN\n");
+    printf("RETURN\n\n");
 
 }
 
