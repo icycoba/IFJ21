@@ -154,15 +154,19 @@ int parser(){
         
 void bottom_up(){
     printf("bottom-up\n");
-    int test;
-    test = token;
+    int exprOutcome;
+    int E = 100;
+    int left = 101;
+    exprOutcome = token;
     Stack *s;
     s = (Stack *) malloc(sizeof(Stack));
     stack_init(s);
     token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     while((token >= STRING && token <= RBR) || token == LEN || token == ID || token == ZERO || token == KW_NIL || token == CONCAT){
         /*if(stack_isEmpty(s)){
+            stack_push(s, left);
             stack_push(s, token);
+            printf("UHDSKJDSFAHJLDFA: %d\n", s->arr[s->top]);
         }
         else{
             if(s->arr[s->top]==ID&&(token!=LBR)){
@@ -228,12 +232,13 @@ void bottom_up(){
             }
             else errorMessage(ERR_SYNTAX, "Chyba precedence");
 
-            printf("STACK_TOP: %d", s->arr[s->top]);
+            printf("UHDSKJDSFAHJLDFASTACK_TOP: %d\n", s->arr[s->top]);
         }*/
-        if((test >= STRING && test <= EXP) || test == ID){
+
+        if((exprOutcome >= STRING && exprOutcome <= EXP) || exprOutcome == ID){
             if((token >= STRING && token <= EXP) || token == ID) break;            
         }
-        test = token;
+        exprOutcome = token;
         token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
     stack_delete(s);
@@ -647,9 +652,9 @@ void syntax_stmt(){
         //token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token == F_WRITE){  
 
-            token = getToken(&attribute);
+            token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
             if(token != LBR) errorMessage(ERR_SYNTAX, "Očekával se znak '('");
-            token = getToken(&attribute);
+            token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
             while((token >= STRING && token <= EXP) || token == ID){
                 token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
                 if(token == RBR) break;
@@ -662,6 +667,7 @@ void syntax_stmt(){
         }
         else if(funcTableSearch(&funcTable, currentVar)){
             generateCall(&attributeTemp);
+            token = getToken(&attribute); printf("%-15s |%s\n", printState(token), strGetStr(&attribute));
             syntax_fun_call();
         }
         else if(varTableSearch(&varTable, currentVar)){
@@ -783,7 +789,8 @@ void syntax_init(){
         if(funcTableSearch(&funcTable, attribute)){
             if(DLL_length(&funcTableSearch(&funcTable, attribute)->returnParam) != 1) errorMessage(ERR_ASSIGN, "Funkce vraci spatny pocet parametru");
 
-            if(strCmpString(&varTableSearch(&varTable, currentVar)->type, &funcTableSearch(&funcTable, attribute)->returnParam.firstElement->data))
+            if(strCmpString(&varTableSearch(&varTable, currentVar)->type, &funcTableSearch(&funcTable, attribute)->returnParam.firstElement->data)
+                &&  (strCmpConstStr(&varTableSearch(&varTable, currentVar)->type,"number") || strCmpConstStr(&funcTableSearch(&funcTable, attribute)->returnParam.firstElement->data, "integer")))
                 errorMessage(ERR_ASSIGN, "Funkce vraci spatny typ pri inicializaci funkce");
 
             strCopyString(&currentVar, &attribute);
