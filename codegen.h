@@ -12,6 +12,7 @@
  *      @brief Generování tříadresného kódu
  */
 
+#pragma once
 
 #include "symtable.h"
 
