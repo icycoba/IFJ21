@@ -345,7 +345,7 @@ void syntax_fun_dec_def_call(){
         
         if(token != KW_END) errorMessage(ERR_SYNTAX, "Očekávalo se klíčové slovo end na konci funkce");
         fprintf(stdout, "POPFRAME\n");
-        fprintf(stdout, "RETURN\n");
+        fprintf(stdout, "RETURN\n\n");
         scopeSub(&varTable);
 
         if(DLL_length(&funcTableSearch(&funcTable, currentFunc)->returnParam) != 0 && funcTableSearch(&funcTable, currentFunc)->returned == false)
@@ -624,7 +624,16 @@ void syntax_stmt(){
         token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(!syntax_type()) errorMessage(ERR_SYNTAX, "Očekával se typ");
         varTypeAdd(&varTable, currentVar, attribute);
-        
+        fprintf(stdout, "DEFVAR LF@%s\n", strGetStr(&currentVar));
+        if(!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "integer")){
+            fprintf(stdout, "MOVE LF@%s int@\n", strGetStr(&currentVar));
+        } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "number")){
+            fprintf(stdout, "MOVE LF@%s float@\n", strGetStr(&currentVar));
+        } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "string")){
+            fprintf(stdout, "MOVE LF@%s string@\n", strGetStr(&currentVar));
+        } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "nil")){
+            fprintf(stdout, "MOVE LF@%s nil@nil\n", strGetStr(&currentVar));
+        }
         syntax_var_init();
     }     
     else if(token == KW_IF){
@@ -798,7 +807,18 @@ void syntax_init(){
             strAddString(&attribute, "number");
             if(strCmpString(&attribute, &varTableSearch(&varTable, currentVar)->type)) errorMessage(ERR_ASSIGN, "Špatný typ při inicializaci");
         }
-        fprintf(stdout, "MOVE LF@%s borec@%s\n", strGetStr(&currentVar), strGetStr(&attribute)); //TODO borec -> zjisteni typu attributu
+
+        //TODO runtime errory
+        if(!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "integer")){
+            fprintf(stdout, "MOVE LF@%s int@%s\n", strGetStr(&currentVar), strGetStr(&attribute));
+        } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "number")){
+            fprintf(stdout, "MOVE LF@%s float@%s\n", strGetStr(&currentVar), strGetStr(&attribute));
+        } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "string")){
+            fprintf(stdout, "MOVE LF@%s string@%s\n", strGetStr(&currentVar), strGetStr(&attribute));
+        } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "nil")){
+            fprintf(stdout, "MOVE LF@%s nil@nil\n", strGetStr(&currentVar));
+        }
+        //fprintf(stdout, "MOVE LF@%s borec@%s\n", strGetStr(&currentVar), strGetStr(&attribute)); //TODO borec -> zjisteni typu attributu
         bottom_up();
     }
     else if(token == ID || (token <= F_CHR && token >= F_READS)){
