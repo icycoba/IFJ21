@@ -798,11 +798,10 @@ void syntax_init(){
             strAddString(&attribute, "number");
             if(strCmpString(&attribute, &varTableSearch(&varTable, currentVar)->type)) errorMessage(ERR_ASSIGN, "Špatný typ při inicializaci");
         }
-
+        fprintf(stdout, "MOVE LF@%s borec@%s\n", strGetStr(&currentVar), strGetStr(&attribute)); //TODO borec -> zjisteni typu attributu
         bottom_up();
     }
     else if(token == ID || (token <= F_CHR && token >= F_READS)){
-        
         //token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(funcTableSearch(&funcTable, attribute)){
             if(DLL_length(&funcTableSearch(&funcTable, attribute)->returnParam) != 1) errorMessage(ERR_ASSIGN, "Funkce vraci spatny pocet parametru");
@@ -815,10 +814,14 @@ void syntax_init(){
             strCopyString(&funcName, &attribute);
             token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
             syntax_fun_call();
+            if(DLL_length(&funcTableSearch(&funcTable, currentFunc)->returnParam) > 0)
+                    fprintf(stdout, "MOVE LF@%s LF@%%retval%%1\n", strGetStr(&currentVar));
+            //TODOprintf("MOVE LF@%s LF")
         }
         else if(varTableSearch(&varTable, attribute)){
             if(strCmpString(&varTableSearch(&varTable, currentVar)->type, &varTableSearch(&varTable, attribute)->type))
                 errorMessage(ERR_ASSIGN, "Promenna ma spatny typ pri inicializaci funkce");
+            fprintf(stdout, "MOVE LF@%s kakao%s\n", strGetStr(&currentVar), strGetStr(&attribute)); //TODO kakao -> zjisteni typu attributu
             bottom_up();
         }
         
