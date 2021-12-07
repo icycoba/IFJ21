@@ -34,6 +34,7 @@ string attribute;
 string attributeTemp;
 string currentFunc;
 string currentVar;
+string funcName;
 
 DLList currentList;
 DLList assignExpr;
