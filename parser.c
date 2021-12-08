@@ -1297,7 +1297,7 @@ void stack_handle(Stack *s){
         if(s->arr[result] != E) break;
         result --;
     }
-    if(s->top - result >= 2) errorMessage(ERR_TYPE_CMP, "Moc E vedle sebe");
+    if(s->top - result >= 2) errorMessage(ERR_SYNTAX, "Moc E vedle sebe");
 
     for(int i = 0; i < s->top - result; i++){
         s->arr[s->top - i + 1] = s->arr[s->top - i];
@@ -1312,7 +1312,7 @@ void stack_rules(Stack *s){
         if(s->arr[result] == HANDLE) break;
         result --;
     }
-    if(result == -1) errorMessage(ERR_TYPE_CMP, "Ve vyrazu je chyba");
+    if(result == -1) errorMessage(ERR_SYNTAX, "Ve vyrazu je chyba");
 
     if(s->top - result == 1){
         if(s->arr[s->top] == ID || s->arr[s->top] == ZERO || s->arr[s->top] == KW_NIL || (s->arr[s->top] >= STRING && s->arr[s->top] <= EXP)){
@@ -1320,7 +1320,7 @@ void stack_rules(Stack *s){
             s->arr[s->top] = E;
         }
 
-        else errorMessage(ERR_TYPE_CMP, "Pravidlo nejde");
+        else errorMessage(ERR_SYNTAX, "Pravidlo nejde");
     }
     else if(s->top - result == 2){
         if(s->arr[s->top] == E && s->arr[s->top - 1] == LEN){
@@ -1328,7 +1328,7 @@ void stack_rules(Stack *s){
             s->arr[s->top] = E;
         }
 
-        else errorMessage(ERR_TYPE_CMP, "Pravidlo nemuze");
+        else errorMessage(ERR_SYNTAX, "Pravidlo nemuze");
     
     }
 
@@ -1356,9 +1356,9 @@ void stack_rules(Stack *s){
 
         }
 
-        else errorMessage(ERR_TYPE_CMP, "Pravidlo nelze");
+        else errorMessage(ERR_SYNTAX, "Pravidlo nelze");
     }
 
-    else errorMessage(ERR_TYPE_CMP, "Nesedi zadne pravidlo");
+    else errorMessage(ERR_SYNTAX, "Nesedi zadne pravidlo");
     
 }
