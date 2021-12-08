@@ -100,7 +100,9 @@ void generatePredefined(){
 
     printf("LABEL $chr\n");
     printf("PUSHFRAME\n");
-
+    printf("DEFVAR LF@_\n");
+    printf("CALL $ord\n");
+    printf("WRITE LF@_\n");
     printf("RETURN\n\n");
 
 }
