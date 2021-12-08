@@ -66,7 +66,7 @@ void generatePredefined(){
     printf("PUSHFRAME\n");
     printf("DEFVAR LF@_\n");
     printf("DEFVAR LF@ret\n");
-    printf("PUSHS float@\n");
+    printf("PUSHS float@%a\n", 0.0);
     printf("PUSHS int@\n");
     printf("POPS LF@ret\n");
     printf("POPS LF@_\n");

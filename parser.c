@@ -716,11 +716,11 @@ void syntax_stmt(){
         varTypeAdd(&varTable, currentVar, attribute);
         fprintf(stdout, "DEFVAR LF@%s\n", strGetStr(&currentVar));
         if(!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "integer")){
-            fprintf(stdout, "MOVE LF@%s int@\n", strGetStr(&currentVar));
+            //fprintf(stdout, "MOVE LF@%s int@\n", strGetStr(&currentVar));
         } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "number")){
-            fprintf(stdout, "MOVE LF@%s float@\n", strGetStr(&currentVar));
+            //fprintf(stdout, "MOVE LF@%s float@\n", strGetStr(&currentVar));
         } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "string")){
-            fprintf(stdout, "MOVE LF@%s string@\n", strGetStr(&currentVar));
+            //fprintf(stdout, "MOVE LF@%s string@\n", strGetStr(&currentVar));
         } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "nil")){
             fprintf(stdout, "MOVE LF@%s nil@nil\n", strGetStr(&currentVar));     
         }
@@ -939,6 +939,12 @@ void syntax_init(){
         
         
 
+        
+        exprOutcome = KW_NIL;
+        bottom_up();
+        exprEnd = false;
+        stack_delete(s);
+
         if(!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "integer")){
             fprintf(stdout, "POPS LF@%s\n", strGetStr(&currentVar));
         } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "number")){
@@ -948,10 +954,6 @@ void syntax_init(){
         } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "nil")){
             fprintf(stdout, "POPS LF@%s\n", strGetStr(&currentVar));
         }
-        exprOutcome = KW_NIL;
-        bottom_up();
-        exprEnd = false;
-        stack_delete(s);
     }
     else if(token == ID || (token <= F_CHR && token >= F_READS)){
         //token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
@@ -991,7 +993,7 @@ void syntax_expr(){
     fprintf(stderr, "expr\n");
     token = getToken(&attribute);fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));   
     if(token == LEN || token == RBR || token == LBR || token == ZERO || token == KW_NIL || (token >= STRING && token <= EXP)){
-        fprintf(stdout, "PUSHS int@%s\n", strGetStr(&attribute));
+        
         if(token == LEN || token == LBR || token == INT){
             strClear(&attributeTemp);
             strAddString(&attributeTemp, "integer");
@@ -1009,7 +1011,15 @@ void syntax_expr(){
         }
         exprOutcome = KW_NIL;
         bottom_up();
-        fprintf(stdout, "MOVE LF@%s KOKOTK@%s\n", strGetStr(&currentVar), strGetStr(&attribute));
+        if(!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "integer")){
+            fprintf(stdout, "POPS LF@%s\n", strGetStr(&currentVar));
+        } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "number")){
+            fprintf(stdout, "POPS LF@%s\n", strGetStr(&currentVar));
+        } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "string")){
+            fprintf(stdout, "POPS LF@%s\n", strGetStr(&currentVar));
+        } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "nil")){
+            fprintf(stdout, "POPS LF@%s\n", strGetStr(&currentVar));
+        }
         exprEnd = false;
         stack_delete(s);
         syntax_expr2();
