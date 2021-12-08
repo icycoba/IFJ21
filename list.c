@@ -133,8 +133,7 @@ int DLL_Compare(DLList *list1, DLList *list2){
     
     first = list1->firstElement;
     second = list2->firstElement;
-    while (first != NULL && second != NULL){
-        fprintf(stderr, "[%s, %s]", strGetStr(&first->data), strGetStr(&second->data));
+    while (first != NULL && second != NULL){        
         if(strCmpString(&first->data, &second->data) && 
            (strCmpConstStr(&first->data,"integer") || strCmpConstStr((&second->data), "number"))) break;     
 
