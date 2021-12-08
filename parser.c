@@ -222,7 +222,7 @@ void bottom_up(){
         }
     }
     else if(s->arr[stack_highest(s)]==GT || s->arr[stack_highest(s)]==GTE || s->arr[stack_highest(s)]==LT || 
-            s->arr[stack_highest(s)]==LTE || s->arr[stack_highest(s)]==EQUAL || s->arr[stack_highest(s)]==NEQUAL){
+            s->arr[stack_highest(s)]==LTE || s->arr[stack_highest(s)]==EQUAL || s->arr[stack_highest(s)]==NEQUAL){        
         if(exprEnd){
             stack_rules(s);
             skip = true;
@@ -323,9 +323,71 @@ void bottom_up(){
                 fprintf(stdout, "PUSHS LF@%s\n", strGetStr(&attribute));
             }
         }
+        if((token >= STRING && token <= ID) || token == ZERO){
+            fprintf(stderr, "[%s]\n", printState(exprOutcome));
+            if(exprOutcome == KW_NIL){
+                if(token == STRING){
+                    if(s->top - 2 >= 0 && s->arr[s->top - 2] == LEN) exprOutcome = INT;
+                    else exprOutcome = STRING;
+                }
+                else if(token == INT || token == ZERO){
+                    exprOutcome = INT;
+                }
+                else if(token == DOUBLE || token == EXP){
+                    exprOutcome = DOUBLE;
+                }
+                else if(token == ID){
+                    if(!strCmpConstStr(&varTableSearch(&varTable, attribute)->type, "integer")){
+                        exprOutcome = INT;
+                    }
+                    else if(!strCmpConstStr(&varTableSearch(&varTable, attribute)->type, "string")){
+                        if(s->top - 2 >= 0 && s->arr[s->top - 2] == LEN) exprOutcome = INT;
+                        else exprOutcome = STRING;
+                    }
+                    else if(!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type,"number")){
+                        exprOutcome = DOUBLE;
+                    }
+                }                
+            }
+            else{
+                if(token == STRING){
+                    if(!stack_isEmpty(s) && s->arr[s->top - 2] == LEN){
+                        fprintf(stderr, "[%d]\n", s->arr[s->top]);
+                         if(exprOutcome != INT && exprOutcome != DOUBLE) errorMessage(ERR_TYPE_CMP, "Typ nesedí1");
+                    }
+                    else if(exprOutcome != STRING) errorMessage(ERR_TYPE_CMP, "Typ nesedí2");
+                }
+                else if(token == INT || token == ZERO){
+                    if(exprOutcome != INT && exprOutcome != DOUBLE) errorMessage(ERR_TYPE_CMP, "Typ nesedí3");
+                }
+                else if(token == DOUBLE || token == EXP){
+                    if(exprOutcome != DOUBLE) errorMessage(ERR_TYPE_CMP, "Typ nesedí4");
+                }
+                else if(token == ID){
+                    if(!strCmpConstStr(&varTableSearch(&varTable, attribute)->type, "integer")){
+                        if(exprOutcome != INT && exprOutcome != DOUBLE) errorMessage(ERR_TYPE_CMP, "Typ nesedí5");
+                    }
+                    else if(!strCmpConstStr(&varTableSearch(&varTable, attribute)->type, "string")){
+                        if(s->top - 2 >= 0 && s->arr[s->top - 2] == LEN){
+                            if(exprOutcome != INT && exprOutcome != DOUBLE) errorMessage(ERR_TYPE_CMP, "Typ nesedí6");
+                        }
+                        else if(exprOutcome != STRING) errorMessage(ERR_TYPE_CMP, "Typ nesedí7");
+                    }
+                    else if(!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type,"number")){
+                        if(exprOutcome != DOUBLE) errorMessage(ERR_TYPE_CMP, "Typ nesedí8");
+                    }
+                }  
+
+            }
+
+        }
+
+
         token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != LEN && !(token >= STRING && token <= RBR) && token != ID && token != ZERO && token != KW_NIL && token != CONCAT)
-            {exprEnd = true;fprintf(stderr, "sdfdsfdsafdsafasfsfsadfa\n");}
+            exprEnd = true;
+        if(token == GT || token == GTE || token == LT || token == LTE || token == EQUAL || token == NEQUAL)
+            exprOutcome = KW_NIL;
     }
     skip = false;
     
@@ -842,7 +904,7 @@ void syntax_stmt(){
         fprintf(stderr, "stmt-return\n");
         token = getToken(&attribute);fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if ((token >= STRING && token <= EXP) || token == LEN || token == ID){
-            if(token == LEN || token == LBR || token == INT){
+            /*if(token == LEN || token == LBR || token == INT){
             strClear(&attributeTemp);
             strAddString(&attributeTemp, "integer");
             DLL_InsertLast(&assignExpr, attributeTemp);
@@ -860,9 +922,24 @@ void syntax_stmt(){
             else if(token == ID){ 
                 if(!varTableSearch(&varTable, attribute)) errorMessage(ERR_RETURN, "Nedefinovaná proměnná při return funkce");              
                 DLL_InsertLast(&assignExpr, varTableSearch(&varTable, attribute)->type);         
-            }
+            }*/
             exprOutcome = KW_NIL;
             bottom_up();
+            if(exprOutcome == INT){
+                strClear(&attributeTemp);
+                strAddString(&attributeTemp, "integer");
+                DLL_InsertLast(&assignExpr, attributeTemp);
+            }
+            else if(exprOutcome == STRING){
+                strClear(&attributeTemp);
+                strAddString(&attributeTemp, "string");
+                DLL_InsertLast(&assignExpr, attributeTemp);
+            }
+            else if(exprOutcome == DOUBLE){
+                strClear(&attributeTemp);
+                strAddString(&attributeTemp, "number");
+                DLL_InsertLast(&assignExpr, attributeTemp);
+            }
             exprEnd = false;
             stack_delete(s);
             syntax_expr2();
@@ -908,7 +985,7 @@ void syntax_var_init(){
 void syntax_init(){
     fprintf(stderr, "init\n");
     if(token == LEN || token == LBR || token == ZERO || token == KW_NIL || (token >= STRING && token <= EXP)){
-        if(token == LEN || token == LBR || token == INT){
+        /*if(token == LEN || token == LBR || token == INT){
             strClear(&attributeTemp);
             strAddString(&attributeTemp, "integer");
             if(strCmpString(&attributeTemp, &varTableSearch(&varTable, currentVar)->type)) errorMessage(ERR_ASSIGN, "Špatný typ při inicializaci");
@@ -922,7 +999,7 @@ void syntax_init(){
             strClear(&attributeTemp);
             strAddString(&attributeTemp, "number");
             if(strCmpString(&attributeTemp, &varTableSearch(&varTable, currentVar)->type)) errorMessage(ERR_ASSIGN, "Špatný typ při inicializaci");
-        }
+        }*/
 
         //TODO runtime errory
         
@@ -931,6 +1008,15 @@ void syntax_init(){
         
         exprOutcome = KW_NIL;
         bottom_up();
+        if(exprOutcome == INT){
+            if(strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "integer")) errorMessage(ERR_ASSIGN, "Špatný typ při inicializaci");
+        }
+        else if(exprOutcome == STRING){
+            if(strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "string")) errorMessage(ERR_ASSIGN, "Špatný typ při inicializaci");
+        }
+        else if(exprOutcome == DOUBLE){
+            if(strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "number")) errorMessage(ERR_ASSIGN, "Špatný typ při inicializaci");
+        }
         exprEnd = false;
         stack_delete(s);
 
@@ -983,7 +1069,7 @@ void syntax_expr(){
     token = getToken(&attribute);fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));   
     if(token == LEN || token == RBR || token == LBR || token == ZERO || token == KW_NIL || (token >= STRING && token <= EXP)){
         
-        if(token == LEN || token == LBR || token == INT){
+        /*if(token == LEN || token == LBR || token == INT){
             strClear(&attributeTemp);
             strAddString(&attributeTemp, "integer");
             DLL_InsertLast(&assignExpr, attributeTemp);
@@ -997,9 +1083,24 @@ void syntax_expr(){
             strClear(&attributeTemp);
             strAddString(&attributeTemp, "number");
             DLL_InsertLast(&assignExpr, attributeTemp);
-        }
+        }*/
         exprOutcome = KW_NIL;
         bottom_up();
+        if(exprOutcome == INT){
+            strClear(&attributeTemp);
+            strAddString(&attributeTemp, "integer");
+            DLL_InsertLast(&assignExpr, attributeTemp);
+        }
+        else if(exprOutcome == STRING){
+            strClear(&attributeTemp);
+            strAddString(&attributeTemp, "string");
+            DLL_InsertLast(&assignExpr, attributeTemp);
+        }
+        else if(exprOutcome == DOUBLE){
+            strClear(&attributeTemp);
+            strAddString(&attributeTemp, "number");
+            DLL_InsertLast(&assignExpr, attributeTemp);
+        }
         if(!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "integer")){
             fprintf(stdout, "POPS LF@%s\n", strGetStr(&currentVar));
         } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "number")){
@@ -1030,13 +1131,28 @@ void syntax_expr(){
             syntax_fun_call();
         }
         else if(varTableSearch(&varTable, currentVar)){
-            DLL_InsertLast(&assignExpr, varTableSearch(&varTable, currentVar)->type);
+            //DLL_InsertLast(&assignExpr, varTableSearch(&varTable, currentVar)->type);
             exprOutcome = KW_NIL;
             bottom_up();
-            exprEnd = false;
-            stack_delete(s);
-            syntax_expr2();
-        }  
+            if(exprOutcome == INT){
+                strClear(&attributeTemp);
+                strAddString(&attributeTemp, "integer");
+                DLL_InsertLast(&assignExpr, attributeTemp);
+            }
+            else if(exprOutcome == STRING){
+                strClear(&attributeTemp);
+                strAddString(&attributeTemp, "string");
+                DLL_InsertLast(&assignExpr, attributeTemp);
+            }
+            else if(exprOutcome == DOUBLE){
+                strClear(&attributeTemp);
+                strAddString(&attributeTemp, "number");
+                DLL_InsertLast(&assignExpr, attributeTemp);
+            }
+                exprEnd = false;
+                stack_delete(s);
+                syntax_expr2();
+            }  
         else errorMessage(ERR_NONDEF, "Nedefinovany vyraz nebo volani funkce");  
     }
     else errorMessage(ERR_SYNTAX, "Očekával se vyraz nebo volani funkce");  
@@ -1050,7 +1166,7 @@ void syntax_expr2(){
         token = getToken(&attribute);fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if (!((token >= STRING && token <= NEQUAL) || token == LEN)) errorMessage(ERR_SYNTAX, "Očekával se vyraz");  
         fprintf(stdout, "PUSHS int@%s\n", strGetStr(&attribute));
-        if(token == LEN || token == LBR || token == INT){
+        /*if(token == LEN || token == LBR || token == INT){
             strClear(&attributeTemp);
             strAddString(&attributeTemp, "integer");
             DLL_InsertLast(&assignExpr, attributeTemp);
@@ -1068,9 +1184,24 @@ void syntax_expr2(){
         else if(token == ID){
             if(varTableSearch(&varTable, attribute) == NULL) errorMessage(ERR_NONDEF, "Nedefinované proměná ve vyrazu");
             DLL_InsertLast(&assignExpr, varTableSearch(&varTable, currentVar)->type);            
-        }  
+        }  */
         exprOutcome = KW_NIL;
         bottom_up();
+        if(exprOutcome == INT){
+            strClear(&attributeTemp);
+            strAddString(&attributeTemp, "integer");
+            DLL_InsertLast(&assignExpr, attributeTemp);
+        }
+        else if(exprOutcome == STRING){
+            strClear(&attributeTemp);
+            strAddString(&attributeTemp, "string");
+            DLL_InsertLast(&assignExpr, attributeTemp);
+        }
+        else if(exprOutcome == DOUBLE){
+            strClear(&attributeTemp);
+            strAddString(&attributeTemp, "number");
+            DLL_InsertLast(&assignExpr, attributeTemp);
+        }
         exprEnd = false;
         stack_delete(s);
         syntax_expr2();

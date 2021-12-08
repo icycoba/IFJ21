@@ -1,9 +1,8 @@
 require "ifj21"
 function main()
-    local a : integer
-    local b : integer
-    local c : integer
-    a = 3 + 5
+    local a : integer = 2
+    local b : integer = 5
+    a =  4 + 5 - 2 + b
     
 end
 main()
