@@ -363,6 +363,20 @@ void bottom_up(){
                 else if(token == DOUBLE || token == EXP){
                     if(exprOutcome != DOUBLE) errorMessage(ERR_TYPE_CMP, "Typ nesedí4");
                 }
+                else if(token == ID){
+                    if(!strCmpConstStr(&varTableSearch(&varTable, attribute)->type, "integer")){
+                        if(exprOutcome != INT && exprOutcome != DOUBLE) errorMessage(ERR_TYPE_CMP, "Typ nesedí5");
+                    }
+                    else if(!strCmpConstStr(&varTableSearch(&varTable, attribute)->type, "string")){
+                        if(s->top - 2 >= 0 && s->arr[s->top - 2] == LEN){
+                            if(exprOutcome != INT && exprOutcome != DOUBLE) errorMessage(ERR_TYPE_CMP, "Typ nesedí6");
+                        }
+                        else if(exprOutcome != STRING) errorMessage(ERR_TYPE_CMP, "Typ nesedí7");
+                    }
+                    else if(!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type,"number")){
+                        if(exprOutcome != DOUBLE) errorMessage(ERR_TYPE_CMP, "Typ nesedí8");
+                    }
+                }  
 
             }
 
@@ -911,6 +925,9 @@ void syntax_stmt(){
             }
             exprOutcome = KW_NIL;
             bottom_up();
+            if(exprOutcome == INT){
+
+            }
             exprEnd = false;
             stack_delete(s);
             syntax_expr2();
