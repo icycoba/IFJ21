@@ -713,13 +713,7 @@ void syntax_stmt(){
         if(!syntax_type()) errorMessage(ERR_SYNTAX, "Očekával se typ");
         varTypeAdd(&varTable, currentVar, attribute);
         fprintf(stdout, "DEFVAR LF@%s\n", strGetStr(&currentVar));
-        if(!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "integer")){
-            //fprintf(stdout, "MOVE LF@%s int@\n", strGetStr(&currentVar));
-        } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "number")){
-            //fprintf(stdout, "MOVE LF@%s float@\n", strGetStr(&currentVar));
-        } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "string")){
-            //fprintf(stdout, "MOVE LF@%s string@\n", strGetStr(&currentVar));
-        } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "nil")){
+        if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "nil")){
             fprintf(stdout, "MOVE LF@%s nil@nil\n", strGetStr(&currentVar));     
         }
         syntax_var_init();
@@ -843,25 +837,6 @@ void syntax_stmt(){
     else if(token == KW_RETURN){
         token = getToken(&attribute);
         if ((token >= STRING && token <= EXP) || token == LEN || token == ID){
-            /*if(token == LEN || token == LBR || token == INT){
-            strClear(&attributeTemp);
-            strAddString(&attributeTemp, "integer");
-            DLL_InsertLast(&assignExpr, attributeTemp);
-            }
-            else if(token == STRING){
-                strClear(&attributeTemp);
-                strAddString(&attributeTemp, "string");
-                DLL_InsertLast(&assignExpr, attributeTemp);
-            }
-            else if(token == DOUBLE || token == EXP){
-                strClear(&attributeTemp);
-                strAddString(&attributeTemp, "number");
-                DLL_InsertLast(&assignExpr, attributeTemp);
-            }
-            else if(token == ID){ 
-                if(!varTableSearch(&varTable, attribute)) errorMessage(ERR_RETURN, "Nedefinovaná proměnná při return funkce");              
-                DLL_InsertLast(&assignExpr, varTableSearch(&varTable, attribute)->type);         
-            }*/
             exprOutcome = KW_NIL;
             bottom_up();
             if(exprOutcome == INT){

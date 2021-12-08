@@ -35,7 +35,8 @@ int token;
 int exprOutcome;
 bool exprEnd;
 bool skip;
-//bool mainLabel;
+
+
 string attribute;
 string attributeTemp;
 string currentFunc;

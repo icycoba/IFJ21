@@ -24,21 +24,6 @@
 #include "scanner.h"
 
 
-typedef enum{
-    T_NIL,
-    T_INT,
-    T_DOUBLE,
-    T_STRING
-} sType;
-
-/**
- *  @brief Data uzlu 
- **/
-//typedef struct varTableData {
-//    sType type;
-//    string attribute;
-//    int scope;
-//} *varTableDataPtr;
 
 /**
  *  @brief Uzel stromu
@@ -51,13 +36,6 @@ typedef struct varTableNode {
     struct varTableNode *rptr; 
 } *varTableNodePtr;
 
-//typedef struct funcTableData{
-//    //TODO seznam parametru, jejich typu
-//    //TODO -II- navratove typy
-//    bool defined;
-//    int paramCount;
-//    int returnParamCount;
-//} *funcTableDataPtr;
 
 typedef struct funcTableNode{
     string key;
@@ -106,6 +84,5 @@ void funcDeclared(funcTableNodePtr *funcTree, string key);
 //bool isFunc(varTableNodePtr *tree, funcTableNodePtr *funcTree, string key);
 
 int getType(varTableNodePtr *tree, funcTableNodePtr *funcTree, string key);
-sType typeConvertor(int state);
 void simple_print(varTableNodePtr *tree);
 void simple_print2(funcTableNodePtr *tree);

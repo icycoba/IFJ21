@@ -120,10 +120,7 @@ void replaceByRightmost(varTableNodePtr replacedPtr, varTableNodePtr *tree){
         replaceByRightmost(replacedPtr, &(*tree)->rptr);
     } else{
         
-        //string new;
-        //if(strInit(&new)) errorMessage(ERR_INTERNAL, "Chyba alokace řetězce");
-        //strCopyString(&new, &(*tree)->key);
-        //replacedPtr->key = new;
+        
         replacedPtr->scope = (*tree)->scope;
         replacedPtr->type = (*tree)->type;
         replacedPtr->key = (*tree)->key;
@@ -331,15 +328,6 @@ int getType(varTableNodePtr *tree, funcTableNodePtr *funcTree, string key){
     } else return 0;
 }
 
-sType typeConvertor(int state){
-    if (state == KW_INT) return T_INT;
-    else if (state == KW_NIL) return T_NIL;
-    else if (state == KW_STR) return T_STRING;
-    else if (state == KW_NUM) return T_DOUBLE;
-    else errorMessage(ERR_SYNTAX, "Chyba ve volani funkce typeConvertor");
-
-}
-
 void simple_print(varTableNodePtr *tree){
     if (*tree != NULL){
         simple_print(&(*tree)->lptr);
@@ -352,15 +340,7 @@ void simple_print2(funcTableNodePtr *tree){
     //funcTableNodePtr new;
     if (*tree != NULL){
         simple_print2(&(*tree)->lptr);
-        printf("[%s]  ",strGetStr(&(*tree)->key));
-        //new = funcTableSearch(tree, (*tree)->key);
-        //DLLElementPtr param = new->param.firstElement;
-        //while (param != NULL)
-        //{
-        //    printf("[%s]  ",strGetStr(&param->data));
-        //    param = param->nextElement;
-        //}
-        //printf("\n");
+        printf("[%s]  ",strGetStr(&(*tree)->key));        
         simple_print2(&(*tree)->rptr);
     }
 }
