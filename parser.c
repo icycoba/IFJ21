@@ -315,7 +315,7 @@ void bottom_up(){
     if(!exprEnd && !skip){
         token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != LEN && !(token >= STRING && token <= RBR) && token != ID && token != ZERO && token != KW_NIL && token != CONCAT)
-            exprEnd = true;
+            {exprEnd = true;fprintf(stderr, "sdfdsfdsafdsafasfsfsadfa\n");}
     }
     skip = false;
     
@@ -924,9 +924,7 @@ void syntax_init(){
 
         //TODO runtime errory
         
-        bottom_up();
-        exprEnd = false;
-        stack_delete(s);
+        
 
         if(!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "integer")){
             fprintf(stdout, "MOVE LF@%s int@%s\n", strGetStr(&currentVar), strGetStr(&attributeTemp));
