@@ -40,71 +40,58 @@ void generateProlog(){
 }
 
 void generatePredefined(){
+
+    printf("\nDEFVAR GF@$__temp__\n");
+    printf("DEFVAR GF@$__length__\n");
+    printf("DEFVAR GF@$__counter__\n");
+
     printf("\nLABEL $readi\n");
     printf("PUSHFRAME\n");
-    //printf("DEFVAR LF@ret\n");
     printf("READ LF@%%retval%%1 int\n");
     printf("POPFRAME\n");
     printf("RETURN\n");
 
     printf("LABEL $readn\n");
     printf("PUSHFRAME\n");
-    //printf("DEFVAR LF@ret\n");
     printf("READ LF@%%retval%%1 float\n");
     printf("POPFRAME\n");
     printf("RETURN\n");
 
     printf("LABEL $reads\n");
     printf("PUSHFRAME\n");
-    //printf("DEFVAR LF@ret\n");
     printf("READ LF@%%retval%%1 string\n");
     printf("POPFRAME\n");
     printf("RETURN\n");
 
-    //TODO vstupni params
     printf("LABEL $tointeger\n");
     printf("PUSHFRAME\n");
-    printf("DEFVAR LF@_\n");
-    printf("DEFVAR LF@ret\n");
-    printf("PUSHS float@%a\n", 0.0);
-    printf("PUSHS int@\n");
-    printf("POPS LF@ret\n");
-    printf("POPS LF@_\n");
+    printf("FLOAT2INT LF@%%retval%%1 LF@%%inval%%1\n");
     printf("POPFRAME\n");
     printf("RETURN\n");
 
     printf("LABEL $substr\n");
     printf("PUSHFRAME\n");
-    printf("DEFVAR LF@%%inval%%1\n");
-    printf("DEFVAR LF@%%inval%%2\n");
-    printf("DEFVAR LF@%%inval%%3\n");
-    printf("DEFVAR LF@%%retval%%1\n");
-    printf("GETCHAR LF@%%retval%%1 LF@%%inval%%1 LF@%%inval%%2\n");
-    printf("PUSHS string@\n");
-    printf("POPS LF@ret\n");
-    printf("POPS LF@2\n");
-    printf("POPS LF@1\n");
+    printf("STRLEN GF@$__length__ LF@%%inval%%1\n");
+    printf("ADD GF@$__length__ GF@$__length__ int@1\n");
+    printf("SUB GF@$__length__ GF@$__length__ LF@%%inval%%3\n");
+    printf("MOVE GF@$__counter__ LF@%%inval%%2\n");
+    printf("LABEL $substr$while$1\n");
+    printf("JUMPIFEQ $substr$while$1$end GF@$__counter__ GF@$__length__\n");
+    printf("GETCHAR GF@$__temp__ LF@%%inval%%1 GF@$__counter__\n");
+    printf("CONCAT LF@%%retval%%1 LF@%%retval%%1 GF@$__temp__\n");
+    printf("ADD GF@$__counter__ GF@$__counter__ int@1\n");
     printf("POPFRAME\n");
     printf("RETURN\n");
 
     printf("LABEL $ord\n");
     printf("PUSHFRAME\n");
-    printf("DEFVAR LF@_\n");
-    printf("DEFVAR LF@ret\n");
-    printf("CALL $tointeger\n");
-    printf("PUSHS string@\n");
-    printf("PUSHS int@\n");
-    printf("POPS LF@ret\n");
-    printf("POPS LF@_\n");
+    printf("STRI2INT LF@%%retval%%1 LF@%%inval%%1 LF@%%inval%%2\n");
     printf("POPFRAME\n");
     printf("RETURN\n");
 
     printf("LABEL $chr\n");
     printf("PUSHFRAME\n");
-    printf("DEFVAR LF@_\n");
-    printf("CALL $ord\n");
-    printf("WRITE LF@_\n");
-    printf("POPS LF@_\n");
+    printf("INT2CHAR LF@%%retval%%1 LF@%%inval%%1\n");
     printf("POPFRAME\n");
     printf("RETURN\n\n");
 
