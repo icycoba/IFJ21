@@ -222,7 +222,7 @@ void bottom_up(){
         }
     }
     else if(s->arr[stack_highest(s)]==GT || s->arr[stack_highest(s)]==GTE || s->arr[stack_highest(s)]==LT || 
-            s->arr[stack_highest(s)]==LTE || s->arr[stack_highest(s)]==EQUAL || s->arr[stack_highest(s)]==NEQUAL){
+            s->arr[stack_highest(s)]==LTE || s->arr[stack_highest(s)]==EQUAL || s->arr[stack_highest(s)]==NEQUAL){        
         if(exprEnd){
             stack_rules(s);
             skip = true;
@@ -337,13 +337,14 @@ void bottom_up(){
                     exprOutcome = DOUBLE;
                 }
                 else if(token == ID){
-                    if(strCmpConstStr(&varTableSearch(&varTable, attribute)->type, "integer")){
+                    if(!strCmpConstStr(&varTableSearch(&varTable, attribute)->type, "integer")){
                         exprOutcome = INT;
                     }
-                    else if(strCmpConstStr(&varTableSearch(&varTable, attribute)->type, "string")){
-                        exprOutcome = STRING;
+                    else if(!strCmpConstStr(&varTableSearch(&varTable, attribute)->type, "string")){
+                        if(s->top - 2 >= 0 && s->arr[s->top - 2] == LEN) exprOutcome = INT;
+                        else exprOutcome = STRING;
                     }
-                    else if(strCmpConstStr(&varTableSearch(&varTable, currentVar)->type,"number")){
+                    else if(!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type,"number")){
                         exprOutcome = DOUBLE;
                     }
                 }                
@@ -371,6 +372,8 @@ void bottom_up(){
         token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != LEN && !(token >= STRING && token <= RBR) && token != ID && token != ZERO && token != KW_NIL && token != CONCAT)
             exprEnd = true;
+        if(token == GT || token == GTE || token == LT || token == LTE || token == EQUAL || token == NEQUAL)
+            exprOutcome = KW_NIL;
     }
     skip = false;
     
