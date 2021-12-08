@@ -1,0 +1,6 @@
+./ifjtest: line 80:  7776 Segmentation fault      (core dumped) timeout -k 5s 2s "$COMPILER" < "$test"/program.tl > "$TMP_DIR"/out.IFJcode21 2> "$TMP_DIR"/compiler_stderr
+./ifjtest: line 80:  7782 Segmentation fault      (core dumped) timeout -k 5s 2s "$COMPILER" < "$test"/program.tl > "$TMP_DIR"/out.IFJcode21 2> "$TMP_DIR"/compiler_stderr
+./ifjtest: line 80:  7788 Segmentation fault      (core dumped) timeout -k 5s 2s "$COMPILER" < "$test"/program.tl > "$TMP_DIR"/out.IFJcode21 2> "$TMP_DIR"/compiler_stderr
+./ifjtest: line 80:  7810 Segmentation fault      (core dumped) timeout -k 5s 2s "$COMPILER" < "$test"/program.tl > "$TMP_DIR"/out.IFJcode21 2> "$TMP_DIR"/compiler_stderr
+./ifjtest: line 80:  7816 Segmentation fault      (core dumped) timeout -k 5s 2s "$COMPILER" < "$test"/program.tl > "$TMP_DIR"/out.IFJcode21 2> "$TMP_DIR"/compiler_stderr
+./ifjtest: line 80:  7822 Segmentation fault      (core dumped) timeout -k 5s 2s "$COMPILER" < "$test"/program.tl > "$TMP_DIR"/out.IFJcode21 2> "$TMP_DIR"/compiler_stderr

@@ -44,6 +44,7 @@ void generatePredefined(){
     printf("\nDEFVAR GF@$__temp__\n");
     printf("DEFVAR GF@$__length__\n");
     printf("DEFVAR GF@$__counter__\n");
+    printf("DEFVAR GF@$__finalValue__\n");
 
     printf("\nLABEL $readi\n");
     printf("PUSHFRAME\n");

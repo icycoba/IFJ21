@@ -1,0 +1,283 @@
+make: Entering directory '/mnt/d/imstuff/Projects/project/ProjectIFJ21'
+gcc  -o ifj21 error.o str.o list.o ilist.o codegen.o symtable.o parser.o scanner.o main.o
+make: Leaving directory '/mnt/d/imstuff/Projects/project/ProjectIFJ21'
+[0;31m✗ Ondroid 001[2m
+Recursive implementation of factorial.
+Interpreter exited with error 51:
+60.12-17: syntax error, unexpected ID
+Syntax error!
+[0m[0;31m✗ Ondroid 002[2m
+Test for valid funtion calls and returns.
+Interpreter exited with error 55:
+Error at line: 87
+Frame does not exist!
+[0m[0;32m✓ Ondroid 003[0m
+[0;32m✓ Ondroid 004[0m
+[0;31m✗ Ondroid 005[2m
+Tests basic expression parsing with + - * () operators.
+Expected output:
+59
+Output:
+43
+n[0m[0;31m✗ Ondroid 006[2m
+A program with as little whitespaces as possible.
+Interpreter exited with error 51:
+79.8-11: syntax error, unexpected ID, expecting sLF or sGF or sTF
+Syntax error!
+[0m[0;32m✓ Ondroid 007[0m
+[0;31m✗ Ondroid 008[2m
+Ifs with > operator with all combinations of ints floats.
+Compiler exited with error 139:
+timeout: the monitored command dumped core
+[0m[0;31m✗ Ondroid 009[2m
+Ifs with >= operator with all combinations of ints floats.
+Compiler exited with error 139:
+timeout: the monitored command dumped core
+[0m[0;31m✗ Ondroid 010[2m
+Ifs with == operator with all combinations of ints floats.
+Compiler exited with error 139:
+timeout: the monitored command dumped core
+[0m[0;31m✗ Ondroid 011[2m
+Basic strings, escape characters, concatenation operator ..
+Interpreter exited with error 51:
+66.11-16: syntax error, unexpected ID
+Syntax error!
+[0m[0;31m✗ Ondroid 012[2m
+Try to compare number with string. Compilation should exit with error.
+Program was supposed to fail, but with different exit code
+Expected return: 6
+Compiler return: 0
+Interpreter return: 0
+[0m[0;31m✗ Ondroid 013[2m
+Compare variables of all types to nil literal.
+Compiler exited with error 139:
+timeout: the monitored command dumped core
+[0m[0;31m✗ Ondroid 014[2m
+Compare variables of all types to a variable of nil type.
+Compiler exited with error 139:
+timeout: the monitored command dumped core
+[0m[0;31m✗ Ondroid 015[2m
+Compare unassigned variables of all types to a variable of nil type, nil literal.
+Compiler exited with error 139:
+timeout: the monitored command dumped core
+[0m[0;31m✗ Ondroid 016[2m
+Compare nil integer with nil number.
+Interpreter exited with error 56:
+Error at line: 58
+Symbol has not been initilized!
+[0m[0;31m✗ Ondroid 017[2m
+Simple while cycle with integer.
+Interpreter exited with error 51:
+58.19-22: syntax error, unexpected sLF, expecting END
+Syntax error!
+[0m[0;31m✗ Ondroid 018[2m
+Compare two integers with < operator, one of the integers is nil.
+Program was supposed to fail, but with different exit code
+Expected return: 8
+Compiler return: 0
+Interpreter return: 56
+[0m[0;31m✗ Ondroid 019[2m
+Two nested while loops.
+Interpreter exited with error 51:
+58.19-22: syntax error, unexpected sLF, expecting END
+Syntax error!
+[0m[0;31m✗ Ondroid 020[2m
+A local variable declaration inside while loop.
+Interpreter exited with error 51:
+58.19-22: syntax error, unexpected sLF, expecting END
+Syntax error!
+[0m[0;32m✓ Ondroid 021[0m
+[0;31m✗ Ondroid 022[2m
+Basic usage of # operator.
+Compiler exited with error 6:
+Nastala chyba [6]:
+Sémantická chyba typové kompatibility v aritmetických, řetězcových a relačních výrazech.
+Další informace o chybě:
+Typ nesedí7
+[0m[0;31m✗ Ondroid 023[2m
+Calculating sqrt using Newton's method.
+Compiler exited with error 5:
+Nastala chyba [5]:
+Sémantická chyba v programu.
+Další informace o chybě:
+Špatný počet návratových parametrů
+[0m[0;31m✗ Ondroid 024[2m
+Implicit return of a function (all values should be nil).
+Compiler exited with error 5:
+Nastala chyba [5]:
+Sémantická chyba v programu.
+Další informace o chybě:
+Chybí return ve funkci která má něco vracet
+[0m[0;31m✗ Rostik 001[2m
+Call function with all parameter types, return types all set to nil.
+Compiler exited with error 5:
+Nastala chyba [5]:
+Sémantická chyba v programu.
+Další informace o chybě:
+Špatný počet návratových parametrů
+[0m[0;31m✗ Rostik 002[2m
+Call function that has zero parameters with one nil argument.
+Program was supposed to fail, but with different exit code
+Expected return: 5
+Compiler return: 2
+[0m[0;31m✗ Rostik 003[2m
+Call function with one nil parameter with no arguments.
+Program was supposed to fail, but with different exit code
+Expected return: 5
+Compiler return: 0
+Interpreter return: 55
+[0m[0;31m✗ Rostik 004[2m
+Calling function with two nil parameters with one nil argument.
+Program was supposed to fail, but with different exit code
+Expected return: 5
+Compiler return: 2
+[0m[0;31m✗ Rostik 005[2m
+Calling function with one nil parameter with two nil arguments.
+Program was supposed to fail, but with different exit code
+Expected return: 5
+Compiler return: 2
+[0m[0;31m✗ Rostik 006[2m
+Call function with zero parameters with one non-nil argument.
+Program was supposed to fail, but with different exit code
+Expected return: 5
+Compiler return: 2
+[0m[0;31m✗ Rostik 007[2m
+Call function with one nil parameter with zero arguments.
+Program was supposed to fail, but with different exit code
+Expected return: 5
+Compiler return: 0
+Interpreter return: 55
+[0m[0;31m✗ Rostik 008[2m
+Call function with one non-nil parameters with zero arguments.
+Program was supposed to fail, but with different exit code
+Expected return: 5
+Compiler return: 0
+Interpreter return: 55
+[0m[0;31m✗ Rostik 009[2m
+Iterative implementation of factorial. Modified from presentation.
+Interpreter exited with error 51:
+70.19-22: syntax error, unexpected sLF, expecting END
+Syntax error!
+[0m[0;31m✗ Rostik 010[2m
+Calling a function with returns outside of main
+Interpreter exited with error 56:
+Error at line: 70
+Call stack is empty!
+[0m[0;31m✗ Rostik 011[2m
+Usage of strings and builtin functions. Modified from presentation.
+Interpreter exited with error 51:
+59.12-18: syntax error, unexpected ID
+Syntax error!
+[0m[0;32m✓ Rostik 012[0m
+[0;31m✗ Rostik 013[2m
+Calling function without returns outside main.
+Interpreter exited with error 55:
+Error at line: 55
+Frame does not exist!
+[0m[0;31m✗ Rostik 014[2m
+Function with return returning nothing.
+Compiler exited with error 5:
+Nastala chyba [5]:
+Sémantická chyba v programu.
+Další informace o chybě:
+Chybí return ve funkci která má něco vracet
+[0m[0;32m✓ Rostik 015[0m
+[0;32m✓ Rostik 016[0m
+[0;32m✓ Rostik 017[0m
+[0;32m✓ Rostik 018[0m
+[0;32m✓ Rostik 019[0m
+[0;32m✓ Rostik 020[0m
+[0;32m✓ Rostik 021[0m
+[0;31m✗ Rostik 022[2m
+Using underscore as a first char of an ID.
+Expected output:
+podtrzitko muze byt na zacatku ID
+Output:
+podtrzitko muze byt na zacatku ID
+n[0m[0;31m✗ Rostik 023[2m
+Using underscore as an identifier.
+Interpreter exited with error 56:
+Error at line: 64
+Symbol has not been initilized!
+[0m[0;32m✓ Rostik 024[0m
+[0;31m✗ Rostik 025[2m
+Testing escape sequence characters in string.
+Interpreter exited with error 51:
+Wrong escape sequence!
+[0m[0;31m✗ Rostik 026[2m
+Escape sequence testing. Taken from ifj2021 presentation.
+Interpreter exited with error 51:
+Wrong escape sequence!
+[0m[0;31m✗ Rostik 027[2m
+Extreme comments test.
+Expected output:
+you passed
+Output:
+you passed
+n[0m[0;31m✗ Rostik 028[2m
+Whitespaces everywhere.
+Interpreter exited with error 56:
+Error at line: 64
+Symbol has not been initilized!
+[0m[0;31m✗ Rostik 029[2m
+Number with all the compatible formats.
+Compiler exited with error 4:
+Nastala chyba [4]:
+Sémantická chyba v příkazu přiřazení.
+Další informace o chybě:
+Špatný typ při inicializaci
+[0m[0;32m✓ Rostik 030[0m
+[0;31m✗ Rostik 031[2m
+Function without return should return nil.
+Compiler exited with error 5:
+Nastala chyba [5]:
+Sémantická chyba v programu.
+Další informace o chybě:
+Chybí return ve funkci která má něco vracet
+[0m[0;32m✓ Rostik 032[0m
+[0;31m✗ Rostik 033[2m
+Calling function defined after  it is called.
+Compiler exited with error 5:
+[string, string]Nastala chyba [5]:
+Sémantická chyba v programu.
+Další informace o chybě:
+Špatný počet návratových parametrů
+[0m[0;32m✓ Rostik 034[0m
+[0;32m✓ Rostik 035[0m
+[0;31m✗ Rostik 036[2m
+Variable a in block cannot be used in the next one.
+Interpreter exited with error 52:
+Label already exists!
+[0m[0;32m✓ Rostik 037[0m
+[0;32m✓ Rostik 038[0m
+[0;32m✓ Rostik 039[0m
+[0;32m✓ Rostik 040[0m
+[0;31m✗ Rostik 041[2m
+Testing all possible value assignments to all the types.
+Compiler exited with error 4:
+Nastala chyba [4]:
+Sémantická chyba v příkazu přiřazení.
+Další informace o chybě:
+Špatný typ při inicializaci
+[0m[0;31m✗ Rostik 042[2m
+Assignment of all possible types from functions.
+Compiler exited with error 2:
+Nastala chyba [2]:
+Chyba v programu v rámci syntaktické analýzy.
+Další informace o chybě:
+Očekával se vyraz
+[0m[0;32m✓ Rostik 043[0m
+[0;31m✗ Rostik 044[2m
+Example from presentation.
+Compiler exited with error 2:
+Nastala chyba [2]:
+Chyba v programu v rámci syntaktické analýzy.
+Další informace o chybě:
+Očekával se vyraz
+[0m[0;31m✗ Rostik 045[2m
+Float formats corrected.
+Interpreter exited with error 56:
+Error at line: 68
+Symbol has not been initilized!
+[0m
+[0;31m✗ SOME TESTS FAILED (22/69 passed)[0m

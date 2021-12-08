@@ -855,7 +855,7 @@ void syntax_stmt(){
                     fprintf(stdout, "WRITE float@%a\n", atof(strGetStr(&attribute)));
                 } else if(token == ID){
                     if(varTableSearch(&varTable, attribute)){
-                        fprintf(stdout, "WRITE %s\n", strGetStr(&attribute));
+                        fprintf(stdout, "WRITE LF@%s\n", strGetStr(&attribute));
                     } else{
                         errorMessage(ERR_NONDEF, "Pokus o WRITE nedefinované proměnné.");
                     }
