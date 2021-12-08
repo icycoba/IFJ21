@@ -750,6 +750,7 @@ void syntax_stmt(){
         token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         syntax_stmts();
 
+        fprintf(stdout, "WHILE\n"); //prozatimně
         
         if(token != KW_END) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"end\"");
         scopeSub(&varTable);
