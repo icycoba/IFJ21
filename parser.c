@@ -239,6 +239,7 @@ void bottom_up(){
                 skip = true;
             }
             else{
+                strCopyString(&attributeTemp, &attribute);
                 stack_handle(s);
                 stack_push(s, token);
             }
@@ -753,12 +754,11 @@ void syntax_stmt(){
         fprintf(stderr, "stmt-while\n");
         //TODO - volani bottom-up analyzy která určí jestli je tu validní terminál a vyhodnotí ho
         fprintf(stdout, "LABEL $%s\n", strGetStr(&attribute));
-        strCopyString(&attributeTemp, &attribute);
         scopeAdd(&varTable);
         token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         bottom_up();
-        fprintf(stdout, "JUMPIFEQ end GF@%%%s %%%s@%%%s\n", strGetStr(&attribute), strGetStr(&currentVar), strGetStr(&attributeTemp));
-        //strCopyString(&attributeTemp, &attribute);
+
+        fprintf(stdout, "JUMPIFEQ end GF@%%%s %%%s@\n", strGetStr(&currentVar), strGetStr(&attributeTemp));
         exprEnd = false;
         stack_delete(s);
         if(token != KW_DO) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"do\"");
