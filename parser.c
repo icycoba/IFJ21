@@ -301,7 +301,8 @@ void bottom_up(){
                 skip = true;
             }
         }
-        else errorMessage(ERR_TYPE_CMP, "Chyba v kodu precedence, tady by se to ani nemelo dostat");
+        else {fprintf(stderr, "%d ",s->arr[stack_highest(s)]); 
+        errorMessage(ERR_TYPE_CMP, "Chyba v kodu precedence, tady by se to ani nemelo dostat");}
 
         fprintf(stderr, "[");
         for(int i = 0; i < s->top + 1; i++){
@@ -1140,7 +1141,7 @@ void stack_rules(Stack *s){
     if(result == -1) errorMessage(ERR_TYPE_CMP, "Ve vyrazu je chyba");
 
     if(s->top - result == 1){
-        if(s->arr[s->top] == ID || (s->arr[s->top] >= STRING && s->arr[s->top] <= EXP)){
+        if(s->arr[s->top] == ID || s->arr[s->top] == ZERO || (s->arr[s->top] >= STRING && s->arr[s->top] <= EXP)){
             s->top--; 
             s->arr[s->top] = E;
         }
