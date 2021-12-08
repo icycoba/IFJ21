@@ -66,7 +66,7 @@ void generatePredefined(){
     printf("PUSHFRAME\n");
     printf("DEFVAR LF@_\n");
     printf("DEFVAR LF@ret\n");
-    printf("PUSHS float@\n");
+    printf("PUSHS float@%a\n", 0.0);
     printf("PUSHS int@\n");
     printf("POPS LF@ret\n");
     printf("POPS LF@_\n");
@@ -75,10 +75,11 @@ void generatePredefined(){
 
     printf("LABEL $substr\n");
     printf("PUSHFRAME\n");
-    printf("DEFVAR LF@1\n");
-    printf("DEFVAR LF@2n\n");
-    printf("DEFVAR LF@ret\n");
-    printf("GETCHAR LF@ret LF@1 LF@2\n");
+    printf("DEFVAR LF@%%inval%%1\n");
+    printf("DEFVAR LF@%%inval%%2\n");
+    printf("DEFVAR LF@%%inval%%3\n");
+    printf("DEFVAR LF@%%retval%%1\n");
+    printf("GETCHAR LF@%%retval%%1 LF@%%inval%%1 LF@%%inval%%2\n");
     printf("PUSHS string@\n");
     printf("POPS LF@ret\n");
     printf("POPS LF@2\n");

@@ -142,10 +142,10 @@ int parser(){
 
 
 
-    token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    token = getToken(&attribute);
     syntax_program();
 
-    token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    token = getToken(&attribute);
     if (token != EOFILE) errorMessage(ERR_SYNTAX, "Chybí EOF");
 
     controlDefined(&funcTable);
@@ -158,12 +158,10 @@ int parser(){
     DLL_Dispose(&assignExpr);
     funcTableDispose(&funcTable);
     varTableDispose(&varTable);
-    //printf("syntakticka analyza probehla bez problemu\n");
     return SYNTAX_OK;  
 }
         
-void bottom_up(){
-    fprintf(stderr, "bottom-up\n");    
+void bottom_up(){    
     
     if(stack_highest(s) == -1){            
         if(exprEnd){
@@ -298,10 +296,9 @@ void bottom_up(){
             skip = true;
         }
     }
-    else {fprintf(stderr, "%d ",s->arr[stack_highest(s)]); 
+    else {
     errorMessage(ERR_SYNTAX, "Chyba v kodu precedence, tady by se to ani nemelo dostat");}
 
-    fprintf(stderr, "[");
     for(int i = 0; i < s->top + 1; i++){
         fprintf(stderr, "%d  ", s->arr[s->top - i]);
     }
@@ -386,7 +383,6 @@ void bottom_up(){
 
 // <program> -> <prolog> <fun_dec_def_call> EOF
 void syntax_program(){
-    //printf("program\n");
     if (token != EOFILE){
         syntax_prolog();
         token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
@@ -660,13 +656,6 @@ void syntax_fun_params2(){
 // <fun_call_params> -> ID <fun_call_params2>
 // <fun_call_params> -> epsilon
 void syntax_fun_call_params(){
-    fprintf(stderr, "fun_call_params\n");
-    
-    //simple_print2(&funcTable);
-    //printf("\n");    
-    //simple_print(&varTable);    
-    //printf("\n");
-
     token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     
     if(token == ID || (token >= STRING && token <= EXP)) {
@@ -761,11 +750,11 @@ void syntax_stmt(){
         varTypeAdd(&varTable, currentVar, attribute);
         fprintf(stdout, "DEFVAR LF@%s\n", strGetStr(&currentVar));
         if(!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "integer")){
-            fprintf(stdout, "MOVE LF@%s int@\n", strGetStr(&currentVar));
+            //fprintf(stdout, "MOVE LF@%s int@\n", strGetStr(&currentVar));
         } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "number")){
-            fprintf(stdout, "MOVE LF@%s float@\n", strGetStr(&currentVar));
+            //fprintf(stdout, "MOVE LF@%s float@\n", strGetStr(&currentVar));
         } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "string")){
-            fprintf(stdout, "MOVE LF@%s string@\n", strGetStr(&currentVar));
+            //fprintf(stdout, "MOVE LF@%s string@\n", strGetStr(&currentVar));
         } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "nil")){
             fprintf(stdout, "MOVE LF@%s nil@nil\n", strGetStr(&currentVar));     
         }
@@ -984,6 +973,12 @@ void syntax_init(){
         
         
 
+        
+        exprOutcome = KW_NIL;
+        bottom_up();
+        exprEnd = false;
+        stack_delete(s);
+
         if(!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "integer")){
             fprintf(stdout, "POPS LF@%s\n", strGetStr(&currentVar));
         } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "number")){
@@ -993,10 +988,6 @@ void syntax_init(){
         } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "nil")){
             fprintf(stdout, "POPS LF@%s\n", strGetStr(&currentVar));
         }
-        exprOutcome = KW_NIL;
-        bottom_up();
-        exprEnd = false;
-        stack_delete(s);
     }
     else if(token == ID || (token <= F_CHR && token >= F_READS)){
         //token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
@@ -1036,7 +1027,7 @@ void syntax_expr(){
     fprintf(stderr, "expr\n");
     token = getToken(&attribute);fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));   
     if(token == LEN || token == RBR || token == LBR || token == ZERO || token == KW_NIL || (token >= STRING && token <= EXP)){
-        fprintf(stdout, "PUSHS int@%s\n", strGetStr(&attribute));
+        
         if(token == LEN || token == LBR || token == INT){
             strClear(&attributeTemp);
             strAddString(&attributeTemp, "integer");
@@ -1054,7 +1045,15 @@ void syntax_expr(){
         }
         exprOutcome = KW_NIL;
         bottom_up();
-        fprintf(stdout, "MOVE LF@%s KOKOTK@%s\n", strGetStr(&currentVar), strGetStr(&attribute));
+        if(!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "integer")){
+            fprintf(stdout, "POPS LF@%s\n", strGetStr(&currentVar));
+        } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "number")){
+            fprintf(stdout, "POPS LF@%s\n", strGetStr(&currentVar));
+        } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "string")){
+            fprintf(stdout, "POPS LF@%s\n", strGetStr(&currentVar));
+        } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "nil")){
+            fprintf(stdout, "POPS LF@%s\n", strGetStr(&currentVar));
+        }
         exprEnd = false;
         stack_delete(s);
         syntax_expr2();
@@ -1162,13 +1161,11 @@ int stack_isFull(const Stack *s){
 
 // Je záspbník prázdný?
 int stack_isEmpty(const Stack *s){
-    //printf("Vidím ťa");
     return (s->top == -1);
 }
 
 // Uložení tokenu na zásobník
 void stack_push(Stack *s, int token){
-    //printf("Vidím ťa2");
     if(!stack_isFull(s)){
         s->top++;
         s->arr[s->top]=token;
@@ -1180,7 +1177,6 @@ void stack_push(Stack *s, int token){
 
 // Odstranění tokenu z vrcholu zásobníku
 void stack_pop(Stack *s){
-    fprintf(stderr, "Nevidím ťa");
     if(stack_isEmpty(s)) return;
     else s->top--;
 }
