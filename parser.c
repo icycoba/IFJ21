@@ -164,7 +164,7 @@ int parser(){
         
 void bottom_up(){
     //fprintf(stderr, "bottom-up\n");
-    int exprOutcome;
+   /* int exprOutcome;
     exprOutcome = token;
     //token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     //while((token >= STRING && token <= RBR) || token == LEN || token == ID || token == ZERO || token == KW_NIL || token == CONCAT){
@@ -299,7 +299,7 @@ void bottom_up(){
     //}
     
     printf("bottom-up-end\n");
-    bottom_up();
+    bottom_up();*/
 }
 
 //// každá syntax funkce je jeden neterminál v gramatice ////
@@ -726,6 +726,7 @@ void syntax_stmt(){
         token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         syntax_stmts();
 
+        fprintf(stdout, "WHILE\n"); //prozatimně
         
         if(token != KW_END) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"end\"");
         scopeSub(&varTable);
