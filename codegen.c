@@ -81,7 +81,16 @@ void generatePredefined(){
     printf("RETURN\n");
 
     printf("LABEL $substr\n");
-
+    printf("PUSHFRAME\n");
+    printf("DEFVAR LF@1\n");
+    printf("DEFVAR LF@2n\n");
+    printf("DEFVAR LF@ret\n");
+    printf("GETCHAR LF@ret LF@1 LF@2\n");
+    printf("PUSHS string@\n");
+    printf("POPS LF@ret\n");
+    printf("POPS LF@2\n");
+    printf("POPS LF@1\n");
+    printf("POPFRAME\n");
     printf("RETURN\n");
 
     printf("LABEL $ord\n");
