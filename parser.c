@@ -496,8 +496,7 @@ void syntax_fun_dec_def_call(){
         fprintf(stdout, "RETURN\n\n");
         scopeSub(&varTable);
 
-        if(DLL_length(&funcTableSearch(&funcTable, currentFunc)->returnParam) != 0 && funcTableSearch(&funcTable, currentFunc)->returned == false)
-            errorMessage(ERR_RETURN, "Chybí return ve funkci která má něco vracet");
+        
         
         token = getToken(&attribute);//fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         
@@ -1338,8 +1337,23 @@ void stack_rules(Stack *s){
             (s->arr[s->top - 1] == CONCAT || (s->arr[s->top - 1] >= ADD && s->arr[s->top - 1] <= NEQUAL)) &&
             (s->arr[s->top - 2]== E) )
         {
+            if(s->arr[s->top - 1] == ADD){
+                fprintf(stdout, "ADDS GF@$__finalValue__\n");
+            }
+            else if(s->arr[s->top - 1] == SUB){
+                fprintf(stdout, "SUBS GF@$__finalValue__\n");
+            }
+            else if(s->arr[s->top - 1] == MUL){
+                fprintf(stdout, "MULS GF@$__finalValue__\n");
+            }
+            else if(s->arr[s->top - 1] == DIV || s->arr[s->top - 1] == DIV_WHOLE){
+                fprintf(stdout, "DIVS GF@$__finalValue__\n");
+            }
+
             s->top -= 3;
             s->arr[s->top] = E;
+
+
         }
 
         else errorMessage(ERR_TYPE_CMP, "Pravidlo nelze");
