@@ -191,7 +191,8 @@ void bottom_up(){
                 errorMessage(ERR_TYPE_CMP, "Chyba precedence2");
 
             else if((token >= STRING && token <= EXP) || token == ZERO || token == ID){
-                exprEnd = true;printf("napis neco at vim");}
+                exprEnd = true;printf("napis neco at vim");
+            }
             else{
                 stack_rules(s);
                 skip = true;
@@ -746,19 +747,23 @@ void syntax_stmt(){
         fprintf(stderr, "stmt-while\n");
         //TODO - volani bottom-up analyzy která určí jestli je tu validní terminál a vyhodnotí ho
         fprintf(stdout, "LABEL $%s\n", strGetStr(&attribute));
+        strCopyString(&attributeTemp, &attribute);
         scopeAdd(&varTable);
         token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         bottom_up();
+        fprintf(stdout, "JUMPIFEQ end GF@%%%s %%%s@%%%s\n", strGetStr(&attribute), strGetStr(&currentVar), strGetStr(&attributeTemp));
+        //strCopyString(&attributeTemp, &attribute);
         exprEnd = false;
         stack_delete(s);
         if(token != KW_DO) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"do\"");
 
         token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         syntax_stmts();
-
-        
+        fprintf(stdout, "JUMP $while\n");
         if(token != KW_END) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"end\"");
         scopeSub(&varTable);
+
+        fprintf(stdout, "LABEL %%%s\n", strGetStr(&attribute));
 
         token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     } 
