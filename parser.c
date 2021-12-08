@@ -142,10 +142,10 @@ int parser(){
 
 
 
-    token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    token = getToken(&attribute);
     syntax_program();
 
-    token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    token = getToken(&attribute);
     if (token != EOFILE) errorMessage(ERR_SYNTAX, "Chybí EOF");
 
     controlDefined(&funcTable);
@@ -161,8 +161,7 @@ int parser(){
     return SYNTAX_OK;  
 }
         
-void bottom_up(){
-    fprintf(stderr, "bottom-up\n");    
+void bottom_up(){    
     
     if(stack_highest(s) == -1){            
         if(exprEnd){
@@ -297,10 +296,9 @@ void bottom_up(){
             skip = true;
         }
     }
-    else {fprintf(stderr, "%d ",s->arr[stack_highest(s)]); 
+    else {
     errorMessage(ERR_SYNTAX, "Chyba v kodu precedence, tady by se to ani nemelo dostat");}
 
-    fprintf(stderr, "[");
     for(int i = 0; i < s->top + 1; i++){
         fprintf(stderr, "%d  ", s->arr[s->top - i]);
     }
@@ -1134,7 +1132,6 @@ void stack_push(Stack *s, int token){
 
 // Odstranění tokenu z vrcholu zásobníku
 void stack_pop(Stack *s){
-    fprintf(stderr, "Nevidím ťa");
     if(stack_isEmpty(s)) return;
     else s->top--;
 }
