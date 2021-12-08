@@ -137,10 +137,10 @@ int parser(){
 
 
 
-    token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     syntax_program();
 
-    token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     if (token != EOFILE) errorMessage(ERR_SYNTAX, "Chybí EOF");
 
     controlDefined(&funcTable);
@@ -157,7 +157,7 @@ int parser(){
 }
         
 void bottom_up(){
-    fprintf(stderr, "bottom-up\n");
+    //fprintf(stderr, "bottom-up\n");
     int exprOutcome;
     int E = 100;
     int left = 101;
@@ -165,7 +165,7 @@ void bottom_up(){
     Stack *s;
     s = (Stack *) malloc(sizeof(Stack));
     stack_init(s);
-    token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     while((token >= STRING && token <= RBR) || token == LEN || token == ID || token == ZERO || token == KW_NIL || token == CONCAT){
         /*if(stack_isEmpty(s)){
             stack_push(s, left);
@@ -243,10 +243,10 @@ void bottom_up(){
             if((token >= STRING && token <= EXP) || token == ID) break;            
         }
         exprOutcome = token;
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     }
     stack_delete(s);
-    fprintf(stderr, "bottom-up-end\n");
+    //fprintf(stderr, "bottom-up-end\n");
 }
 
 //// každá syntax funkce je jeden neterminál v gramatice ////
@@ -256,8 +256,10 @@ void syntax_program(){
     //printf("program\n");
     if (token != EOFILE){
         syntax_prolog();
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         syntax_fun_dec_def_call();        
+    } else{
+        errorMessage(ERR_SYNTAX, "Input file je prázdný / neočekávaný EOF");
     }
 
     //TODO if token != EOFILE => SYNTAX / SEMANTICS ERROR
@@ -265,12 +267,12 @@ void syntax_program(){
 
 // <prolog> -> KW_REQUIRE "ifj21"
 void syntax_prolog(){
-    fprintf(stderr, "prolog\n");
-    fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    //fprintf(stderr, "prolog\n");
+    //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     if (token != KW_REQUIRE) errorMessage(ERR_SYNTAX, "V prologu chybí klíčové slovo require");
 
-    token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
-    if (token != STRING || strCmpConstStr(&attribute, "\"ifj21\"")) errorMessage(ERR_SYNTAX, "Klíčové slovo require musí následovat řetězec \"ifj21\"");
+    token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    if (token != STRING || strCmpConstStr(&attribute, "\"ifj21\"")) errorMessage(ERR_SEM_OTHER, "Klíčové slovo require musí následovat řetězec \"ifj21\"");
     //generateProlog();
 
     fprintf(stdout, ".IFJcode21\n");
@@ -283,9 +285,9 @@ void syntax_prolog(){
 // <fun_dec_def_call> -> <fun_call> <fun_dec_def_call>
 // <fun_dec_def_call> -> epsilon
 void syntax_fun_dec_def_call(){
-    fprintf(stderr, "fun_dec_def_call\n");
+    //fprintf(stderr, "fun_dec_def_call\n");
     if (token == KW_GLOBAL){
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != ID) errorMessage(ERR_SYNTAX /*MOZNA ERR_SYNTAX TODO nejsem si jisty jaky tady bude error -xhlins01*/, "Pokus o definici non-ID");
         //je atribut jiz declared?
         if(funcTableSearch(&funcTable, attribute)){
@@ -294,26 +296,26 @@ void syntax_fun_dec_def_call(){
             funcTableInsert(&funcTable, attribute);
         }
         strCopyString(&currentFunc, &attribute);
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != DOUBLEDOT) errorMessage(ERR_SYNTAX, "Očekával se znak : v deklaraci funkce");
 
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != KW_FUNC) errorMessage(ERR_SYNTAX, "Očekávalo se klíčové slovo function v deklaraci funkce");
 
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != LBR) errorMessage(ERR_SYNTAX, "Očekával se znak ( v deklaraci funkce");
         syntax_param_type();
 
-        //token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        //token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != RBR) errorMessage(ERR_SYNTAX, "Očekával se znak ) v deklaraci funkce");
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token == DOUBLEDOT) syntax_type_rtrn();
 
         funcDeclared(&funcTable, currentFunc);
         syntax_fun_dec_def_call();
     }
     else if (token == KW_FUNC){
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if (token != ID) errorMessage(ERR_SYNTAX, "Očekával se token ID");
         
         if (funcTableSearch(&funcTable, attribute)){
@@ -327,13 +329,13 @@ void syntax_fun_dec_def_call(){
         fprintf(stdout, "PUSHFRAME\n");
 
         // TODO sémantika
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != LBR) errorMessage(ERR_SYNTAX, "Očekával se znak (");
 
         syntax_fun_params();
         if(token != RBR) errorMessage(ERR_SYNTAX, "Očekával se znak )");
 
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token == DOUBLEDOT) syntax_type_rtrn();
        
         
@@ -351,7 +353,7 @@ void syntax_fun_dec_def_call(){
         if(DLL_length(&funcTableSearch(&funcTable, currentFunc)->returnParam) != 0 && funcTableSearch(&funcTable, currentFunc)->returned == false)
             errorMessage(ERR_RETURN, "Chybí return ve funkci která má něco vracet");
         
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         
         syntax_fun_dec_def_call();
     }
@@ -367,7 +369,7 @@ void syntax_fun_dec_def_call(){
         if(!funcTableSearch(&funcTable, attribute)) errorMessage(ERR_NONDEF, "Volání nedefinované funkce funkce");
         strCopyString(&currentVar, &attribute);
         strCopyString(&funcName, &attribute);
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         
         syntax_fun_call();
         
@@ -384,7 +386,7 @@ void syntax_fun_dec_def_call(){
 
 // <fun_call> -> ID LBR <fun_call_params> RBR
 void syntax_fun_call(){
-    fprintf(stderr, "fun_call\n");
+    //fprintf(stderr, "fun_call\n");
     //token = getToken(&attribute);
     if (token == LBR){
         
@@ -397,12 +399,12 @@ void syntax_fun_call(){
             fprintf(stdout, "DEFVAR TF@%%retval%%%d\n", i);
         }
         fprintf(stdout, "CALL $%s\n", strGetStr(&funcName));
-        //token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        //token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != RBR) errorMessage(ERR_SYNTAX, "Očekával se se znak ')'");
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
 
-        fprintf(stderr, "%d, %d",DLL_length(&currentList), DLL_length(&funcTableSearch(&funcTable, currentVar)->param ));
-        fprintf(stderr, "%s\n\n", strGetStr(&funcTableSearch(&funcTable, currentVar)->key));
+        //fprintf(stderr, "%d, %d",DLL_length(&currentList), DLL_length(&funcTableSearch(&funcTable, currentVar)->param ));
+        //fprintf(stderr, "%s\n\n", strGetStr(&funcTableSearch(&funcTable, currentVar)->key));
         if(!DLL_Compare(&currentList, &funcTableSearch(&funcTable, currentVar)->param)) errorMessage(ERR_RETURN, "Parametry se neshoduji");
         
         DLL_Dispose(&currentList);
@@ -415,8 +417,8 @@ void syntax_fun_call(){
 // <param_type> -> <type> <param_type2>
 // <param_type> -> epsilon
 void syntax_param_type(){
-    fprintf(stderr, "param_type\n");
-    token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    //fprintf(stderr, "param_type\n");
+    token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(syntax_type()){
         syntax_param_type2();
     }
@@ -426,11 +428,11 @@ void syntax_param_type(){
 // <param_type2> -> COMMA <type> <param_type2>
 // <param_type2> -> epsilon
 void syntax_param_type2(){
-    fprintf(stderr, "param_type2\n");
+    //fprintf(stderr, "param_type2\n");
     addParam(&funcTable, currentFunc, attribute);
-    token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == COMMA){
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(syntax_type()) syntax_param_type2();
         else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
     }
@@ -440,8 +442,8 @@ void syntax_param_type2(){
 // <type_rtrn> -> DOUBLEDOT <type> <type_rtrn2>
 // <type_rtrn> -> epsilon
 void syntax_type_rtrn(){
-    fprintf(stderr, "type_rtrn\n");
-    token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    //fprintf(stderr, "type_rtrn\n");
+    token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(syntax_type()) syntax_type_rtrn2();
     else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
 }
@@ -449,14 +451,14 @@ void syntax_type_rtrn(){
 // <type_rtrn2> -> COMMA <type> <type_rtrn2>
 // <type_rtrn2> -> epsilon
 void syntax_type_rtrn2(){
-    fprintf(stderr, "type_rtrn2\n");  
+    //fprintf(stderr, "type_rtrn2\n");  
 
     if(!funcTableSearch(&funcTable, currentFunc)->declared && !funcTableSearch(&funcTable, currentFunc)->defined) addReturnParam(&funcTable, currentFunc, attribute);
 
 
-    token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == COMMA){
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(syntax_type()) syntax_type_rtrn2();
         else errorMessage(ERR_SYNTAX, "Očekával se typ proměnné");
     }
@@ -465,22 +467,22 @@ void syntax_type_rtrn2(){
 // <fun_params> -> ID DOUBLEDOT <type> <fun_params2>
 // <fun_params> -> epsilon
 void syntax_fun_params(){
-    fprintf(stderr, "fun_params\n");
-    token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    //fprintf(stderr, "fun_params\n");
+    token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     strCopyString(&attributeTemp, &attribute);
     if(token == ID){
         varTableInsert(&varTable, attribute);
         strCopyString(&currentVar, &attribute);
         fprintf(stdout,"DEFVAR TF@%%%s\n",  strGetStr(&attribute));
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token == DOUBLEDOT){
-            token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+            token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
             if(syntax_type()){ 
                 varTypeAdd(&varTable, currentVar, attribute);
                 fprintf(stdout, "DEFVAR TF@%%%s\n", strGetStr(&attribute));
                 fprintf(stdout,"POPS TF@%%%s\n",  strGetStr(&attribute));
                 fprintf(stdout,"TYPE TF@%%%s TF@%%%s\n",  strGetStr(&attributeTemp), strGetStr(&attribute));
-                fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+                //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
                 if(!funcTableSearch(&funcTable, currentFunc)->declared && !funcTableSearch(&funcTable, currentFunc)->defined) addParam(&funcTable, currentFunc, attribute);
                 syntax_fun_params2();
             }
@@ -493,18 +495,18 @@ void syntax_fun_params(){
 // <fun_params2> -> COMMA ID DOUBLEDOT <type> <fun_params2>
 // <fun_params2> -> epsilon
 void syntax_fun_params2(){
-    fprintf(stderr, "fun_params2\n");
-    token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    //fprintf(stderr, "fun_params2\n");
+    token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == COMMA){
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         strCopyString(&attributeTemp, &attribute);
         if(token == ID){   
             varTableInsert(&varTable, attribute);
             strCopyString(&currentVar, &attribute);
             fprintf(stdout,"DEFVAR TF@%%%s\n",  strGetStr(&attribute));
-            token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+            token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
             if(token == DOUBLEDOT){
-                token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+                token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
                 if(syntax_type()){
                     varTypeAdd(&varTable, currentVar, attribute);
                     if(!funcTableSearch(&funcTable, currentFunc)->declared && !funcTableSearch(&funcTable, currentFunc)->defined) addParam(&funcTable, currentFunc, attribute);
@@ -526,19 +528,19 @@ void syntax_fun_params2(){
 // <fun_call_params> -> ID <fun_call_params2>
 // <fun_call_params> -> epsilon
 void syntax_fun_call_params(){
-    fprintf(stderr, "fun_call_params\n");
+    //fprintf(stderr, "fun_call_params\n");
     
     //simple_print2(&funcTable);
     //printf("\n");    
     //simple_print(&varTable);    
     //printf("\n");
 
-    token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     
     if(token == ID || (token >= STRING && token <= EXP)) {
         fprintf(stdout, "DEFVAR TF@%%%s\n", strGetStr(&attribute));
         syntax_fun_call_params2();
-        //token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        //token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         
     }
     
@@ -547,7 +549,7 @@ void syntax_fun_call_params(){
 // <fun_call_params2> -> COMMA ID <fun_call_params2>
 // <fun_call_params2> -> epsilon
 void syntax_fun_call_params2(){
-    fprintf(stderr, "fun_call_params2\n");   
+    //fprintf(stderr, "fun_call_params2\n");   
     
     if(token == ID){
         if(varTableSearch(&varTable, attribute) == NULL) errorMessage(ERR_NONDEF, "Nedefinované proměná ve volání funkce");
@@ -570,9 +572,9 @@ void syntax_fun_call_params2(){
     }    
 
 
-    token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == COMMA){
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token == ID || (token >= STRING && token <= EXP)) {
             fprintf(stdout,"DEFVAR TF%%%s\n",  strGetStr(&attribute));
             syntax_fun_call_params2();
@@ -586,8 +588,8 @@ void syntax_fun_call_params2(){
 // <stmts> -> <stmt> <stmts>
 // <stmts> -> epsilon
 void syntax_stmts(){
-    fprintf(stderr, "stmts\n");
-    //token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    //fprintf(stderr, "stmts\n");
+    //token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == KW_LOCAL || token == ID || token == KW_IF || token == KW_WHILE || token == KW_RETURN || (token < UNKNOWN && token > KW_WHILE)) {
         syntax_stmt(); 
         //token = getToken(&attribute);
@@ -602,10 +604,10 @@ void syntax_stmts(){
 // <stmt> -> <fun_call>
 // <stmt> -> KW_RETURN  expression  <expr2>
 void syntax_stmt(){
-    fprintf(stderr, "stmt\n");
+    //fprintf(stderr, "stmt\n");
     if(token == KW_LOCAL){
-        fprintf(stderr, "stmt-local\n");
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        //fprintf(stderr, "stmt-local\n");
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != ID) errorMessage(ERR_SYNTAX, "Očekával se token ID");
         
         if(varTableSearch(&varTable, attribute)){ 
@@ -618,10 +620,10 @@ void syntax_stmt(){
 
         //generateVar(&attribute);
 
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != DOUBLEDOT) errorMessage(ERR_SYNTAX, "Očekával se znak :");
 
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(!syntax_type()) errorMessage(ERR_SYNTAX, "Očekával se typ");
         varTypeAdd(&varTable, currentVar, attribute);
         fprintf(stdout, "DEFVAR LF@%s\n", strGetStr(&currentVar));
@@ -637,13 +639,13 @@ void syntax_stmt(){
         syntax_var_init();
     }     
     else if(token == KW_IF){
-        fprintf(stderr, "stmt-if\n");
+        //fprintf(stderr, "stmt-if\n");
         //TODO - volani bottom-up analyzy která určí jestli je tu validní terminál a vyhodnotí ho
         scopeAdd(&varTable);
         bottom_up();
         if(token != KW_THEN) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"then\"");
 
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         
 
         syntax_stmts();
@@ -655,41 +657,41 @@ void syntax_stmt(){
         if(token != KW_END) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"end\"");
         scopeSub(&varTable);
 
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     }     
     else if(token == KW_WHILE){
-        fprintf(stderr, "stmt-while\n");
+        //fprintf(stderr, "stmt-while\n");
         //TODO - volani bottom-up analyzy která určí jestli je tu validní terminál a vyhodnotí ho
         scopeAdd(&varTable);
         bottom_up();
         
         if(token != KW_DO) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"do\"");
 
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         syntax_stmts();
 
         
         if(token != KW_END) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"end\"");
         scopeSub(&varTable);
 
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     } 
     else if(token == ID || (token <= F_CHR && token >= F_READS)){
-        fprintf(stderr, "stmt-id-or-fun\n");
+        //fprintf(stderr, "stmt-id-or-fun\n");
         strCopyString(&attributeTemp, &attribute);
 
         strCopyString(&currentVar, &attribute);
-        //token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        //token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token == F_WRITE){  
 
-            token = getToken(&attribute); fprintf(stderr,"%-15s |%s\n", printState(token), strGetStr(&attribute));
+            token = getToken(&attribute); //fprintf(stderr,"%-15s |%s\n", printState(token), strGetStr(&attribute));
             if(token != LBR) errorMessage(ERR_SYNTAX, "Očekával se znak '('");
-            token = getToken(&attribute); fprintf(stderr,"%-15s |%s\n", printState(token), strGetStr(&attribute));
+            token = getToken(&attribute); //fprintf(stderr,"%-15s |%s\n", printState(token), strGetStr(&attribute));
             while((token >= STRING && token <= EXP) || token == ID){
-                token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+                token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
                 if(token == RBR) break;
                 else if (token != COMMA) errorMessage(ERR_SYNTAX, "Očekával se znak ,");
-                token = getToken(&attribute);  fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+                token = getToken(&attribute);  //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
                 if(!(token == ID || (token >= STRING && token <= EXP))) errorMessage(ERR_SYNTAX, "Očekával se ID, int, string nebo number");
             }
             if(token != RBR) errorMessage(ERR_SYNTAX, "Očekával se znak ')'");
@@ -697,7 +699,7 @@ void syntax_stmt(){
         }
         else if(funcTableSearch(&funcTable, currentVar)){
             strCopyString(&funcName, &attribute);
-            token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+            token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
             syntax_fun_call();
         }
         else if(varTableSearch(&varTable, currentVar)){
@@ -712,7 +714,7 @@ void syntax_stmt(){
             syntax_expr();
 
             if(assignExpr.firstElement != NULL){
-                fprintf(stderr, "%d, %d",DLL_length(&currentList), DLL_length(&assignExpr));
+                //fprintf(stderr, "%d, %d",DLL_length(&currentList), DLL_length(&assignExpr));
                 if(!DLL_Compare(&assignExpr, &currentList)) errorMessage(ERR_ASSIGN, "Prava a leva strana nema stejne typy nebo pocet parametru");
                 DLL_Dispose(&assignExpr);
                 DLL_Init(&assignExpr);
@@ -726,8 +728,8 @@ void syntax_stmt(){
         else errorMessage(ERR_NONDEF, "Nedefinovana proměnná nebo funkce");
     } 
     else if(token == KW_RETURN){
-        fprintf(stderr, "stmt-return\n");
-        token = getToken(&attribute);fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        //fprintf(stderr, "stmt-return\n");
+        token = getToken(&attribute);//fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if ((token >= STRING && token <= EXP) || token == LEN || token == ID){
             if(token == LEN || token == LBR || token == INT){
             strClear(&attribute);
@@ -768,8 +770,8 @@ void syntax_stmt(){
 // <else> -> else <stmts>
 // <else> -> epsilon
 void syntax_else(){
-    fprintf(stderr, "else\n");
-    token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    //fprintf(stderr, "else\n");
+    token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token != KW_END) {
         syntax_stmts();
     }
@@ -779,10 +781,10 @@ void syntax_else(){
 // <var_init> -> ASSIGN <init>
 // <var_init> -> epsilon
 void syntax_var_init(){
-    fprintf(stderr, "var_init\n");
-    token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    //fprintf(stderr, "var_init\n");
+    token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == ASSIGN){
-        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         syntax_init();
     }
 }
@@ -790,7 +792,7 @@ void syntax_var_init(){
 // <init> -> expression
 // <init> -> <fun_call>
 void syntax_init(){
-    fprintf(stderr, "init\n");
+    //fprintf(stderr, "init\n");
     if(token == LEN || token == LBR || token == ZERO || token == KW_NIL || (token >= STRING && token <= EXP)){
         if(token == LEN || token == LBR || token == INT){
             strClear(&attribute);
@@ -818,11 +820,10 @@ void syntax_init(){
         } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "nil")){
             fprintf(stdout, "MOVE LF@%s nil@nil\n", strGetStr(&currentVar));
         }
-        //fprintf(stdout, "MOVE LF@%s borec@%s\n", strGetStr(&currentVar), strGetStr(&attribute)); //TODO borec -> zjisteni typu attributu
         bottom_up();
     }
     else if(token == ID || (token <= F_CHR && token >= F_READS)){
-        //token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        //token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(funcTableSearch(&funcTable, attribute)){
             if(DLL_length(&funcTableSearch(&funcTable, attribute)->returnParam) != 1) errorMessage(ERR_ASSIGN, "Funkce vraci spatny pocet parametru");
 
@@ -832,11 +833,10 @@ void syntax_init(){
 
             strCopyString(&currentVar, &attribute);
             strCopyString(&funcName, &attribute);
-            token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+            token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
             syntax_fun_call();
-            if(DLL_length(&funcTableSearch(&funcTable, currentFunc)->returnParam) > 0)
-                    fprintf(stdout, "MOVE LF@%s LF@%%retval%%1\n", strGetStr(&currentVar));
-            //TODOprintf("MOVE LF@%s LF")
+            if(DLL_length(&funcTableSearch(&funcTable, funcName)->returnParam) > 0)
+                fprintf(stdout, "MOVE LF@%s LF@%%retval%%1\n", strGetStr(&currentVar));
         }
         else if(varTableSearch(&varTable, attribute)){
             if(strCmpString(&varTableSearch(&varTable, currentVar)->type, &varTableSearch(&varTable, attribute)->type))
@@ -854,8 +854,8 @@ void syntax_init(){
  // <expr> -> <fun_call> 
  // <expr> -> expression <expr2>
 void syntax_expr(){
-    fprintf(stderr, "expr\n");
-    token = getToken(&attribute);fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));   
+    //fprintf(stderr, "expr\n");
+    token = getToken(&attribute);//fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));   
     if(token == LEN || token == RBR || token == LBR || token == ZERO || token == KW_NIL || (token >= STRING && token <= EXP)){
         if(token == LEN || token == LBR || token == INT){
             strClear(&attribute);
@@ -876,7 +876,7 @@ void syntax_expr(){
         syntax_expr2();
     }
     else if(token == ID || (token <= F_CHR && token >= F_READS)){
-        //token = getToken(&attribute);fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        //token = getToken(&attribute);//fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         strCopyString(&currentVar, &attribute);
         if(funcTableSearch(&funcTable, currentVar)){
             
@@ -888,7 +888,7 @@ void syntax_expr(){
 
             strCopyString(&funcName, &attribute);
 
-            token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+            token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
             syntax_fun_call();
         }
         else if(varTableSearch(&varTable, currentVar)){
@@ -904,9 +904,9 @@ void syntax_expr(){
 // <expr2> -> COMMA expression <expr2>
 // <expr2> -> epsilon
 void syntax_expr2(){
-    fprintf(stderr, "expr2\n");    
+    //fprintf(stderr, "expr2\n");    
     if(token == COMMA){
-        token = getToken(&attribute);fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        token = getToken(&attribute);//fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if (!((token >= STRING && token <= NEQUAL) || token == LEN)) errorMessage(ERR_SYNTAX, "Očekával se vyraz");  
         if(token == LEN || token == LBR || token == INT){
             strClear(&attribute);
@@ -936,7 +936,7 @@ void syntax_expr2(){
 // <type> -> KW_INT
 // <type> -> KW_NUM
 bool syntax_type(){
-    fprintf(stderr, "type\n");
+    //fprintf(stderr, "type\n");
     if(token == KW_STR || token == KW_INT || token == KW_NUM || token == KW_NIL) return true;
     else return false;
 }
@@ -944,15 +944,15 @@ bool syntax_type(){
 // <ID_next> -> COMMA ID <ID_next>
 // <ID_next> -> epsilon
 void syntax_ID_next(){
-    fprintf(stderr, "ID_next\n");
+    //fprintf(stderr, "ID_next\n");
 
-    token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token != ID) errorMessage(ERR_SYNTAX, "Očekávalo se ID");
     
     if(!varTableSearch(&varTable, attribute)) errorMessage(ERR_NONDEF, "Nedefinovana promenna v assign");
     DLL_InsertLast(&currentList, varTableSearch(&varTable, attribute)->type);
 
-    token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+    token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     if(token == COMMA) syntax_ID_next();
 }
 
@@ -989,7 +989,7 @@ void stack_push(Stack *s, int token){
 
 // Odstranění tokenu z vrcholu zásobníku
 void stack_pop(Stack *s){
-    fprintf(stderr, "Nevidím ťa");
+    //fprintf(stderr, "Nevidím ťa");
     if(stack_isEmpty(s)) return;
     else s->top--;
 }
