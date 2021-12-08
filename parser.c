@@ -20,7 +20,7 @@
  * @brief  Funkce, která obstarává chod syntaktické a sémantiské analýzy
 */
 bool mainLabel = false;
-bool skip;
+
 
 int parser(){
     varTableInit(&varTable);
@@ -163,173 +163,162 @@ int parser(){
 }
         
 void bottom_up(){
-    fprintf(stderr, "bottom-up\n");
-    int exprOutcome;
-    exprOutcome = token;
-    //token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
-    //while((token >= STRING && token <= RBR) || token == LEN || token == ID || token == ZERO || token == KW_NIL || token == CONCAT){
-        if(stack_highest(s) == -1){            
-            if(exprEnd){
-                fprintf(stderr, "vyraz zpracovan uspesne\n");
-                return;
-            }
-            else if(token == RBR)
-                errorMessage(ERR_TYPE_CMP, "Chyba precedence1");
-            else{
-                stack_handle(s);
-                stack_push(s, token);
-            }
+    fprintf(stderr, "bottom-up\n");    
+    
+    if(stack_highest(s) == -1){            
+        if(exprEnd){
+            fprintf(stderr, "vyraz zpracovan uspesne\n");
+            return;
         }
-        else if(s->arr[stack_highest(s)] == ID || 
-                (s->arr[stack_highest(s)] >= STRING && s->arr[stack_highest(s)] <= EXP) ||  
-                s->arr[stack_highest(s)] == ZERO){
-            if(exprEnd){
-                stack_rules(s);
-                skip = true;
-            }
-            else if(token == LBR || token == LEN)
-                errorMessage(ERR_TYPE_CMP, "Chyba precedence2");
+        else if(token == RBR)
+            errorMessage(ERR_SYNTAX, "Chyba precedence1");
+        else{
+            stack_handle(s);
+            stack_push(s, token);
+        }
+    }
+    else if(s->arr[stack_highest(s)] == ID || 
+            (s->arr[stack_highest(s)] >= STRING && s->arr[stack_highest(s)] <= EXP) ||  
+            s->arr[stack_highest(s)] == ZERO || s->arr[stack_highest(s)] == KW_NIL){            
+        if(exprEnd){
+            stack_rules(s);
+            skip = true;
+        }
+        else if(token == LBR || token == LEN || (token >= STRING && token <= EXP) || token == ZERO || token == KW_NIL)
+            errorMessage(ERR_SYNTAX, "Chyba precedence2");
 
-            else if((token >= STRING && token <= EXP) || token == ZERO || token == ID){
-                exprEnd = true;fprintf(stderr, "napis neco at vim");
-            }
-            else{
-                stack_rules(s);
-                skip = true;
-            }            
+        else if(token == ID)
+            exprEnd = true;
+        else{
+            stack_rules(s);
+            skip = true;
+        }            
+    }
+    else if(s->arr[stack_highest(s)] == RBR){
+        if(exprEnd){
+            stack_rules(s);
+            skip = true;
         }
-        else if(s->arr[stack_highest(s)] == RBR){
-            if(exprEnd){
-                stack_rules(s);
-                skip = true;
-            }
-            else if(token == LEN || token == LBR)
-                errorMessage(ERR_TYPE_CMP, "Chyba precedence3");
-            else if((token >= STRING && token <= EXP) || token == ZERO || token == ID)
-                exprEnd = true;
-            else{
-                stack_rules(s);
-                skip = true;
-            }
-            
+        else if(token == LEN || token == LBR || (token >= STRING && token <= EXP) || token == KW_NIL || token == ZERO)
+            errorMessage(ERR_SYNTAX, "Chyba precedence3");
+        else if(token == ID)
+            exprEnd = true;
+        else{
+            stack_rules(s);
+            skip = true;
         }
-        else if(s->arr[stack_highest(s)]==LBR){
-            if(exprEnd)
-                errorMessage(ERR_TYPE_CMP, "Chyba precedence4");
-            else if(token == RBR){
-                if(s->arr[s->top - 1] == LBR && s->arr[s->top] == E){
-                    s->top -= 2;
-                    s->arr[s->top] = E;
-                }
-            }
-            else{
-                stack_handle(s);
-                stack_push(s, token);
-            }
-        }
-        else if(s->arr[stack_highest(s)]==GT || s->arr[stack_highest(s)]==GTE || s->arr[stack_highest(s)]==LT || 
-                s->arr[stack_highest(s)]==LTE || s->arr[stack_highest(s)]==EQUAL || s->arr[stack_highest(s)]==NEQUAL){
-            if(exprEnd){
-                stack_rules(s);
-                skip = true;
-            }
-            else if(token == GT || token == GTE || token == LT || token == LTE 
-                || token == EQUAL || token == NEQUAL || token == RBR || exprEnd){
-                stack_rules(s);
-                skip = true;
-            }
-            else{
-                strCopyString(&attributeTemp, &attribute);
-                stack_handle(s);
-                stack_push(s, token);
-            }
-        }
-        else if(s->arr[stack_highest(s)] == CONCAT){
-            if(exprEnd){
-                stack_rules(s);
-                skip = true;
-            }
-            else if(token == GT || token == GTE || token == LT || token == LTE || token == EQUAL || token == NEQUAL || token == RBR || exprEnd){
-                stack_rules(s);
-                skip = true;
-            }
-            else{
-                stack_handle(s);
-                stack_push(s, token);
-            }
-        }
-        else if(s->arr[stack_highest(s)] == ADD || s->arr[stack_highest(s)] == SUB){
-            if(exprEnd){
-                stack_rules(s);
-                skip = true;
-            }
-            else if(token == ADD || token == SUB || token == CONCAT || token == RBR || token == GT ||
-                token == GTE || token == LT || token == LTE || token == EQUAL || token == NEQUAL || exprEnd){
-                
-                stack_rules(s);
-                skip = true;
-            }
-            else{
-                stack_handle(s);
-                stack_push(s, token);
-            }
-        }
-        else if(s->arr[stack_highest(s)] == MUL || s->arr[stack_highest(s)] == DIV || s->arr[stack_highest(s)] == DIV_WHOLE){
-            if(exprEnd){
-                stack_rules(s);
-                skip = true;
-            }
-            else if(token == LEN || token == LBR || token == ID || (token >= STRING && token <= EXP) || token == ZERO){
-                stack_handle(s);
-                stack_push(s, token);
-            }
-            else{
-                stack_rules(s);
-                skip = true;
-            }
-        }
-        else if(s->arr[stack_highest(s)] == LEN){
-            if(exprEnd){
-                stack_rules(s);
-                skip = true;
-            }
-            else if(token == LBR || token == ID || (token >= STRING && token <= EXP) || token == ZERO){
-                stack_handle(s);
-                stack_push(s, token);
-            }
-            else if(token == LEN)
-                errorMessage(ERR_TYPE_CMP, "Chyba precedence5");
-            else{
-                stack_rules(s);
-                skip = true;
-            }
-        }
-        else {fprintf(stderr, "%d ",s->arr[stack_highest(s)]); 
-        errorMessage(ERR_TYPE_CMP, "Chyba v kodu precedence, tady by se to ani nemelo dostat");}
-
-        fprintf(stderr, "[");
-        for(int i = 0; i < s->top + 1; i++){
-            fprintf(stderr, "%d  ", s->arr[s->top - i]);
-        }
-        fprintf(stderr, " start]\n");
         
-
-        //if((exprOutcome >= STRING && exprOutcome <= EXP) || exprOutcome == ID){
-        //    if((token >= STRING && token <= EXP) || token == ID) break;            
-        //}
-        //exprOutcome = token;
-        if(!exprEnd && !skip){
-            if(token >= STRING && token <= ID){
-                fprintf(stdout, "%-15s |%s\n", printState(token), strGetStr(&attribute));
-                fprintf(stdout, "PUSHS string@test\n");
+    }
+    else if(s->arr[stack_highest(s)]==LBR){
+        if(exprEnd)
+            errorMessage(ERR_SYNTAX, "Chyba precedence4");
+        else if(token == RBR){
+            if(s->arr[s->top - 1] == LBR && s->arr[s->top] == E){
+                s->top -= 2;
+                s->arr[s->top] = E;
             }
-            token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
-            
-            if(token != LEN && !(token >= STRING && token <= RBR) && token != ID && token != ZERO && token != KW_NIL && token != CONCAT)
-                exprEnd = true;
         }
-        skip = false;
+        else{
+            stack_handle(s);
+            stack_push(s, token);
+        }
+    }
+    else if(s->arr[stack_highest(s)]==GT || s->arr[stack_highest(s)]==GTE || s->arr[stack_highest(s)]==LT || 
+            s->arr[stack_highest(s)]==LTE || s->arr[stack_highest(s)]==EQUAL || s->arr[stack_highest(s)]==NEQUAL){
+        if(exprEnd){
+            stack_rules(s);
+            skip = true;
+        }
+        else if(token == GT || token == GTE || token == LT || token == LTE 
+            || token == EQUAL || token == NEQUAL || token == RBR || exprEnd){
+            stack_rules(s);
+            skip = true;
+        }
+        else{
+            stack_handle(s);
+            stack_push(s, token);
+        }
+    }
+    else if(s->arr[stack_highest(s)] == CONCAT){
+        if(exprEnd){
+            stack_rules(s);
+            skip = true;
+        }
+        else if(token == GT || token == GTE || token == LT || token == LTE || token == EQUAL || token == NEQUAL || token == RBR || exprEnd){
+            stack_rules(s);
+            skip = true;
+        }
+        else{
+            stack_handle(s);
+            stack_push(s, token);
+        }
+    }
+    else if(s->arr[stack_highest(s)] == ADD || s->arr[stack_highest(s)] == SUB){
+        if(exprEnd){
+            stack_rules(s);
+            skip = true;
+        }
+        else if(token == ADD || token == SUB || token == CONCAT || token == RBR || token == GT ||
+            token == GTE || token == LT || token == LTE || token == EQUAL || token == NEQUAL || exprEnd){
+            stack_rules(s);
+            skip = true;
+        }
+        else{
+            stack_handle(s);
+            stack_push(s, token);
+        }
+    }
+    else if(s->arr[stack_highest(s)] == MUL || s->arr[stack_highest(s)] == DIV || s->arr[stack_highest(s)] == DIV_WHOLE){
+        if(exprEnd){
+            stack_rules(s);
+            skip = true;
+        }
+        else if(token == LEN || token == LBR || token == ID || (token >= STRING && token <= EXP) || token == ZERO || token == KW_NIL){
+            stack_handle(s);
+            stack_push(s, token);
+        }
+        else{
+            stack_rules(s);
+            skip = true;
+        }
+    }
+    else if(s->arr[stack_highest(s)] == LEN){
+        if(exprEnd){
+            stack_rules(s);
+            skip = true;
+        }
+        else if(token == LBR || token == ID || (token >= STRING && token <= EXP) || token == ZERO || token == KW_NIL){
+            stack_handle(s);
+            stack_push(s, token);
+        }
+        else if(token == LEN)
+            errorMessage(ERR_SYNTAX, "Chyba precedence5");
+        else{
+            stack_rules(s);
+            skip = true;
+        }
+    }
+    else {fprintf(stderr, "%d ",s->arr[stack_highest(s)]); 
+    errorMessage(ERR_SYNTAX, "Chyba v kodu precedence, tady by se to ani nemelo dostat");}
+
+    fprintf(stderr, "[");
+    for(int i = 0; i < s->top + 1; i++){
+        fprintf(stderr, "%d  ", s->arr[s->top - i]);
+    }
+    fprintf(stderr, " start]\n");
+    
+
+    //if((exprOutcome >= STRING && exprOutcome <= EXP) || exprOutcome == ID){
+    //    if((token >= STRING && token <= EXP) || token == ID) break;            
     //}
+    //exprOutcome = token;
+    if(!exprEnd && !skip){
+        token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        if(token != LEN && !(token >= STRING && token <= RBR) && token != ID && token != ZERO && token != KW_NIL && token != CONCAT)
+            exprEnd = true;
+    }
+    skip = false;
+    
     
     fprintf(stderr, "bottom-up-end\n");
     bottom_up();
@@ -358,7 +347,7 @@ void syntax_prolog(){
     if (token != KW_REQUIRE) errorMessage(ERR_SYNTAX, "V prologu chybí klíčové slovo require");
 
     token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
-    if (token != STRING || strCmpConstStr(&attribute, "\"ifj21\"")) errorMessage(ERR_SEM_OTHER, "Klíčové slovo require musí následovat řetězec \"ifj21\"");
+    if (token != STRING || strCmpConstStr(&attribute, "ifj21")) errorMessage(ERR_SEM_OTHER, "Klíčové slovo require musí následovat řetězec \"ifj21\"");
     //generateProlog();
 
     fprintf(stdout, ".IFJcode21\n");
@@ -694,6 +683,7 @@ void syntax_stmt(){
         fprintf(stderr, "stmt-local\n");
         token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != ID) errorMessage(ERR_SYNTAX, "Očekával se token ID");
+        if(funcTableSearch(&funcTable, attribute)) errorMessage(ERR_NONDEF, "Toto jmeno uz ma nejaka funkce");
         
         if(varTableSearch(&varTable, attribute)){ 
             if(varTableSearch(&varTable, attribute)->scope == 0) errorMessage(ERR_NONDEF, "Pokus o redeklaraci proměnné");
@@ -730,6 +720,7 @@ void syntax_stmt(){
 
         fprintf(stdout, "LABEL $%s\n", strGetStr(&attribute));
         token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        exprOutcome = KW_NIL;
         bottom_up();
         exprEnd = false;
         stack_delete(s);
@@ -752,9 +743,10 @@ void syntax_stmt(){
     else if(token == KW_WHILE){
         fprintf(stderr, "stmt-while\n");
         //TODO - volani bottom-up analyzy která určí jestli je tu validní terminál a vyhodnotí ho
-        fprintf(stdout, "LABEL $%s\n", strGetStr(&attribute));
+        fprintf(stdout, "LABEL $%s", strGetStr(&attribute));
         scopeAdd(&varTable);
         token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+        exprOutcome = KW_NIL;
         bottom_up();
 
         fprintf(stdout, "JUMPIFEQ end LF@%%%s %%%s\n", strGetStr(&currentVar), strGetStr(&attributeTemp));
@@ -783,12 +775,33 @@ void syntax_stmt(){
             token = getToken(&attribute); fprintf(stderr,"%-15s |%s\n", printState(token), strGetStr(&attribute));
             if(token != LBR) errorMessage(ERR_SYNTAX, "Očekával se znak '('");
             token = getToken(&attribute); fprintf(stderr,"%-15s |%s\n", printState(token), strGetStr(&attribute));
-            while((token >= STRING && token <= EXP) || token == ID){
+            
+            while((token >= STRING && token <= EXP) || token == ID || token == KW_NIL){
+                if(token == ID){
+                    if(varTableSearch(&varTable, attribute) == NULL)
+                        errorMessage(ERR_NONDEF, "Nedefinovana promenna ve funkci write");
+                }         
+            
+                
+                if(token == STRING){
+                    fprintf(stdout, "WRITE string@%s\n", strGetStr(&attribute));
+                } else if(token == INT){
+                    fprintf(stdout, "WRITE int@%s\n", strGetStr(&attribute));
+                } else if(token == DOUBLE || token == EXP){
+                    fprintf(stdout, "WRITE float@%a\n", atof(strGetStr(&attribute)));
+                } else if(token == ID){
+                    if(varTableSearch(&varTable, attribute)){
+                        fprintf(stdout, "WRITE %s\n", strGetStr(&attribute));
+                    } else{
+                        errorMessage(ERR_NONDEF, "Pokus o WRITE nedefinované proměnné.");
+                    }
+                }
                 token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
                 if(token == RBR) break;
                 else if (token != COMMA) errorMessage(ERR_SYNTAX, "Očekával se znak ,");
+                
                 token = getToken(&attribute);  fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
-                if(!(token == ID || (token >= STRING && token <= EXP))) errorMessage(ERR_SYNTAX, "Očekával se ID, int, string nebo number");
+                if(!(token == ID || (token >= STRING && token <= EXP)|| token == KW_NIL)) errorMessage(ERR_SYNTAX, "Očekával se ID, int, string nebo number");
             }
             if(token != RBR) errorMessage(ERR_SYNTAX, "Očekával se znak ')'");
             token = getToken(&attribute);
@@ -846,6 +859,7 @@ void syntax_stmt(){
                 if(!varTableSearch(&varTable, attribute)) errorMessage(ERR_RETURN, "Nedefinovaná proměnná při return funkce");              
                 DLL_InsertLast(&assignExpr, varTableSearch(&varTable, attribute)->type);         
             }
+            exprOutcome = KW_NIL;
             bottom_up();
             exprEnd = false;
             stack_delete(s);
@@ -923,6 +937,10 @@ void syntax_init(){
         } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "nil")){
             fprintf(stdout, "MOVE LF@%s nil@nil\n", strGetStr(&currentVar));
         }
+        exprOutcome = KW_NIL;
+        bottom_up();
+        exprEnd = false;
+        stack_delete(s);
     }
     else if(token == ID || (token <= F_CHR && token >= F_READS)){
         //token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
@@ -944,6 +962,7 @@ void syntax_init(){
             if(strCmpString(&varTableSearch(&varTable, currentVar)->type, &varTableSearch(&varTable, attribute)->type))
                 errorMessage(ERR_ASSIGN, "Promenna ma spatny typ pri inicializaci funkce");
             fprintf(stdout, "MOVE LF@%s kakao%s\n", strGetStr(&currentVar), strGetStr(&attribute)); //TODO kakao -> zjisteni typu attributu
+            exprOutcome = KW_NIL;
             bottom_up();
             exprEnd = false;
             stack_delete(s);
@@ -977,6 +996,7 @@ void syntax_expr(){
             strAddString(&attributeTemp, "number");
             DLL_InsertLast(&assignExpr, attributeTemp);
         }
+        exprOutcome = KW_NIL;
         bottom_up();
         fprintf(stdout, "MOVE LF@%s KOKOTK@%s\n", strGetStr(&currentVar), strGetStr(&attribute));
         exprEnd = false;
@@ -1001,6 +1021,7 @@ void syntax_expr(){
         }
         else if(varTableSearch(&varTable, currentVar)){
             DLL_InsertLast(&assignExpr, varTableSearch(&varTable, currentVar)->type);
+            exprOutcome = KW_NIL;
             bottom_up();
             exprEnd = false;
             stack_delete(s);
@@ -1037,8 +1058,8 @@ void syntax_expr2(){
         else if(token == ID){
             if(varTableSearch(&varTable, attribute) == NULL) errorMessage(ERR_NONDEF, "Nedefinované proměná ve vyrazu");
             DLL_InsertLast(&assignExpr, varTableSearch(&varTable, currentVar)->type);            
-        }
-        
+        }  
+        exprOutcome = KW_NIL;
         bottom_up();
         exprEnd = false;
         stack_delete(s);
@@ -1157,7 +1178,7 @@ void stack_rules(Stack *s){
     if(result == -1) errorMessage(ERR_TYPE_CMP, "Ve vyrazu je chyba");
 
     if(s->top - result == 1){
-        if(s->arr[s->top] == ID || s->arr[s->top] == ZERO || (s->arr[s->top] >= STRING && s->arr[s->top] <= EXP)){
+        if(s->arr[s->top] == ID || s->arr[s->top] == ZERO || s->arr[s->top] == KW_NIL || (s->arr[s->top] >= STRING && s->arr[s->top] <= EXP)){
             s->top--; 
             s->arr[s->top] = E;
         }

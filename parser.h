@@ -32,7 +32,9 @@
 #define HANDLE 101
 
 int token;
+int exprOutcome;
 bool exprEnd;
+bool skip;
 //bool mainLabel;
 string attribute;
 string attributeTemp;

@@ -34,9 +34,9 @@ int getToken(string *attribute){
                 col++;
                 if (isspace(c))                 {state = S_START; col--; if (c == '\n') {line++; col = 0;}}
                 else if (c == '.')              {state = S_DOT;}
-                else if (c == '\"')             {state = S_STRSTART; strAddChar(attribute, c);}
+                else if (c == '\"')             {state = S_STRSTART;}
                 else if (c >= '1' && c <= '9')  {state = S_INT; strAddChar(attribute, c);}
-                else if (c == '0')              {state = S_ZERO;}
+                else if (c == '0')              {state = S_ZERO; strAddChar(attribute, c);}
                 else if (c == '-')              {state = S_SUB;}
                 else if (c == '/')              {state = S_DIV;}
                 else if (c == '>')              {state = S_GT;}
@@ -67,8 +67,10 @@ int getToken(string *attribute){
             case S_STRSTART:
                 col++;
                 if (c == '\\')                  {state = S_STR1; strAddChar(attribute, c);}
-                else if (c > 31 && c != '\"')   {state = S_STRSTART; strAddChar(attribute, c);}
-                else if (c == '\"')             {state = STRING; strAddChar(attribute, c); return STRING;}
+                else if (c > 31 && c != '\"')   {state = S_STRSTART;
+                                                    if(c == 32) {strAddChar(attribute, '\\'); strAddChar(attribute, '0'); strAddChar(attribute, '3'); strAddChar(attribute, '2');}
+                                                    else {strAddChar(attribute, c);}}
+                else if (c == '\"')             {state = STRING; return STRING;}
                 else                            {errorMessage(ERR_LEXICAL, "V řetězci se objevil neočekávaný znak");}
                 break;
             case S_STR1:
@@ -124,7 +126,8 @@ int getToken(string *attribute){
                 else if (c == 'e' || c == 'E')  {state = S_EXP1; strAddChar(attribute, c);}
                 else if (c >= '1' && c <= '9')  {state = S_INT; strAddChar(attribute, c);}
                 else if (c == '0')              {errorMessage(ERR_LEXICAL, "Dvě nuly nemohou být za sebou");}
-                else                            {strAddChar(attribute, '0'); ungetc(c, stdin); return ZERO;}
+                else                            {ungetc(c, stdin); return ZERO;}
+                break;
             case S_DOUBLE1:
                 col++;
                 if (c >= '0' && c <= '9')       {state = S_DOUBLE; strAddChar(attribute, c);}
@@ -133,7 +136,7 @@ int getToken(string *attribute){
             case S_DOUBLE:
                 col++;
                 if (c >= '0' && c <= '9')       {state = S_DOUBLE; strAddChar(attribute, c);}
-                if (c == 'e' || c == 'E')       {state = S_EXP1; strAddChar(attribute, c);}
+                else if (c == 'e' || c == 'E')       {state = S_EXP1; strAddChar(attribute, c);}
                 else                            {ungetc(c, stdin); return DOUBLE;}
                 break;
             case S_EXP1:
@@ -151,6 +154,7 @@ int getToken(string *attribute){
                 col++;
                 if (c >= '0' && c <= '9')       {state = S_EXP; strAddChar(attribute, c);}
                 else                            {ungetc(c, stdin); return EXP;}
+                break;
             case S_ID:
                 col++;
                 if  (isalnum(c) || c == '_')    {state = S_ID; strAddChar(attribute, c);}

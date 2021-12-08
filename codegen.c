@@ -61,13 +61,6 @@ void generatePredefined(){
     printf("POPFRAME\n");
     printf("RETURN\n");
 
-    //TODO vstupni params (promenlivy pocet)
-    printf("LABEL $write\n");
-    printf("PUSHFRAME\n");
-    printf("WRITE LF@%%retval%%1\n");
-    printf("POPFRAME\n");
-    printf("RETURN\n");
-
     //TODO vstupni params
     printf("LABEL $tointeger\n");
     printf("PUSHFRAME\n");
