@@ -69,6 +69,7 @@ int getToken(string *attribute){
                 if (c == '\\')                  {state = S_STR1; strAddChar(attribute, c);}
                 else if (c > 31 && c != '\"')   {state = S_STRSTART;
                                                     if(c == 32) {strAddChar(attribute, '\\'); strAddChar(attribute, '0'); strAddChar(attribute, '3'); strAddChar(attribute, '2');}
+                                                    else if (c== 35) {strAddChar(attribute, '\\'); strAddChar(attribute, '0'); strAddChar(attribute, '3'); strAddChar(attribute, '5');}
                                                     else {strAddChar(attribute, c);}}
                 else if (c == '\"')             {state = STRING; return STRING;}
                 else                            {errorMessage(ERR_LEXICAL, "V řetězci se objevil neočekávaný znak");}
@@ -76,7 +77,12 @@ int getToken(string *attribute){
             case S_STR1:
                 col++;
                 if (c == '\\' || c == '\"'
-                 || c == 't'  || c == 'n')      {state = S_STRSTART; strAddChar(attribute, c);}
+                 || c == 't'  || c == 'n')      {state = S_STRSTART;
+                                                    if(c == 'n'){strAddChar(attribute, '0'); strAddChar(attribute, '1'); strAddChar(attribute, '0');}
+                                                    else if(c == '\\'){strAddChar(attribute, '0'); strAddChar(attribute, '9'); strAddChar(attribute, '2');}
+                                                    else if(c == 't'){strAddChar(attribute, '0'); strAddChar(attribute, '0'); strAddChar(attribute, '9');}
+                                                    else{strAddChar(attribute, c);}
+                                                }
                 else if (c == '2')              {state = S_STR2; strAddChar(attribute, c);}
                 else if (c == '0')              {state = S_STR2A; strAddChar(attribute, c);}
                 else if (c == '1')              {state = S_STR2B; strAddChar(attribute, c);}
