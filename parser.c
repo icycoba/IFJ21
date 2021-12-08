@@ -326,9 +326,54 @@ void bottom_up(){
                 fprintf(stdout, "PUSHS LF@%s\n", strGetStr(&attribute));
             }
         }
+        if((token >= STRING && token <= ID) || token == ZERO){
+            fprintf(stderr, "[%s]\n", printState(exprOutcome));
+            if(exprOutcome == KW_NIL){
+                if(token == STRING){
+                    if(s->top - 2 >= 0 && s->arr[s->top - 2] == LEN) exprOutcome = INT;
+                    else exprOutcome = STRING;
+                }
+                else if(token == INT || token == ZERO){
+                    exprOutcome = INT;
+                }
+                else if(token == DOUBLE || token == EXP){
+                    exprOutcome = DOUBLE;
+                }
+                else if(token == ID){
+                    if(strCmpConstStr(&varTableSearch(&varTable, attribute)->type, "integer")){
+                        exprOutcome = INT;
+                    }
+                    else if(strCmpConstStr(&varTableSearch(&varTable, attribute)->type, "string")){
+                        exprOutcome = STRING;
+                    }
+                    else if(strCmpConstStr(&varTableSearch(&varTable, currentVar)->type,"number")){
+                        exprOutcome = DOUBLE;
+                    }
+                }                
+            }
+            else{
+                if(token == STRING){
+                    if(!stack_isEmpty(s) && s->arr[s->top - 2] == LEN){
+                        fprintf(stderr, "[%d]\n", s->arr[s->top]);
+                         if(exprOutcome != INT && exprOutcome != DOUBLE) errorMessage(ERR_TYPE_CMP, "Typ nesedí1");
+                    }
+                    else if(exprOutcome != STRING) errorMessage(ERR_TYPE_CMP, "Typ nesedí2");
+                }
+                else if(token == INT || token == ZERO){
+                    if(exprOutcome != INT && exprOutcome != DOUBLE) errorMessage(ERR_TYPE_CMP, "Typ nesedí3");
+                }
+                else if(token == DOUBLE || token == EXP){
+                    if(exprOutcome != DOUBLE) errorMessage(ERR_TYPE_CMP, "Typ nesedí4");
+                }
+
+            }
+
+        }
+
+
         token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(token != LEN && !(token >= STRING && token <= RBR) && token != ID && token != ZERO && token != KW_NIL && token != CONCAT)
-            {exprEnd = true;fprintf(stderr, "sdfdsfdsafdsafasfsfsadfa\n");}
+            exprEnd = true;
     }
     skip = false;
     
