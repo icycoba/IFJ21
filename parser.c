@@ -320,8 +320,17 @@ void bottom_up(){
         //exprOutcome = token;
         if(!exprEnd && !skip){
             if(token >= STRING && token <= ID){
-                fprintf(stdout, "%-15s |%s\n", printState(token), strGetStr(&attribute));
-                fprintf(stdout, "PUSHS string@test\n");
+                fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
+                //fprintf(stdout, "PUSHS string@test\n");
+                if(token == STRING){
+                    fprintf(stdout, "PUSHS string@%s\n", strGetStr(&attribute));
+                }else if(token == INT){
+                    fprintf(stdout, "PUSHS int@%s\n", strGetStr(&attribute));
+                }else if(token == DOUBLE || token == EXP){
+                    fprintf(stdout, "PUSHS float@%a\n", atof(strGetStr(&attribute)));
+                }else if(token == ID){
+                    fprintf(stdout, "PUSHS LF@%s\n", strGetStr(&attribute));
+                }
             }
             token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
             
@@ -928,13 +937,13 @@ void syntax_init(){
         stack_delete(s);
 
         if(!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "integer")){
-            fprintf(stdout, "MOVE LF@%s int@%s\n", strGetStr(&currentVar), strGetStr(&attributeTemp));
+            fprintf(stdout, "POPS LF@%s\n", strGetStr(&currentVar));
         } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "number")){
-            fprintf(stdout, "MOVE LF@%s float@%s\n", strGetStr(&currentVar), strGetStr(&attributeTemp));
+            fprintf(stdout, "POPS LF@%s\n", strGetStr(&currentVar));
         } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "string")){
-            fprintf(stdout, "MOVE LF@%s string@%s\n", strGetStr(&currentVar), strGetStr(&attributeTemp));
+            fprintf(stdout, "POPS LF@%s\n", strGetStr(&currentVar));
         } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "nil")){
-            fprintf(stdout, "MOVE LF@%s nil@nil\n", strGetStr(&currentVar));
+            fprintf(stdout, "POPS LF@%s\n", strGetStr(&currentVar));
         }
     }
     else if(token == ID || (token <= F_CHR && token >= F_READS)){
