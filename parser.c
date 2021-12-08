@@ -358,7 +358,7 @@ void syntax_prolog(){
     if (token != KW_REQUIRE) errorMessage(ERR_SYNTAX, "V prologu chybí klíčové slovo require");
 
     token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
-    if (token != STRING || strCmpConstStr(&attribute, "\"ifj21\"")) errorMessage(ERR_SEM_OTHER, "Klíčové slovo require musí následovat řetězec \"ifj21\"");
+    if (token != STRING || strCmpConstStr(&attribute, "ifj21")) errorMessage(ERR_SEM_OTHER, "Klíčové slovo require musí následovat řetězec \"ifj21\"");
     //generateProlog();
 
     fprintf(stdout, ".IFJcode21\n");
@@ -785,6 +785,19 @@ void syntax_stmt(){
             if(token != LBR) errorMessage(ERR_SYNTAX, "Očekával se znak '('");
             token = getToken(&attribute); fprintf(stderr,"%-15s |%s\n", printState(token), strGetStr(&attribute));
             while((token >= STRING && token <= EXP) || token == ID){
+                if(token == STRING){
+                    fprintf(stdout, "WRITE string@%s\n", strGetStr(&attribute));
+                } else if(token == INT){
+                    fprintf(stdout, "WRITE int@%s\n", strGetStr(&attribute));
+                } else if(token == DOUBLE || token == EXP){
+                    fprintf(stdout, "WRITE float@%a\n", atof(strGetStr(&attribute)));
+                } else if(token == ID){
+                    if(varTableSearch(&varTable, attribute)){
+                        fprintf(stdout, "WRITE %s\n", strGetStr(&attribute));
+                    } else{
+                        errorMessage(ERR_NONDEF, "Pokus o WRITE nedefinované proměnné.");
+                    }
+                }
                 token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
                 if(token == RBR) break;
                 else if (token != COMMA) errorMessage(ERR_SYNTAX, "Očekával se znak ,");
