@@ -170,7 +170,7 @@ void bottom_up(){
     //while((token >= STRING && token <= RBR) || token == LEN || token == ID || token == ZERO || token == KW_NIL || token == CONCAT){
         if(stack_highest(s) == -1){            
             if(exprEnd){
-                printf("vyraz zpracovan uspesne\n");
+                fprintf(stderr, "vyraz zpracovan uspesne\n");
                 return;
             }
             else if(token == RBR)
@@ -303,11 +303,11 @@ void bottom_up(){
         }
         else errorMessage(ERR_TYPE_CMP, "Chyba v kodu precedence, tady by se to ani nemelo dostat");
 
-        printf("[");
+        fprintf(stderr, "[");
         for(int i = 0; i < s->top + 1; i++){
-            printf("%d  ", s->arr[s->top - i]);
+            fprintf(stderr, "%d  ", s->arr[s->top - i]);
         }
-        printf(" start]\n");
+        fprintf(stderr, " start]\n");
         
 
         //if((exprOutcome >= STRING && exprOutcome <= EXP) || exprOutcome == ID){
@@ -322,7 +322,7 @@ void bottom_up(){
         skip = false;
     //}
     
-    printf("bottom-up-end\n");
+    fprintf(stderr, "bottom-up-end\n");
     bottom_up();
 }
 
