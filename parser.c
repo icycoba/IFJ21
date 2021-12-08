@@ -719,10 +719,14 @@ void syntax_stmt(){
         //fprintf(stderr, "stmt-if\n");
         //TODO - volani bottom-up analyzy která určí jestli je tu validní terminál a vyhodnotí ho
         scopeAdd(&varTable);
+
+        fprintf(stdout, "LABEL $%s\n", strGetStr(&attribute));
+
         bottom_up();
         exprEnd = false;
         stack_delete(s);
         if(token != KW_THEN) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"then\"");
+
 
         token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         
@@ -741,6 +745,7 @@ void syntax_stmt(){
     else if(token == KW_WHILE){
         //fprintf(stderr, "stmt-while\n");
         //TODO - volani bottom-up analyzy která určí jestli je tu validní terminál a vyhodnotí ho
+        fprintf(stdout, "LABEL $%s", strGetStr(&attribute));
         scopeAdd(&varTable);
         bottom_up();
         exprEnd = false;
@@ -750,7 +755,6 @@ void syntax_stmt(){
         token = getToken(&attribute); //fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         syntax_stmts();
 
-        fprintf(stdout, "WHILE\n"); //prozatimně
         
         if(token != KW_END) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"end\"");
         scopeSub(&varTable);
