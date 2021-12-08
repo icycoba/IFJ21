@@ -103,6 +103,8 @@ void generatePredefined(){
     printf("DEFVAR LF@_\n");
     printf("CALL $ord\n");
     printf("WRITE LF@_\n");
+    printf("POPS LF@_\n");
+    printf("POPFRAME\n");
     printf("RETURN\n\n");
 
 }
