@@ -170,7 +170,7 @@ void bottom_up(){
     //while((token >= STRING && token <= RBR) || token == LEN || token == ID || token == ZERO || token == KW_NIL || token == CONCAT){
         if(stack_highest(s) == -1){            
             if(exprEnd){
-                printf("vyraz zpracovan uspesne\n");
+                fprintf(stderr, "vyraz zpracovan uspesne\n");
                 return;
             }
             else if(token == RBR)
@@ -303,11 +303,11 @@ void bottom_up(){
         }
         else errorMessage(ERR_TYPE_CMP, "Chyba v kodu precedence, tady by se to ani nemelo dostat");
 
-        printf("[");
+        fprintf(stderr, "[");
         for(int i = 0; i < s->top + 1; i++){
-            printf("%d  ", s->arr[s->top - i]);
+            fprintf(stderr, "%d  ", s->arr[s->top - i]);
         }
-        printf(" start]\n");
+        fprintf(stderr, " start]\n");
         
 
         //if((exprOutcome >= STRING && exprOutcome <= EXP) || exprOutcome == ID){
@@ -322,7 +322,7 @@ void bottom_up(){
         skip = false;
     //}
     
-    printf("bottom-up-end\n");
+    fprintf(stderr, "bottom-up-end\n");
     bottom_up();
 }
 
@@ -719,6 +719,8 @@ void syntax_stmt(){
         fprintf(stderr, "stmt-if\n");
         //TODO - volani bottom-up analyzy která určí jestli je tu validní terminál a vyhodnotí ho
         scopeAdd(&varTable);
+
+        fprintf(stdout, "LABEL $%s\n", strGetStr(&attribute));
         token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         bottom_up();
         exprEnd = false;
@@ -742,6 +744,7 @@ void syntax_stmt(){
     else if(token == KW_WHILE){
         fprintf(stderr, "stmt-while\n");
         //TODO - volani bottom-up analyzy která určí jestli je tu validní terminál a vyhodnotí ho
+        fprintf(stdout, "LABEL $%s", strGetStr(&attribute));
         scopeAdd(&varTable);
         token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         bottom_up();
@@ -752,7 +755,6 @@ void syntax_stmt(){
         token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         syntax_stmts();
 
-        fprintf(stdout, "WHILE\n"); //prozatimně
         
         if(token != KW_END) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"end\"");
         scopeSub(&varTable);
