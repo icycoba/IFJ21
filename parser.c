@@ -151,6 +151,9 @@ int parser(){
     controlDefined(&funcTable);
 
     free(s);
+
+    strFree(&attributeTemp);
+    strFree(&funcName);
     strFree(&currentVar);
     strFree(&currentFunc);
     strFree(&attribute);
@@ -1320,7 +1323,7 @@ void stack_rules(Stack *s){
             s->arr[s->top] = E;
         }
 
-        else errorMessage(ERR_SYNTAX, "Pravidlo nejde");
+        else errorMessage(ERR_SYNTAX, "Pravidlo není");
     }
     else if(s->top - result == 2){
         if(s->arr[s->top] == E && s->arr[s->top - 1] == LEN){
@@ -1328,7 +1331,7 @@ void stack_rules(Stack *s){
             s->arr[s->top] = E;
         }
 
-        else errorMessage(ERR_SYNTAX, "Pravidlo nemuze");
+        else errorMessage(ERR_SYNTAX, "Pravidlo není");
     
     }
 
@@ -1356,7 +1359,7 @@ void stack_rules(Stack *s){
 
         }
 
-        else errorMessage(ERR_SYNTAX, "Pravidlo nelze");
+        else errorMessage(ERR_SYNTAX, "Pravidlo není");
     }
 
     else errorMessage(ERR_SYNTAX, "Nesedi zadne pravidlo");
