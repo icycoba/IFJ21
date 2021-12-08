@@ -551,7 +551,7 @@ void syntax_fun_call(){
 
         fprintf(stderr, "%d, %d",DLL_length(&currentList), DLL_length(&funcTableSearch(&funcTable, currentVar)->param ));
         fprintf(stderr, "%s\n\n", strGetStr(&funcTableSearch(&funcTable, currentVar)->key));
-        if(!DLL_Compare(&currentList, &funcTableSearch(&funcTable, currentVar)->param)) errorMessage(ERR_RETURN, "Parametry se neshoduji");
+        if(DLL_Compare(&currentList, &funcTableSearch(&funcTable, currentVar)->param) != 1) errorMessage(ERR_RETURN, "Parametry se neshoduji");
         
         DLL_Dispose(&currentList);
         DLL_Init(&currentList);
@@ -888,7 +888,7 @@ void syntax_stmt(){
 
             if(assignExpr.firstElement != NULL){
                 fprintf(stderr, "%d, %d",DLL_length(&currentList), DLL_length(&assignExpr));
-                if(!DLL_Compare(&assignExpr, &currentList)) errorMessage(ERR_ASSIGN, "Prava a leva strana nema stejne typy nebo pocet parametru");
+                if(DLL_Compare(&assignExpr, &currentList) != 1) errorMessage(ERR_ASSIGN, "Prava a leva strana nema stejne typy nebo pocet parametru");
                 DLL_Dispose(&assignExpr);
                 DLL_Init(&assignExpr);
             }
@@ -948,7 +948,7 @@ void syntax_stmt(){
         if(DLL_length(&assignExpr) != DLL_length(&funcTableSearch(&funcTable, currentFunc)->returnParam)) errorMessage(ERR_RETURN, "Špatný počet návratových parametrů");
 
         if(assignExpr.firstElement != NULL){
-            if(!DLL_Compare(&assignExpr, &funcTableSearch(&funcTable, currentFunc)->returnParam)) errorMessage(ERR_ASSIGN, "Špatný typ návratových parametrů");
+            if(DLL_Compare(&assignExpr, &funcTableSearch(&funcTable, currentFunc)->returnParam) != 1) errorMessage(ERR_ASSIGN, "Špatný typ návratových parametrů");
             DLL_Dispose(&assignExpr);
             DLL_Init(&assignExpr);
         }
@@ -1033,7 +1033,7 @@ void syntax_init(){
     else if(token == ID || (token <= F_CHR && token >= F_READS)){
         //token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         if(funcTableSearch(&funcTable, attribute)){
-            if(DLL_length(&funcTableSearch(&funcTable, attribute)->returnParam) != 1) errorMessage(ERR_ASSIGN, "Funkce vraci spatny pocet parametru");
+            if(DLL_length(&funcTableSearch(&funcTable, attribute)->returnParam) < 1) errorMessage(ERR_ASSIGN, "Funkce vraci spatny pocet parametru");
 
             if(strCmpString(&varTableSearch(&varTable, currentVar)->type, &funcTableSearch(&funcTable, attribute)->returnParam.firstElement->data)
                 &&  (strCmpConstStr(&varTableSearch(&varTable, currentVar)->type,"number") || strCmpConstStr(&funcTableSearch(&funcTable, attribute)->returnParam.firstElement->data, "integer")))

@@ -142,7 +142,7 @@ int DLL_Compare(DLList *list1, DLList *list2){
         second = second->nextElement;
     }
     if (first == NULL && second == NULL) return 1;
-    
+    if (first == NULL && second != NULL) return -1;
     return 0; 
 }
 
