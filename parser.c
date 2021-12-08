@@ -163,8 +163,8 @@ int parser(){
 }
         
 void bottom_up(){
-    //fprintf(stderr, "bottom-up\n");
-   /* int exprOutcome;
+    fprintf(stderr, "bottom-up\n");
+    int exprOutcome;
     exprOutcome = token;
     //token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     //while((token >= STRING && token <= RBR) || token == LEN || token == ID || token == ZERO || token == KW_NIL || token == CONCAT){
@@ -213,7 +213,7 @@ void bottom_up(){
                 errorMessage(ERR_TYPE_CMP, "Chyba precedence4");
             else if(token == RBR){
                 if(s->arr[s->top - 1] == LBR && s->arr[s->top] == E){
-                    s->top--;
+                    s->top -= 2;
                     s->arr[s->top] = E;
                 }
             }
@@ -299,7 +299,7 @@ void bottom_up(){
     //}
     
     printf("bottom-up-end\n");
-    bottom_up();*/
+    bottom_up();
 }
 
 //// každá syntax funkce je jeden neterminál v gramatice ////
