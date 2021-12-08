@@ -158,7 +158,6 @@ int parser(){
     DLL_Dispose(&assignExpr);
     funcTableDispose(&funcTable);
     varTableDispose(&varTable);
-    //printf("syntakticka analyza probehla bez problemu\n");
     return SYNTAX_OK;  
 }
         
@@ -341,7 +340,6 @@ void bottom_up(){
 
 // <program> -> <prolog> <fun_dec_def_call> EOF
 void syntax_program(){
-    //printf("program\n");
     if (token != EOFILE){
         syntax_prolog();
         token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
@@ -615,13 +613,6 @@ void syntax_fun_params2(){
 // <fun_call_params> -> ID <fun_call_params2>
 // <fun_call_params> -> epsilon
 void syntax_fun_call_params(){
-    fprintf(stderr, "fun_call_params\n");
-    
-    //simple_print2(&funcTable);
-    //printf("\n");    
-    //simple_print(&varTable);    
-    //printf("\n");
-
     token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     
     if(token == ID || (token >= STRING && token <= EXP)) {
@@ -1127,13 +1118,11 @@ int stack_isFull(const Stack *s){
 
 // Je záspbník prázdný?
 int stack_isEmpty(const Stack *s){
-    //printf("Vidím ťa");
     return (s->top == -1);
 }
 
 // Uložení tokenu na zásobník
 void stack_push(Stack *s, int token){
-    //printf("Vidím ťa2");
     if(!stack_isFull(s)){
         s->top++;
         s->arr[s->top]=token;
