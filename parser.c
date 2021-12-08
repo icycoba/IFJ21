@@ -168,13 +168,13 @@ void bottom_up(){
     exprOutcome = token;
     //token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
     //while((token >= STRING && token <= RBR) || token == LEN || token == ID || token == ZERO || token == KW_NIL || token == CONCAT){
-        if(stack_highest(s) == -1){
-            if(token == RBR)
-                errorMessage(ERR_TYPE_CMP, "Chyba precedence1");
-            else if(exprEnd){
+        if(stack_highest(s) == -1){            
+            if(exprEnd){
                 printf("vyraz zpracovan uspesne\n");
                 return;
             }
+            else if(token == RBR)
+                errorMessage(ERR_TYPE_CMP, "Chyba precedence1");
             else{
                 stack_handle(s);
                 stack_push(s, token);
@@ -182,13 +182,13 @@ void bottom_up(){
         }
         else if(s->arr[stack_highest(s)] == ID || 
                 (s->arr[stack_highest(s)] >= STRING && s->arr[stack_highest(s)] <= EXP) ||  
-                s->arr[stack_highest(s)] == ZERO){
-            if(token == LBR || token == LEN)
-                errorMessage(ERR_TYPE_CMP, "Chyba precedence2");
-            else if(exprEnd){
+                s->arr[stack_highest(s)] == ZERO){            
+            if(exprEnd){
                 stack_rules(s);
                 skip = true;
             }
+            else if(token == LBR || token == LEN)
+                errorMessage(ERR_TYPE_CMP, "Chyba precedence2");
 
             else if((token >= STRING && token <= EXP) || token == ZERO || token == ID){
                 exprEnd = true;printf("napis neco at vim");}
@@ -198,7 +198,11 @@ void bottom_up(){
             }            
         }
         else if(s->arr[stack_highest(s)] == RBR){
-            if(token == LEN || token == LBR)
+            if(exprEnd){
+                stack_rules(s);
+                skip = true;
+            }
+            else if(token == LEN || token == LBR)
                 errorMessage(ERR_TYPE_CMP, "Chyba precedence3");
             else if((token >= STRING && token <= EXP) || token == ZERO || token == ID)
                 exprEnd = true;
@@ -224,7 +228,11 @@ void bottom_up(){
         }
         else if(s->arr[stack_highest(s)]==GT || s->arr[stack_highest(s)]==GTE || s->arr[stack_highest(s)]==LT || 
                 s->arr[stack_highest(s)]==LTE || s->arr[stack_highest(s)]==EQUAL || s->arr[stack_highest(s)]==NEQUAL){
-            if(token == GT || token == GTE || token == LT || token == LTE 
+            if(exprEnd){
+                stack_rules(s);
+                skip = true;
+            }
+            else if(token == GT || token == GTE || token == LT || token == LTE 
                 || token == EQUAL || token == NEQUAL || token == RBR || exprEnd){
                 stack_rules(s);
                 skip = true;
@@ -235,7 +243,11 @@ void bottom_up(){
             }
         }
         else if(s->arr[stack_highest(s)] == CONCAT){
-            if(token == GT || token == GTE || token == LT || token == LTE || token == EQUAL || token == NEQUAL || token == RBR || exprEnd){
+            if(exprEnd){
+                stack_rules(s);
+                skip = true;
+            }
+            else if(token == GT || token == GTE || token == LT || token == LTE || token == EQUAL || token == NEQUAL || token == RBR || exprEnd){
                 stack_rules(s);
                 skip = true;
             }
@@ -245,7 +257,11 @@ void bottom_up(){
             }
         }
         else if(s->arr[stack_highest(s)] == ADD || s->arr[stack_highest(s)] == SUB){
-            if(token == ADD || token == SUB || token == CONCAT || token == RBR || token == GT ||
+            if(exprEnd){
+                stack_rules(s);
+                skip = true;
+            }
+            else if(token == ADD || token == SUB || token == CONCAT || token == RBR || token == GT ||
                 token == GTE || token == LT || token == LTE || token == EQUAL || token == NEQUAL || exprEnd){
                 stack_rules(s);
                 skip = true;
@@ -256,7 +272,11 @@ void bottom_up(){
             }
         }
         else if(s->arr[stack_highest(s)] == MUL || s->arr[stack_highest(s)] == DIV || s->arr[stack_highest(s)] == DIV_WHOLE){
-            if(token == LEN || token == LBR || token == ID || (token >= STRING && token <= EXP) || token == ZERO){
+            if(exprEnd){
+                stack_rules(s);
+                skip = true;
+            }
+            else if(token == LEN || token == LBR || token == ID || (token >= STRING && token <= EXP) || token == ZERO){
                 stack_handle(s);
                 stack_push(s, token);
             }
@@ -266,7 +286,11 @@ void bottom_up(){
             }
         }
         else if(s->arr[stack_highest(s)] == LEN){
-            if(token == LBR || token == ID || (token >= STRING && token <= EXP) || token == ZERO){
+            if(exprEnd){
+                stack_rules(s);
+                skip = true;
+            }
+            else if(token == LBR || token == ID || (token >= STRING && token <= EXP) || token == ZERO){
                 stack_handle(s);
                 stack_push(s, token);
             }
