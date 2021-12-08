@@ -533,7 +533,6 @@ void syntax_type_rtrn(){
 // <type_rtrn2> -> epsilon
 void syntax_type_rtrn2(){
     fprintf(stderr, "type_rtrn2\n");  
-
     if(!funcTableSearch(&funcTable, currentFunc)->declared && !funcTableSearch(&funcTable, currentFunc)->defined) addReturnParam(&funcTable, currentFunc, attribute);
 
 
@@ -715,7 +714,7 @@ void syntax_stmt(){
         } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "string")){
             fprintf(stdout, "MOVE LF@%s string@\n", strGetStr(&currentVar));
         } else if (!strCmpConstStr(&varTableSearch(&varTable, currentVar)->type, "nil")){
-            fprintf(stdout, "MOVE LF@%s nil@nil\n", strGetStr(&currentVar));
+            fprintf(stdout, "MOVE LF@%s nil@nil\n", strGetStr(&currentVar));     
         }
         syntax_var_init();
     }     
@@ -753,7 +752,7 @@ void syntax_stmt(){
         token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         bottom_up();
 
-        fprintf(stdout, "JUMPIFEQ end GF@%%%s %%%s@\n", strGetStr(&currentVar), strGetStr(&attributeTemp));
+        fprintf(stdout, "JUMPIFEQ end LF@%%%s %%%s\n", strGetStr(&currentVar), strGetStr(&attributeTemp));
         exprEnd = false;
         stack_delete(s);
         if(token != KW_DO) errorMessage(ERR_SYNTAX, "Očekávalo se slovo \"do\"");
