@@ -1,8 +1,6 @@
 require "ifj21"
-function main(y : number) : integer, integer
+function main()
     local x : integer = 10
-    x, x = main(x)
-    main(x)
-    return 20, 20
+    x = (5 + 10)
 end
-main(20)
+main()

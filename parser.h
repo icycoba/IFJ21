@@ -28,7 +28,11 @@
 #define SYNTAX_OK 0
 #define STACK_MAX_SIZE 30
 
+#define E 100
+#define HANDLE 101
+
 int token;
+bool exprEnd;
 //bool mainLabel;
 string attribute;
 string attributeTemp;
@@ -46,6 +50,8 @@ typedef struct{
     int arr[STACK_MAX_SIZE];
     int top;
 } Stack;
+
+Stack *s;
 
 int parser();
 
@@ -80,3 +86,6 @@ void stack_push(Stack *, int);
 void stack_pop(Stack *);
 void stack_top(const Stack *, int *);
 void stack_delete(Stack *);
+int stack_highest(Stack *);
+void stack_handle(Stack *);
+void stack_rules(Stack *);
