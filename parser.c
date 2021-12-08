@@ -1153,7 +1153,7 @@ void stack_delete(Stack *s){
         stack_pop(s);
     }
 }
-
+// Funkce vrátí umístění nejvyššího prvku který není E
 int stack_highest(Stack *s){
     int result = s->top;
     while(result >= 0){
@@ -1163,7 +1163,7 @@ int stack_highest(Stack *s){
     }
     return result;
 }
-
+// Funkce vloží handle do zásobníku
 void stack_handle(Stack *s){
     int result = s->top;
     while(result >= 0){
@@ -1178,7 +1178,7 @@ void stack_handle(Stack *s){
     s->arr[result + 1] = HANDLE;
     s->top++;
 }
-
+// Nalezení handle a použítí příslušného pravidla
 void stack_rules(Stack *s){
     int result = s->top;
     while(result >= 0){
