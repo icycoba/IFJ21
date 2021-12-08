@@ -744,7 +744,7 @@ void syntax_stmt(){
     else if(token == KW_WHILE){
         fprintf(stderr, "stmt-while\n");
         //TODO - volani bottom-up analyzy která určí jestli je tu validní terminál a vyhodnotí ho
-        fprintf(stdout, "LABEL $%s", strGetStr(&attribute));
+        fprintf(stdout, "LABEL $%s\n", strGetStr(&attribute));
         scopeAdd(&varTable);
         token = getToken(&attribute); fprintf(stderr, "%-15s |%s\n", printState(token), strGetStr(&attribute));
         bottom_up();
